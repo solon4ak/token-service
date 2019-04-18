@@ -11,13 +11,13 @@ public interface FileUtil {
 
     public String getTomcatHomePath();
 
-    public String getUSER_IMAGES();
+    public String getUserImages();
 
-    public void setUSER_IMAGES(String USER_IMAGES);
+    public void setUserImages(String USER_IMAGES);
 
-    public String getTOMCAT_HOME_PROPERTY();
+    public String getServerHomeProperty();
     
-    public void setTOMCAT_HOME_PROPERTY(String TOMCAT_HOME_PROPERTY);
+    public void setServerHomeProperty(String TOMCAT_HOME_PROPERTY);
 
     public String getNewFileNameBase();
 

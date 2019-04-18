@@ -13,32 +13,32 @@ import ru.tokens.site.entities.Token;
 @Component(value = "fileService")
 public class FileUtilImpl implements FileUtil {
         
-    private String USER_IMAGES;
-    private String TOMCAT_HOME_PROPERTY;
+    private String userImages;
+    private String serverHomeProperty;
     
     @Override
     public String getTomcatHomePath() {
-        return System.getProperty(TOMCAT_HOME_PROPERTY);
+        return System.getProperty(serverHomeProperty);
     }
 
     @Override
-    public String getUSER_IMAGES() {
-        return USER_IMAGES;
+    public String getUserImages() {
+        return userImages;
     }
 
     @Override
-    public void setUSER_IMAGES(String USER_IMAGES) {
-        this.USER_IMAGES = USER_IMAGES;
+    public void setUserImages(String userImages) {
+        this.userImages = userImages;
     }
 
     @Override
-    public String getTOMCAT_HOME_PROPERTY() {
-        return TOMCAT_HOME_PROPERTY;
+    public String getServerHomeProperty() {
+        return serverHomeProperty;
     }
 
     @Override
-    public void setTOMCAT_HOME_PROPERTY(String TOMCAT_HOME_PROPERTY) {
-        this.TOMCAT_HOME_PROPERTY = TOMCAT_HOME_PROPERTY;
+    public void setServerHomeProperty(String serverHomeProperty) {
+        this.serverHomeProperty = serverHomeProperty;
     }    
     
     @Override
@@ -61,7 +61,7 @@ public class FileUtilImpl implements FileUtil {
         String USER_IMAGES_PATH
                 = this.getTomcatHomePath()
                 + File.separator
-                + USER_IMAGES
+                + userImages
                 + File.separator
                 + token.getUuidString();
         
