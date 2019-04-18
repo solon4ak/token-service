@@ -30,8 +30,8 @@ public class FileUploadConfig {
     
     @Bean
     protected FileUtil fileProperties() {
-        fileUtil.setUSER_IMAGES(userFilesDir);
-        fileUtil.setTOMCAT_HOME_PROPERTY(serverHomeProp);
+        fileUtil.setUserImages(userFilesDir);
+        fileUtil.setServerHomeProperty(serverHomeProp);
         return fileUtil;
     }
 }
