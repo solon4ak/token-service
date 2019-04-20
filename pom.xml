@@ -149,7 +149,7 @@
             <version>1.2</version>
             <scope>runtime</scope>
         </dependency>
-
+        <!-- Spring -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
@@ -162,6 +162,25 @@
             <artifactId>spring-oxm</artifactId>
             <version>${spring.framework.version}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.framework.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${spring.framework.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        
+        <!-- Java Mail API -->
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.7</version>
         </dependency>
         
         <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
@@ -206,6 +225,13 @@
             <artifactId>java-uuid-generator</artifactId>
             <version>3.1.5</version>
         </dependency>       
+        
+        <!-- Passay -->
+        <dependency>
+            <groupId>org.passay</groupId>
+            <artifactId>passay</artifactId>
+            <version>1.4.0</version>
+        </dependency>
         
     </dependencies>
 

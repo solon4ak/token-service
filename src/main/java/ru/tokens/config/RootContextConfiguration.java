@@ -15,7 +15,7 @@ import org.springframework.stereotype.Controller;
  * @author solon4ak
  */
 @Configuration
-@Import({FileUploadConfig.class})
+@Import({FileUploadConfig.class, MailConfig.class})
 @ComponentScan(
         basePackages = "ru.tokens.site",
         excludeFilters = @ComponentScan.Filter(Controller.class)

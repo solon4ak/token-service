@@ -7,5 +7,5 @@ package ru.tokens.site.utils;
 public interface PasswordUtil {
     String generatePassword();
     String generateActivationString();
-    String generateRandomString(int length, String dictionary);
+//    String generateRandomString(int length, String dictionary);
 }

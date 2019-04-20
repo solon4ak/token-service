@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
-import ru.tokens.site.entities.MedicalFormEntry;
+import ru.tokens.site.entities.DataEntry;
 import ru.tokens.site.entities.MedicalHistory;
 import ru.tokens.site.entities.Token;
 import ru.tokens.site.entities.User;
@@ -69,6 +69,7 @@ public class MedicalHistoryController {
         medHistory.setSurgicalOperations(form.getSurgicalOperations());
         medHistory.setBloodType(form.getBloodType());
         medHistory.setOrganDonor(form.isIsOrganDonor());
+        medHistory.setMedicine(form.getMedicine());
 
         Long tokenId = (Long) session.getAttribute("tokenId");
         Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
@@ -113,6 +114,7 @@ public class MedicalHistoryController {
                 form.setSurgicalOperations(medicalHistory.getSurgicalOperations());
                 form.setBloodType(medicalHistory.getBloodType());
                 form.setIsOrganDonor(medicalHistory.isOrganDonor());
+                form.setMedicine(medicalHistory.getMedicine());
 
                 model.put("bloodVariants", this.getBloodTypes());
                 model.put("medicalForm", form);
@@ -149,6 +151,7 @@ public class MedicalHistoryController {
                 medicalHistory.setSurgicalOperations(form.getSurgicalOperations());
                 medicalHistory.setBloodType(form.getBloodType());
                 medicalHistory.setOrganDonor(form.isIsOrganDonor());
+                medicalHistory.setMedicine(form.getMedicine());
 
                 return new RedirectView("/token/user/med/view", true, false);
             }
@@ -184,7 +187,9 @@ public class MedicalHistoryController {
         private String injuries;
         private String allergy;
         private String inheritedDiseases;
-        private Map<Long, MedicalFormEntry> medicalEntries;
+        private String medicine;
+        
+        private Map<Long, DataEntry> medicalEntries;
 
         public String getOmsNumber() {
             return omsNumber;
@@ -266,11 +271,19 @@ public class MedicalHistoryController {
             this.isOrganDonor = isOrganDonor;
         }
 
-        public Map<Long, MedicalFormEntry> getMedicalEntries() {
+        public String getMedicine() {
+            return medicine;
+        }
+
+        public void setMedicine(String medicine) {
+            this.medicine = medicine;
+        }
+
+        public Map<Long, DataEntry> getMedicalEntries() {
             return medicalEntries;
         }
 
-        public void setMedicalEntries(Map<Long, MedicalFormEntry> medicalEntries) {
+        public void setMedicalEntries(Map<Long, DataEntry> medicalEntries) {
             this.medicalEntries = medicalEntries;
         }
     }

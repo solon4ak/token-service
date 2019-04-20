@@ -1,9 +1,28 @@
 <%--@elvariable id="token" type="ru.tokens.site.entities.Token"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:basic htmlTitle="Token-${token.uuidString} :: Medical History"
-                bodyTitle="Medical History">
-    <c:out value="User ID: ${token.uuidString}"/><br />
-    <c:out value="User E-mail: ${token.user.email}"/><br /><br />
+                bodyTitle="Medical History">    
+    <table class="data_table">
+        <tbody>
+            <tr>
+                <td>
+                    <b>User ID:</b>
+                </td>
+                <td>
+                    <c:out value="${token.uuidString}"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    User E-mail:
+                </td>
+                <td>
+                    <c:out value="${token.user.email}"/>
+                </td>
+            </tr>
+        </tbody>        
+    </table>
+    <br />
     View my token page: 
     <a href="<c:url value="/token/${token.tokenId}/${token.uuidString}">
            <c:param name="showMH" value="false" />              
@@ -12,7 +31,7 @@
     </a> / 
     <a href="<c:url value="/token/${token.tokenId}/${token.uuidString}">
            <c:param name="showMH" value="true" />              
-    </c:url>" target="_blank">
+       </c:url>" target="_blank">
         Full
     </a>
     <hr />
@@ -97,6 +116,14 @@
                 </td>
                 <td>
                     <c:out value="${token.user.medicalHistory.allergy}"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Принимаемые лекарства
+                </td>
+                <td>
+                    <c:out value="${token.user.medicalHistory.medicine}"/>
                 </td>
             </tr>
             <tr>

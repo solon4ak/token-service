@@ -1,8 +1,11 @@
 package ru.tokens.site.entities;
 
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -25,20 +28,27 @@ public class User {
     private BirthCertificate birthCertificate;
     private Address address;
     private String phoneNumber;
-//    private Attachment profileImage;
-//    private byte[] picture;
+
     private LocalDate birthDate;
     private Image image;
+    
+    private boolean emailActivated;
 
     private final List<Contact> contacts = new LinkedList<>();
 
+    private final Map<Long, Email> emails = new Hashtable<>();
+
     private MedicalHistory medicalHistory;
-    
+
     // Список действий, наступление которых обусловлено каким-то событием 
     // со своим индикатором наступления
-    private List<ActionOnCondition> onConditions;
+    private List<CausedEvent> causedEvents;
+
+    private List<ActivationLink> activationLinks = new LinkedList<>();
 
     public User() {
+        super();
+        this.emailActivated = false;
     }
 
     public User(String firstName, String lastName, String email, String password, LocalDate birthDate) {
@@ -49,7 +59,7 @@ public class User {
         if (password != null) {
             this.setPassword(password);
         }
-    }    
+    }
 
     public String getFirstName() {
         return firstName;
@@ -99,14 +109,6 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-//    public byte[] getPicture() {
-//        return picture;
-//    }
-//
-//    public void setPicture(byte[] picture) {
-//        this.picture = picture;
-//    }
-
     public LocalDate getBirthDate() {
         return birthDate;
     }
@@ -131,12 +133,12 @@ public class User {
         this.medicalHistory = medicalHistory;
     }
 
-    public List<ActionOnCondition> getOnConditions() {
-        return onConditions;
+    public List<CausedEvent> getCausedEvents() {
+        return causedEvents;
     }
 
-    public void addActionOnCondition(ActionOnCondition onCondition) {
-        this.onConditions.add(onCondition);
+    public void addActionOnCondition(CausedEvent onCondition) {
+        this.causedEvents.add(onCondition);
     }
 
     public String getPassword() {
@@ -179,14 +181,6 @@ public class User {
         this.birthCertificate = birthCertificate;
     }
 
-//    public Attachment getProfileImage() {
-//        return profileImage;
-//    }
-//
-//    public void setProfileImage(Attachment profileImage) {
-//        this.profileImage = profileImage;
-//    }
-
     public Image getImage() {
         return image;
     }
@@ -195,5 +189,34 @@ public class User {
         this.image = image;
     }
 
+    public void addEmail(Long id, Email email) {
+        this.emails.put(id, email);
+    }
+
+    public Collection<Email> getEmails() {
+        return this.emails.values();
+    }
+
+    public Email getEmail(Long id) {
+        return this.emails.get(id);
+    }
+
+    public void addActivationLink(ActivationLink link) {
+        this.activationLinks.add(link);
+    }
     
+    public List<ActivationLink> getActivationLinks() {
+        return this.activationLinks;
+    }
+
+    public boolean isEmailActivated() {
+        return emailActivated;
+    }
+
+    public void setEmailActivated(boolean emailActivated) {
+        this.emailActivated = emailActivated;
+    }
+    
+    
+
 }

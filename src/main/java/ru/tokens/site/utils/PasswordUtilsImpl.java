@@ -18,7 +18,6 @@ final class PasswordUtilsImpl implements PasswordUtil {
     private static final String NUMERIC = "0123456789";
 //    private static final String SPECIAL_CHARS = "!@#$%^&*_=+-/";
     
-    @Override
     public String generateRandomString(int length, String dictionary) {        
         String result = "";
         for (int i = 0; i < length; i++) {

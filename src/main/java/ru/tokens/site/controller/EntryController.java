@@ -1,6 +1,5 @@
 package ru.tokens.site.controller;
 
-import java.awt.image.ImagingOpException;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
@@ -20,7 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 import ru.tokens.site.entities.Attachment;
-import ru.tokens.site.entities.MedicalFormEntry;
+import ru.tokens.site.entities.DataEntry;
 import ru.tokens.site.entities.MedicalHistory;
 import ru.tokens.site.entities.Token;
 import ru.tokens.site.entities.User;
@@ -67,7 +66,7 @@ public class EntryController {
         if (token != null && token.isActivated()) {
             User user = token.getUser();
             if (user != null) {
-                MedicalFormEntry entry = user.getMedicalHistory().getMedicalFormEntry(entryId);
+                DataEntry entry = user.getMedicalHistory().getMedicalFormEntry(entryId);
                 if (entry != null) {
                     model.put("token", token);
                     model.put("entry", entry);
@@ -96,7 +95,7 @@ public class EntryController {
         if (token != null && token.isActivated()) {
             User user = token.getUser();
             if (user != null) {
-                MedicalFormEntry entry = user.getMedicalHistory().getMedicalFormEntry(entryId);
+                DataEntry entry = user.getMedicalHistory().getMedicalFormEntry(entryId);
                 if (entry != null) {
                     Attachment attachment = entry.getAttachment(name);
                     if (attachment == null) {
@@ -121,7 +120,7 @@ public class EntryController {
         Token token = tokens.get(tokenId);
         User user = token.getUser();
         MedicalHistory history = user.getMedicalHistory();
-        MedicalFormEntry entry = history.getMedicalFormEntry(entryId);
+        DataEntry entry = history.getMedicalFormEntry(entryId);
 
         model.put("entry", entry);
         model.put("token", token);
@@ -153,7 +152,7 @@ public class EntryController {
 
         User user = token.getUser();
 
-        MedicalFormEntry entry = new MedicalFormEntry();
+        DataEntry entry = new DataEntry();
         entry.setId(this.getNextEntryId());
         String subject = form.getSubject();
         if (subject.isEmpty() || subject.equals("")) {
@@ -186,7 +185,7 @@ public class EntryController {
                     attachment.setSize(filePart.getSize());
 
                     entry.addAttachment(attachment);
-                } catch (ImagingOpException | IOException
+                } catch (IOException
                         | IllegalArgumentException | IllegalStateException e) {
                     log.error("Could not upload file " + filePart.getOriginalFilename(), e);
                 }
@@ -212,7 +211,7 @@ public class EntryController {
 
         if (null != user) {
             MedicalHistory medicalHistory = user.getMedicalHistory();
-            MedicalFormEntry entry = medicalHistory.getMedicalFormEntry(entryId);
+            DataEntry entry = medicalHistory.getMedicalFormEntry(entryId);
             if (null != entry) {
 
                 Map<Long, Attachment> attachments = entry.getAttachmentsMap();
@@ -251,7 +250,7 @@ public class EntryController {
 
         if (null != user) {
             MedicalHistory medicalHistory = user.getMedicalHistory();
-            MedicalFormEntry entry = medicalHistory.getMedicalFormEntry(entryId);
+            DataEntry entry = medicalHistory.getMedicalFormEntry(entryId);
             if (null != entry) {
                 form.setSubject(entry.getSubject());
                 form.setBody(entry.getBody());
@@ -281,7 +280,7 @@ public class EntryController {
 
         if (null != user) {
             MedicalHistory medicalHistory = user.getMedicalHistory();
-            MedicalFormEntry entry = medicalHistory.getMedicalFormEntry(entryId);
+            DataEntry entry = medicalHistory.getMedicalFormEntry(entryId);
             if (null != entry) {
                 entry.setSubject(form.getSubject());
                 entry.setBody(form.getBody());
