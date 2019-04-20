@@ -15,6 +15,5 @@
         <label>Up to 5 Mb/file</label>
         <input type="file" name="attachments" multiple="multiple"/><br /><br />
         <input type="submit" value="Submit"/>
-        <fo
     </form:form>
 </template:basic>

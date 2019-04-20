@@ -97,6 +97,16 @@
                 </tr>
                 <tr>
                     <td>
+                        <form:label path="medicine">
+                            Принимаемые лекарства
+                        </form:label>
+                    </td>
+                    <td>
+                        <form:textarea path="medicine" rows="5" cols="70" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
                         <form:label path="inheritedDiseases">
                             Наследственные заболевания
                         </form:label>

@@ -11,7 +11,7 @@
     </a> / 
     <a href="<c:url value="/token/${token.tokenId}/${token.uuidString}">
            <c:param name="showMH" value="true" />              
-    </c:url>" target="_blank">
+       </c:url>" target="_blank">
         Full
     </a>
     <hr />
@@ -27,12 +27,12 @@
         <c:otherwise>
             <hr />
             <img src="<c:url value="/token/user/image/thumbnail" />" 
-             alt="${token.user.lastName}, ${token.user.firstName}"/><br /><br />
+                 alt="${token.user.lastName}, ${token.user.firstName}"/><br /><br />
             <a href="<c:url value="/token/user/image/delete" />">Delete</a> / 
             <a href="<c:url value="/token/user/image/upload" />">Change</a>
         </c:otherwise>
     </c:choose>  
-    
+
     <hr />
     <h5>Birth Certificate:</h5>
     <c:choose>
@@ -210,5 +210,7 @@
             <a href="<c:url context="/tkn" value="/token/user/med/view" />">Medical Data</a>
         </c:otherwise>
     </c:choose>
+    <hr />
+    <a href="<c:url context="/tkn" value="/token/user/csdevent/add" />">Add Caused Message</a>
 
 </template:basic>

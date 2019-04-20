@@ -5,10 +5,35 @@
                     bodyTitle="Token: ${token.uuidString}">
     Activated: <wrox:formatDate value="${token.activatedDate}" />
     <hr />
-    <b>Token owner</b> - <c:out value="${token.user.lastName}, 
-           ${token.user.firstName} ${token.user.middleName} " /><br /><br />    
-    Birth date: <tags:localDate date="${token.user.birthDate}" /><br />
-    Age: <c:out value="${age}" />
+    <table class="data_table">
+        <tbody>
+            <tr>
+                <td>
+                    <b>Token owner</b>
+                </td>
+                <td>
+                    <c:out value="${token.user.lastName}, 
+                           ${token.user.firstName} ${token.user.middleName} " />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Birth date:
+                </td>
+                <td>
+                    <tags:localDate date="${token.user.birthDate}" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Age:
+                </td>
+                <td>
+                    <c:out value="${age}" />
+                </td>
+            </tr>
+        </tbody>        
+    </table>
     <hr />
     <c:if test="${token.user.image != null}">
         <a href="<c:url value="/token/user/image/view" />">

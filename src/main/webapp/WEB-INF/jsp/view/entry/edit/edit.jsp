@@ -27,7 +27,7 @@
                             <c:out value="${attachment.name}" />
                         </td>
                         <td>
-                            <c:out value="${attachment.contentSize}" /> Kb
+                            <c:out value="${attachment.contentSize}" />
                         </td>
                         <td>
                             <a href="<c:url value="/token/user/med/entry/${entry.id}/${attachment.id}/delete"/>">

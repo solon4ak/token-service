@@ -19,7 +19,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import ru.tokens.site.entities.Token;
 import ru.tokens.site.entities.User;
 import ru.tokens.site.utils.TimeUtils;
-import ru.tokens.site.utils.UtilActivation;
+import ru.tokens.site.utils.AppInitUtil;
 
 /**
  *
@@ -99,7 +99,7 @@ public class UserDataController {
         Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
         Token token = tokens.get(tokenId);
 
-        UtilActivation util = new UtilActivation();
+        AppInitUtil util = new AppInitUtil();
         String password = util.getPasswordUtil().generatePassword();
         System.out.println("--- User password: " + password);
 

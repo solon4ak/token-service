@@ -9,7 +9,7 @@ import java.util.Map;
  *
  * @author solon4ak
  */
-public class MedicalFormEntry {
+public class DataEntry {
 
     private long id;
     private String subject;
@@ -17,7 +17,7 @@ public class MedicalFormEntry {
     private Instant dateCreated;
     private Map<Long, Attachment> attachments = new LinkedHashMap<>();
 
-    public MedicalFormEntry() {
+    public DataEntry() {
     }
 
     public long getId() {

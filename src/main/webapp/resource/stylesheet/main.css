@@ -99,9 +99,13 @@ input[type=text] {
 
 .data_table tbody tr:nth-child(2n) {background: #f4f4f4;}
 
-.data_table tbody tr:hover {background: highlight;}
+.data_table tbody tr:hover {background: beige;}
 
-fieldset legend {    
+fieldset {
+    margin-top: 15px;
+}
+
+fieldset legend {      
     font-size: 1.4em;
     line-height: 1.5em;
 }

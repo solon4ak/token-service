@@ -14,7 +14,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import ru.tokens.site.entities.Token;
 import ru.tokens.site.entities.User;
 import ru.tokens.site.utils.TokenUtils;
-import ru.tokens.site.utils.UtilActivation;
+import ru.tokens.site.utils.AppInitUtil;
 
 /**
  *
@@ -29,7 +29,7 @@ public class TokenRegistrationController {
     private static final Map<Long, Token> tokenDatabase = new Hashtable<>();
 
     static {
-        UtilActivation util = new UtilActivation();
+        AppInitUtil util = new AppInitUtil();
         TokenUtils tokenUtils = util.getTokenUtils();
 
         Token t1 = tokenUtils.generateToken();

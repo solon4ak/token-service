@@ -41,9 +41,12 @@ public class MedicalHistory implements Serializable {
 
     // Наследственные заболевания
     private String inheritedDiseases;
+    
+    // Принимаемые лекарства
+    private String medicine;
 
     // Список перенесенных заболеваний по датам
-    private Map<Long, MedicalFormEntry> entries = new LinkedHashMap<>();
+    private Map<Long, DataEntry> entries = new LinkedHashMap<>();
 
     public MedicalHistory() {
     }
@@ -112,7 +115,7 @@ public class MedicalHistory implements Serializable {
         this.inheritedDiseases = inheritedDiseases;
     }
 
-    public MedicalFormEntry getMedicalFormEntry(Long id) {
+    public DataEntry getMedicalFormEntry(Long id) {
         return this.entries.get(id);
     }
 
@@ -120,7 +123,7 @@ public class MedicalHistory implements Serializable {
         return this.entries.values();
     }
 
-    public void addMedicalFormEntry(MedicalFormEntry entry) {
+    public void addMedicalFormEntry(DataEntry entry) {
         this.entries.put(entry.getId(), entry);
     }
     
@@ -146,6 +149,14 @@ public class MedicalHistory implements Serializable {
 
     public void setOrganDonor(boolean organDonor) {
         this.organDonor = organDonor;
+    }
+
+    public String getMedicine() {
+        return medicine;
+    }
+
+    public void setMedicine(String medicine) {
+        this.medicine = medicine;
     }
     
     

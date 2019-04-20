@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 import ru.tokens.site.entities.Attachment;
-import ru.tokens.site.entities.MedicalFormEntry;
+import ru.tokens.site.entities.DataEntry;
 import ru.tokens.site.entities.MedicalHistory;
 import ru.tokens.site.entities.Token;
 import ru.tokens.site.entities.User;
@@ -51,7 +51,7 @@ public class AttachmentController {
 
         if (null != user) {
             MedicalHistory history = user.getMedicalHistory();
-            MedicalFormEntry entry = history.getMedicalFormEntry(entryId);
+            DataEntry entry = history.getMedicalFormEntry(entryId);
             if (null != entry) {
                 String path = fileUtil.getStorageDirectory(token);
                 Attachment attachment = entry.getAttachment(attachmentId);
