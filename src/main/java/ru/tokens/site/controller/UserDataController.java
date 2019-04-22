@@ -8,6 +8,8 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +21,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import ru.tokens.site.entities.Token;
 import ru.tokens.site.entities.User;
 import ru.tokens.site.utils.TimeUtils;
-import ru.tokens.site.utils.AppInitUtil;
+import ru.tokens.site.utils.PasswordUtil;
 
 /**
  *
@@ -28,6 +30,10 @@ import ru.tokens.site.utils.AppInitUtil;
 @Controller
 @RequestMapping("token")
 public class UserDataController {
+    
+    @Autowired
+    @Qualifier(value = "passayPasswordUtil")
+    private PasswordUtil passwordUtil;
 
     private static final Logger log = LogManager.getLogger("User");
 
@@ -99,8 +105,7 @@ public class UserDataController {
         Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
         Token token = tokens.get(tokenId);
 
-        AppInitUtil util = new AppInitUtil();
-        String password = util.getPasswordUtil().generatePassword();
+        String password = passwordUtil.generatePassword();
         System.out.println("--- User password: " + password);
 
         UserForm userForm = new UserForm();

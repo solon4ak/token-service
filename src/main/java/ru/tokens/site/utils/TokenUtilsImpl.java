@@ -7,7 +7,7 @@ import ru.tokens.site.entities.Token;
  *
  * @author solon4ak
  */
-class TokenUtilsImpl implements TokenUtils {
+public class TokenUtilsImpl implements TokenUtils {
 
     private volatile long TOKEN_ID_SEQUENCE = 1;
 

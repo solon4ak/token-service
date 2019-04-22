@@ -1,11 +1,13 @@
 package ru.tokens.site.utils;
 
 import java.security.SecureRandom;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author solon4ak
  */
+@Service(value = "defaultPasswordUtil")
 final class PasswordUtilsImpl implements PasswordUtil {
 
     private static final SecureRandom RANDOM = new SecureRandom();
@@ -45,5 +47,14 @@ final class PasswordUtilsImpl implements PasswordUtil {
         String dictionary = String.join(ALPHA_CAPS, ALPHA, NUMERIC);
         return generateRandomString(len, dictionary);
     }
+
+    @Override
+    public String generateUserDir() {
+        int len = 6;
+        String dictionary = String.join(ALPHA_CAPS, ALPHA, NUMERIC);
+        return generateRandomString(len, dictionary);
+    }
+    
+    
 
 }

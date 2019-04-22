@@ -10,9 +10,9 @@ public class AppInitUtil {
         return new IdUtilsImpl();
     }
     
-    public PasswordUtil getPasswordUtil() {
-        return new PassayPasswordUtilImpl();
-    }
+//    public PasswordUtil getPasswordUtil() {
+//        return new PassayPasswordUtilImpl();
+//    }
     
     public TokenUtils getTokenUtils() {
         return new TokenUtilsImpl();

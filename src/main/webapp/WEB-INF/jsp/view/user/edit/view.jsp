@@ -160,11 +160,11 @@
     <hr />
 
     <h5>Contacts:</h5>
-    <c:if test="${fn:length(token.user.contacts) == 0}">
+    <c:if test="${token.user.numberOfContacts == 0}">
         There is no contacts binded to the token!
     </c:if>
     <table class="data_table">
-        <c:if test="${fn:length(token.user.contacts) > 0}">
+        <c:if test="${token.user.numberOfContacts > 0}">
             <thead>
                 <!-- here should go some titles... -->
                 <tr>                

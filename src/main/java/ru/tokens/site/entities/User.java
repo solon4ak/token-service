@@ -34,7 +34,7 @@ public class User {
     
     private boolean emailActivated;
 
-    private final List<Contact> contacts = new LinkedList<>();
+    private final Map<Long, Contact> contacts = new Hashtable<>();
 
     private final Map<Long, Email> emails = new Hashtable<>();
 
@@ -42,7 +42,7 @@ public class User {
 
     // Список действий, наступление которых обусловлено каким-то событием 
     // со своим индикатором наступления
-    private List<CausedEvent> causedEvents;
+    private Map<Long, MessageEvent> messageEvents = new Hashtable<>();
 
     private List<ActivationLink> activationLinks = new LinkedList<>();
 
@@ -116,13 +116,25 @@ public class User {
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
-
-    public List<Contact> getContacts() {
-        return contacts;
+    
+    public Collection<Contact> getContacts() {
+        return this.contacts.values();
+    }
+    
+    public Contact getContact(Long id) {
+        return this.contacts.get(id);
     }
 
     public void addContact(Contact contact) {
-        this.contacts.add(contact);
+        this.contacts.put(contact.getContactId(), contact);
+    }
+    
+    public void deleteContact(Long id) {
+        this.contacts.remove(id);
+    }
+    
+    public int getNumberOfContacts() {
+        return this.contacts.size();
     }
 
     public MedicalHistory getMedicalHistory() {
@@ -133,12 +145,20 @@ public class User {
         this.medicalHistory = medicalHistory;
     }
 
-    public List<CausedEvent> getCausedEvents() {
-        return causedEvents;
+    public Map<Long, MessageEvent> getMessageEvents() {
+        return messageEvents;
+    }
+    
+    public Collection<MessageEvent> getMessageEventsList() {
+        return this.getMessageEvents().values();
     }
 
-    public void addActionOnCondition(CausedEvent onCondition) {
-        this.causedEvents.add(onCondition);
+    public void addCausedEvent(MessageEvent msgEvent) {
+        this.messageEvents.put(msgEvent.getId(), msgEvent);
+    }
+    
+    public MessageEvent getMessageEvent(Long id) {
+        return this.messageEvents.get(id);
     }
 
     public String getPassword() {

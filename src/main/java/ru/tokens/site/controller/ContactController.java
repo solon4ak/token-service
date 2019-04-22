@@ -1,6 +1,5 @@
 package ru.tokens.site.controller;
 
-import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
@@ -46,7 +45,7 @@ public class ContactController {
         contact.setLastName(form.getLastName());
         contact.setPhoneNumber(form.getPhoneNumber());
         contact.setEmail(form.getEmail());
-        
+
         Long tokenId = (Long) session.getAttribute("tokenId");
         Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
 
@@ -66,21 +65,11 @@ public class ContactController {
 
         Token token = tokens.get(tokenId);
         User user = token.getUser();
-        
+
         Contact contact = null;
 
         if (user != null) {
-            List<Contact> contacts = user.getContacts();
-            if (contacts != null && contacts.size() > 0) {
-                for (Contact c : contacts) {
-                    if (contactId.equals(c.getContactId())) {
-                        contact = c;
-                    }
-                }
-                if (contact != null) {
-                    contacts.remove(contact);
-                }
-            }
+            user.deleteContact(contactId);
         }
 
         log.info("Contact '{}' for token '{}' was deleted.", contactId, tokenId);
@@ -96,19 +85,22 @@ public class ContactController {
 
         Token token = tokens.get(tokenId);
         User user = token.getUser();
-        
+
         ContactForm form = new ContactForm();
         Contact contact = null;
 
         if (user != null) {
-            List<Contact> contacts = user.getContacts();
-            if (contacts != null && contacts.size() > 0) {
-                for (Contact c : contacts) {
-                    if (contactId.equals(c.getContactId())) {
-                        contact = c;
-                    }
-                }
-            }
+//            List<Contact> contacts = user.getContacts();
+//            if (contacts != null && contacts.size() > 0) {
+//                for (Contact c : contacts) {
+//                    if (contactId.equals(c.getContactId())) {
+//                        contact = c;
+//                    }
+//                }
+//            }
+
+            contact = user.getContact(contactId);
+
             if (contact != null) {
                 form.setFirstName(contact.getFirstName());
                 form.setLastName(contact.getLastName());
@@ -133,18 +125,21 @@ public class ContactController {
 
         Token token = tokens.get(tokenId);
         User user = token.getUser();
-        
+
         Contact contact = null;
 
         if (user != null) {
-            List<Contact> contacts = user.getContacts();
-            if (contacts != null && contacts.size() > 0) {
-                for (Contact c : contacts) {
-                    if (contactId.equals(c.getContactId())) {
-                        contact = c;
-                    }
-                }
-            }
+//            List<Contact> contacts = user.getContacts();
+//            if (contacts != null && contacts.size() > 0) {
+//                for (Contact c : contacts) {
+//                    if (contactId.equals(c.getContactId())) {
+//                        contact = c;
+//                    }
+//                }
+//            }
+
+            contact = user.getContact(contactId);
+
             if (contact != null) {
                 contact.setFirstName(form.getFirstName());
                 contact.setLastName(form.getLastName());

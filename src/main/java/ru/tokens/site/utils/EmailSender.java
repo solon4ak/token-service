@@ -45,7 +45,7 @@ public class EmailSender {
             helper.setSentDate(new Date());
 
             for (Attachment attachment : email.getAttachments()) {
-                String path = fileUtil.getStorageDirectory(token);
+                String path = fileUtil.getStorageDirectory();
                 File file = new File(path
                         + File.separator
                         + attachment.getNewFileName());
