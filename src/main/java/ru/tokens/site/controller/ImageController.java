@@ -56,7 +56,7 @@ public class ImageController {
 
         Image image = user.getImage();
 
-        String path = fileUtil.getStorageDirectory(token);
+        String path = fileUtil.getStorageDirectory();
         File imageFile = new File(path
                 + File.separator
                 + image.getNewFilename());
@@ -78,7 +78,7 @@ public class ImageController {
 
         Image image = user.getImage();
 
-        String path = fileUtil.getStorageDirectory(token);
+        String path = fileUtil.getStorageDirectory();
         File imageFile = new File(path
                 + File.separator
                 + image.getThumbnailFilename());
@@ -113,7 +113,7 @@ public class ImageController {
         MultipartFile file = form.getFile();
         if (file != null && file.getSize() > 0) {
             String newFileName = fileUtil.getNewFileName(file);
-            String storageDirectory = fileUtil.getStorageDirectory(token);
+            String storageDirectory = fileUtil.getStorageDirectory();
             String newFilenameBase = fileUtil.getNewFileNameBase();
 
             File newFile = new File(storageDirectory + newFileName);
@@ -136,9 +136,9 @@ public class ImageController {
                 image.setSize(file.getSize());
                 image.setThumbnailSize(thumbnailFile.length());
 
-//                image.setUrl("/view");
-//                image.setThumbnailUrl("/thumbnail");
-//                image.setDeleteUrl("/delete");
+                image.setUrl("/view");
+                image.setThumbnailUrl("/thumbnail");
+                image.setDeleteUrl("/delete");
                 user.setImage(image);
             } catch (ImagingOpException | IOException 
                     | IllegalArgumentException | IllegalStateException e) {
@@ -159,7 +159,7 @@ public class ImageController {
     public void deleteImage(Token token) {
         User user = token.getUser();
         Image image = user.getImage();
-        String path = fileUtil.getStorageDirectory(token);
+        String path = fileUtil.getStorageDirectory();
         
         File imageFile = new File(path
                 + File.separator

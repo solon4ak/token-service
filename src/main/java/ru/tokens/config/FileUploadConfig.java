@@ -30,7 +30,7 @@ public class FileUploadConfig {
     
     @Bean
     protected FileUtil fileProperties() {
-        fileUtil.setUserImages(userFilesDir);
+        fileUtil.setUserDir(userFilesDir);
         fileUtil.setServerHomeProperty(serverHomeProp);
         return fileUtil;
     }

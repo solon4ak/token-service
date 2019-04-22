@@ -173,7 +173,7 @@ public class EntryController {
                     || (attachment.getContents() != null && attachment.getContents().length > 0)) {
 
                 String newFileName = fileUtil.getNewFileName(filePart);
-                String storageDirectory = fileUtil.getStorageDirectory(token);
+                String storageDirectory = fileUtil.getStorageDirectory();
                 File newFile = new File(storageDirectory + newFileName);
                 try {
                     filePart.transferTo(newFile);
@@ -216,7 +216,7 @@ public class EntryController {
 
                 Map<Long, Attachment> attachments = entry.getAttachmentsMap();
                 if (!attachments.isEmpty()) {
-                    String path = fileUtil.getStorageDirectory(token);
+                    String path = fileUtil.getStorageDirectory();
                     for (Map.Entry<Long, Attachment> a : attachments.entrySet()) {                        
                         Attachment attachment = a.getValue();
                         File atch = new File(path

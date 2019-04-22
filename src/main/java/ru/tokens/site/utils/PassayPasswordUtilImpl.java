@@ -5,11 +5,13 @@ import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
 import static org.passay.NumberRangeRule.ERROR_CODE;
 import org.passay.PasswordGenerator;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author solon4ak
  */
+@Service(value = "passayPasswordUtil")
 public class PassayPasswordUtilImpl implements PasswordUtil {
 
     private static final PasswordGenerator gen = new PasswordGenerator();
@@ -54,4 +56,13 @@ public class PassayPasswordUtilImpl implements PasswordUtil {
         return activationString;
     }
 
+    @Override
+    public String generateUserDir() {
+        lowerCaseRule.setNumberOfCharacters(2);
+        upperCaseRule.setNumberOfCharacters(2);
+        digitRule.setNumberOfCharacters(2);
+        return gen.generatePassword(6, lowerCaseRule,
+                upperCaseRule, digitRule);
+    }
+    
 }

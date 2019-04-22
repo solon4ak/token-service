@@ -2,6 +2,7 @@
 <%--@elvariable id="token" type="ru.tokens.site.entities.Token"--%>
 <%--@elvariable id="emailIntervals" type="java.util.LinkedList"--%>
 <%--@elvariable id="contacts" type="java.util.LinkedList"--%>
+<%--@elvariable id="eventForm" type="ru.tokens.site.controller.MessageEventController.EventForm"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:basic htmlTitle="Adding Message Event" bodyTitle="Add Message Event">
     <hr />
@@ -31,7 +32,7 @@
                             <td><c:out value="${contact.lastName}" /></td>
                             <td><c:out value="${contact.firstName}" /></td>
                             <td><c:out value="${contact.email}" /></td>
-                            <td><form:checkbox path="emailContacts" value="${contact}"/></td>
+                            <td><form:checkbox path="emailContacts" value="${contact.contactId}"/></td>
                         </tr>
                     </c:forEach>
                 </tbody>
@@ -47,7 +48,6 @@
         <fieldset>
             <legend>Checking email sending interval</legend>
             <form:select path="emailSendingInterval">
-                <%--<form:option value="Нет данных" label="--- Select ---" />--%>
                 <form:options items="${emailIntervals}" />
             </form:select>
         </fieldset>

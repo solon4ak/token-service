@@ -1,30 +1,34 @@
 package ru.tokens.site.entities;
 
-import java.util.Date;
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
  * @author solon4ak
  */
-public class CausedEvent {
+public class MessageEvent implements Serializable {
     
     private long id;
-    private User user;
+//    private User user;
     
     private DataEntry dataEntry;
     
     private List<Contact> contacts;
    
-    private final Date startDate;
-    private Date endDate;
+    private final LocalDate startDate;
+    private LocalDate endDate;
     
     // checking email sending interval
-    private int emailsInterval;
+    private String checkingInterval;
     private boolean executed;
+    
 
-    public CausedEvent() {
-        startDate = new Date();
+    public MessageEvent() {
+        startDate = LocalDate.now();       
     }
 
     public long getId() {
@@ -35,13 +39,13 @@ public class CausedEvent {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
+//    public User getUser() {
+//        return user;
+//    }
+//
+//    public void setUser(User user) {
+//        this.user = user;
+//    }
 
     public DataEntry getDataEntry() {
         return dataEntry;
@@ -59,24 +63,24 @@ public class CausedEvent {
         this.contacts = contacts;
     }
 
-    public Date getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
     
-    public Date getEndDate() {
+    public LocalDate getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 
-    public int getEmailsInterval() {
-        return emailsInterval;
+    public String getCheckingInterval() {
+        return checkingInterval;
     }
 
-    public void setEmailsInterval(int emailsInterval) {
-        this.emailsInterval = emailsInterval;
+    public void setCheckingInterval(String checkingInterval) {
+        this.checkingInterval = checkingInterval;
     }
 
     public boolean isExecuted() {
@@ -86,6 +90,7 @@ public class CausedEvent {
     public void setExecuted(boolean executed) {
         this.executed = executed;
     }
-        
+
+    
     
 }

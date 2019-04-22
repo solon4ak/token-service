@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 
 /**
  *
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Controller;
 @Import({FileUploadConfig.class, MailConfig.class})
 @ComponentScan(
         basePackages = "ru.tokens.site",
+        includeFilters = @ComponentScan.Filter(Service.class),
         excludeFilters = @ComponentScan.Filter(Controller.class)
 )
 public class RootContextConfiguration {

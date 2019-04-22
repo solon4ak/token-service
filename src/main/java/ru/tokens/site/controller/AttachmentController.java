@@ -53,7 +53,7 @@ public class AttachmentController {
             MedicalHistory history = user.getMedicalHistory();
             DataEntry entry = history.getMedicalFormEntry(entryId);
             if (null != entry) {
-                String path = fileUtil.getStorageDirectory(token);
+                String path = fileUtil.getStorageDirectory();
                 Attachment attachment = entry.getAttachment(attachmentId);
                 File atch = new File(path
                                 + File.separator

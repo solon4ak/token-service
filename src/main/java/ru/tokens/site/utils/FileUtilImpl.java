@@ -1,10 +1,10 @@
 package ru.tokens.site.utils;
 
 import java.io.File;
+import java.time.LocalDate;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import ru.tokens.site.entities.Token;
 
 /**
  *
@@ -12,23 +12,23 @@ import ru.tokens.site.entities.Token;
  */
 @Component(value = "fileService")
 public class FileUtilImpl implements FileUtil {
-        
-    private String userImages;
+
+    private String userDir;
     private String serverHomeProperty;
-    
+
     @Override
     public String getTomcatHomePath() {
         return System.getProperty(serverHomeProperty);
     }
 
     @Override
-    public String getUserImages() {
-        return userImages;
+    public String getUserDir() {
+        return userDir;
     }
 
     @Override
-    public void setUserImages(String userImages) {
-        this.userImages = userImages;
+    public void setUserDir(String userDir) {
+        this.userDir = userDir;
     }
 
     @Override
@@ -39,15 +39,15 @@ public class FileUtilImpl implements FileUtil {
     @Override
     public void setServerHomeProperty(String serverHomeProperty) {
         this.serverHomeProperty = serverHomeProperty;
-    }    
-    
+    }
+
     @Override
     public String getNewFileNameBase() {
         return UUID.randomUUID().toString();
     }
 
     @Override
-    public String getNewFileName(MultipartFile file) {        
+    public String getNewFileName(MultipartFile file) {
         String originalFileExtension = file
                 .getOriginalFilename()
                 .substring(file.getOriginalFilename().lastIndexOf("."));
@@ -57,23 +57,35 @@ public class FileUtilImpl implements FileUtil {
     }
 
     @Override
-    public String getStorageDirectory(Token token) {
-        String USER_IMAGES_PATH
+    public synchronized String getStorageDirectory() {
+
+        String userFilesPath
                 = this.getTomcatHomePath()
                 + File.separator
-                + userImages
+                + userDir
                 + File.separator
-                + token.getUuidString();
-        
-        File USER_IMAGES_DIR = new File(USER_IMAGES_PATH);
+                + this.getFileDir();
 
-        String USER_IMAGES_DIR_ABSOLUTE_PATH
-                = USER_IMAGES_DIR.getAbsolutePath() + File.separator;
+        File userImagesDir = new File(userFilesPath);
 
-        if (!USER_IMAGES_DIR.exists()) {
-            USER_IMAGES_DIR.mkdirs();
+        String userImgAbsolutePath
+                = userImagesDir.getAbsolutePath() + File.separator;
+
+        if (!userImagesDir.exists()) {
+            System.out.println("---> User dir does not exist!");
+            userImagesDir.mkdirs();
         }
+        System.out.println("UserImageAbsolutePath: " + userImgAbsolutePath);
 
-        return USER_IMAGES_DIR_ABSOLUTE_PATH;
+        return userImgAbsolutePath;
+    }
+
+    public String getFileDir() {
+        LocalDate date = LocalDate.now();
+        String fileDir = date.getYear()
+                + File.separator
+                + date.getDayOfYear();        
+
+        return fileDir;
     }
 }

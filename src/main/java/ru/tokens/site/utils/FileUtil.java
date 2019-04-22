@@ -11,18 +11,18 @@ public interface FileUtil {
 
     public String getTomcatHomePath();
 
-    public String getUserImages();
+    public String getUserDir();
 
-    public void setUserImages(String USER_IMAGES);
+    public void setUserDir(String userDir);
 
     public String getServerHomeProperty();
     
-    public void setServerHomeProperty(String TOMCAT_HOME_PROPERTY);
+    public void setServerHomeProperty(String tomcatDir);
 
     public String getNewFileNameBase();
 
     public String getNewFileName(MultipartFile file);
 
-    public String getStorageDirectory(Token token);
+    public String getStorageDirectory();
 
 }
