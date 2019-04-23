@@ -10,8 +10,10 @@
     </a><br /><br />
     Created: <tags:localDate date="${event.startDate}" /><br /><br />
     <c:out value="${event.dataEntry.body}" /><br /><br />
+    
     <c:if test="${event.dataEntry.numberOfAttachments > 0}">
-        <b>Attachments:</b><br /><br />
+        <b>Attachments: <c:out value="${event.dataEntry.numberOfAttachments}" /></b><br /><br />
+        
         <table class="data_table">
             <thead>
                 <tr>
@@ -55,12 +57,12 @@
     </table>      
     <hr />
     <b>Checking email sending interval:</b>&nbsp;<c:out value="${event.checkingInterval}" /><br /><br />
-        <hr />
+        <hr />        
         <a href="<c:url context="/tkn" value="/token/user/csdevent/edit/${event.id}" />">
             Edit
         </a>/
         <a href="<c:url context="/tkn" 
-               value="/token/user/med/entry/${entry.id}/delete" />">
+               value="/token/user/csdevent/delete/${event.id}" />">
             Delete
         </a><br /><br />
         <a href="<c:url context="/tkn" value="/token/user/med/entry/create" />">

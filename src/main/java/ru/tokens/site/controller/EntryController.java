@@ -34,11 +34,11 @@ import ru.tokens.site.utils.FileUtil;
 public class EntryController {
 
     private static final Logger log = LogManager.getLogger("EntryController");
-    
+
     @Autowired
     @Qualifier("fileService")
     private FileUtil fileUtil;
-    
+
     private volatile long ENTRY_ID_SEQUENCE = 1;
 
     private synchronized long getNextEntryId() {
@@ -50,7 +50,7 @@ public class EntryController {
     private synchronized long getNextAttachmentId() {
         return this.ATTACHMENT_ID_SEQUENCE++;
     }
-        
+
     @RequestMapping(
             value = {"{tokenId}/{uuidString}/med/entry/view/{entryId}"},
             method = RequestMethod.GET
@@ -161,36 +161,8 @@ public class EntryController {
         entry.setSubject(subject);
         entry.setBody(form.getBody());
         entry.setDateCreated(Instant.now());
-
-        for (MultipartFile filePart : form.getAttachments()) {
-            log.debug("Processing attachment for new entry.");
-            Attachment attachment = new Attachment();
-            attachment.setName(filePart.getOriginalFilename());
-            attachment.setMimeContentType(filePart.getContentType());
-            attachment.setContents(filePart.getBytes());
-
-            if ((attachment.getName() != null && attachment.getName().length() > 0)
-                    || (attachment.getContents() != null && attachment.getContents().length > 0)) {
-
-                String newFileName = fileUtil.getNewFileName(filePart);
-                String storageDirectory = fileUtil.getStorageDirectory();
-                File newFile = new File(storageDirectory + newFileName);
-                try {
-                    filePart.transferTo(newFile);
-
-                    attachment.setId(this.getNextAttachmentId());
-                    attachment.setName(filePart.getOriginalFilename());
-                    attachment.setNewFileName(newFileName);
-                    attachment.setContentType(filePart.getContentType());
-                    attachment.setSize(filePart.getSize());
-
-                    entry.addAttachment(attachment);
-                } catch (IOException
-                        | IllegalArgumentException | IllegalStateException e) {
-                    log.error("Could not upload file " + filePart.getOriginalFilename(), e);
-                }
-            }
-        }
+        
+        this.processAttachment(entry, form);
 
         user.getMedicalHistory().addMedicalFormEntry(entry);
         return new RedirectView("/token/user/med/view", true, false);
@@ -217,11 +189,9 @@ public class EntryController {
                 Map<Long, Attachment> attachments = entry.getAttachmentsMap();
                 if (!attachments.isEmpty()) {
                     String path = fileUtil.getStorageDirectory();
-                    for (Map.Entry<Long, Attachment> a : attachments.entrySet()) {                        
+                    for (Map.Entry<Long, Attachment> a : attachments.entrySet()) {
                         Attachment attachment = a.getValue();
-                        File atch = new File(path
-                                + File.separator
-                                + attachment.getNewFileName());
+                        File atch = new File(attachment.getUrl());
                         atch.delete();
                     }
                 }
@@ -284,21 +254,12 @@ public class EntryController {
             if (null != entry) {
                 entry.setSubject(form.getSubject());
                 entry.setBody(form.getBody());
-
-                for (MultipartFile filePart : form.getAttachments()) {
-                    log.debug("Processing attachment for entry.");
-                    Attachment attachment = new Attachment();
-                    attachment.setName(filePart.getOriginalFilename());
-                    attachment.setMimeContentType(filePart.getContentType());
-                    attachment.setContents(filePart.getBytes());
-                    if ((attachment.getName() != null && attachment.getName().length() > 0)
-                            || (attachment.getContents() != null && attachment.getContents().length > 0)) {
-                        entry.addAttachment(attachment);
-                    }
-                }
-
+                
+                this.processAttachment(entry, form);
+                
                 log.info("Editing entry for token '{}'.", tokenId);
-                return new RedirectView("/token/user/med/view", true, false);
+                // user/med/entry/{entryId}/view
+                return new RedirectView("/token/user/med/entry/" + entry.getId() + "/view", true, false);
             }
         }
         return new RedirectView("/token/user/med/view", true, false);
@@ -312,6 +273,40 @@ public class EntryController {
         return new RedirectView(
                 "/token/" + token.getTokenId() + "/" + token.getUuidString(), true, false
         );
+    }
+
+    private void processAttachment(DataEntry entry, EntryForm form) 
+            throws IOException {
+        for (MultipartFile filePart : form.getAttachments()) {
+            log.debug("Processing attachment for new entry.");
+            Attachment attachment = new Attachment();
+            attachment.setName(filePart.getOriginalFilename());
+            attachment.setMimeContentType(filePart.getContentType());
+            attachment.setContents(filePart.getBytes());
+
+            if ((attachment.getName() != null && attachment.getName().length() > 0)
+                    || (attachment.getContents() != null && attachment.getContents().length > 0)) {
+
+                String newFileName = fileUtil.getNewFileName(filePart);
+                String storageDirectory = fileUtil.getStorageDirectory();
+                File newFile = new File(storageDirectory + newFileName);
+                try {
+                    filePart.transferTo(newFile);
+
+                    attachment.setId(this.getNextAttachmentId());
+                    attachment.setName(filePart.getOriginalFilename());
+                    attachment.setNewFileName(newFileName);
+                    attachment.setContentType(filePart.getContentType());
+                    attachment.setSize(filePart.getSize());
+                    attachment.setUrl(newFile.getCanonicalPath());
+
+                    entry.addAttachment(attachment);
+                } catch (IOException
+                        | IllegalArgumentException | IllegalStateException e) {
+                    log.error("Could not upload file " + filePart.getOriginalFilename(), e);
+                }
+            }
+        }
     }
 
     public static class EntryForm {

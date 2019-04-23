@@ -125,6 +125,165 @@ public class MessageEventController {
         entry.setBody(form.getBody());
         entry.setId(this.getNextEntryId());
 
+        this.uploadFiles(entry, form);
+
+        messageEvent.setDataEntry(entry);
+        user.addMessageEvent(messageEvent);
+
+        // run messageEventTask
+        return new RedirectView("/token/user/csdevent/view/" + messageEvent.getId(), true, false);
+    }
+
+    @RequestMapping(value = "list", method = RequestMethod.GET)
+    public String list(Map<String, Object> model, HttpSession ssession) {
+
+        Token token = this.getToken(ssession);
+        User user = token.getUser();
+        Collection<MessageEvent> messageEvents
+                = new LinkedList<>(user.getMessageEventsList());
+
+        model.put("token", token);
+        model.put("messageEvents", messageEvents);
+        return "causedevent/list";
+    }
+
+    @RequestMapping(value = "edit/{eventId}", method = RequestMethod.GET)
+    public ModelAndView edit(Map<String, Object> model, HttpSession session,
+            @PathVariable("eventId") Long eventId) {
+
+        Token token = this.getToken(session);
+
+        if (null == token) {
+            return new ModelAndView(new RedirectView("/login", true, false));
+        }
+
+        User user = token.getUser();
+        MessageEvent event = user.getMessageEvent(eventId);
+        EventForm form = new EventForm();
+
+        form.setSubject(event.getDataEntry().getSubject());
+        form.setBody(event.getDataEntry().getBody());
+        form.setEmailSendingInterval(event.getCheckingInterval());
+
+        Collection<Contact> contacts = user.getContacts();
+        List<Contact> checkedContacts = event.getContacts();
+        Long[] contactsId = new Long[checkedContacts.size()];
+        for (int i = 0; i < checkedContacts.size(); i++) {
+            contactsId[i] = checkedContacts.get(i).getContactId();
+        }
+        form.setEmailContacts(contactsId);
+
+        Collection<Attachment> attachments = event.getDataEntry().getAttachments();
+
+        model.put("eventForm", form);
+        model.put("token", token);
+        model.put("event", event);
+        model.put("contacts", contacts);
+        model.put("attachments", attachments);
+        model.put("emailIntervals", this.getIntervals());
+
+        return new ModelAndView("causedevent/edit");
+    }
+
+    @RequestMapping(value = "edit/{eventId}", method = RequestMethod.POST)
+    public View edit(HttpSession session, EventForm form,
+            @PathVariable("eventId") long eventId) throws IOException {
+
+        Token token = this.getToken(session);
+        if (null == token) {
+            return new RedirectView("/login", true, false);
+        }
+
+        User user = token.getUser();
+        MessageEvent messageEvent = user.getMessageEvent(eventId);
+        messageEvent.setId(this.getNextMessageId());
+//        messageEvent.setUser(user);
+
+        messageEvent.setCheckingInterval(form.getEmailSendingInterval());
+
+        Long[] contactIds = form.getEmailContacts();
+        List<Contact> contacts = new LinkedList<>();
+
+        if (contactIds != null && contactIds.length > 0) {
+            for (Long id : contactIds) {
+                contacts.add(user.getContact(id));
+            }
+        }
+
+        messageEvent.setContacts(contacts);
+
+        DataEntry entry = new DataEntry();
+        entry.setDateCreated(Instant.now());
+        entry.setSubject(form.getSubject());
+        entry.setBody(form.getBody());
+        entry.setId(this.getNextEntryId());
+
+        this.uploadFiles(entry, form);
+
+        messageEvent.setDataEntry(entry);
+        user.addMessageEvent(messageEvent);
+
+        // run messageEventTask
+        return new RedirectView("/token/user/csdevent/view/" + messageEvent.getId(), true, false);
+    }
+
+    @RequestMapping(value = "delete/{eventId}", method = RequestMethod.GET)
+    public View delete(HttpSession session, @PathVariable("eventId") Long eventId) {
+
+        Token token = this.getToken(session);
+        if (null == token) {
+            return new RedirectView("/login", true, false);
+        }
+
+        User user = token.getUser();
+        MessageEvent messageEvent = user.getMessageEvent(eventId);
+        DataEntry entry = messageEvent.getDataEntry();
+
+        if (null != entry) {
+            Map<Long, Attachment> attachments = entry.getAttachmentsMap();
+            if (!attachments.isEmpty()) {
+                String path = fileUtil.getStorageDirectory();
+                for (Map.Entry<Long, Attachment> a : attachments.entrySet()) {
+                    Attachment attachment = a.getValue();
+                    File attch = new File(path
+                            + File.separator
+                            + attachment.getNewFileName());
+                    attch.delete();
+                }
+            }
+
+//            messageEvent.setDataEntry(null);
+            log.info("Entry '{}' for message event '{}' was deleted.", eventId, messageEvent.getId());
+        }
+        
+        user.deleteMessageEvent(eventId);
+
+        return new RedirectView("/token/user/csdevent/list", true, false);
+    }
+    
+    private Token getToken(HttpSession session) {
+        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
+        Long tokenId = (Long) session.getAttribute("tokenId");
+        Token token = tokens.get(tokenId);
+
+        return token;
+    }
+
+    private List<String> getIntervals() {
+//        List<String> intervals = new LinkedList<>();
+//        intervals.addAll(Arrays.asList(
+//                "Week", "Month", "3 Months",
+//                "6 Months", "Year"
+//        ));
+
+        List<String> intervals = new LinkedList<>();
+        for (Map.Entry<String, Integer> entry : MessageEventHelper.getIntervals().entrySet()) {
+            intervals.add(entry.getKey());
+        }
+        return intervals;
+    }
+
+    private void uploadFiles(DataEntry entry, EventForm form) throws IOException {
         for (MultipartFile filePart : form.getAttachments()) {
             log.debug("Processing attachment for new entry.");
             Attachment attachment = new Attachment();
@@ -148,99 +307,12 @@ public class MessageEventController {
                     attachment.setSize(filePart.getSize());
 
                     entry.addAttachment(attachment);
-                    System.out.println("Attachment was added.");
+                    System.out.println("Attachment was added:" + attachment.getName());
                 } catch (IOException | IllegalArgumentException | IllegalStateException e) {
                     log.error("Could not upload file " + filePart.getOriginalFilename(), e);
                 }
             }
         }
-
-        messageEvent.setDataEntry(entry);
-        user.addCausedEvent(messageEvent);
-
-        // run messageEventTask
-        return new RedirectView("/token/user/csdevent/view/" + messageEvent.getId(), true, false);
-    }
-
-    @RequestMapping(value = "list", method = RequestMethod.GET)
-    public String list(Map<String, Object> model, HttpSession ssession) {
-
-        Token token = this.getToken(ssession);
-        User user = token.getUser();
-        Collection<MessageEvent> messageEvents
-                = new LinkedList<>(user.getMessageEventsList());
-
-        model.put("token", token);
-        model.put("messageEvents", messageEvents);
-        return "causedevent/list";
-    }
-
-    @RequestMapping(value = "edit/{eventId}", method = RequestMethod.GET)
-    public ModelAndView edit(Map<String, Object> model, HttpSession session,
-            @PathVariable("eventId") Long eventId) {
-        
-        Token token = this.getToken(session);
-        
-        if (null == token) {
-            return new ModelAndView(new RedirectView("/login", true, false));
-        }
-        
-        User user = token.getUser();
-        MessageEvent event = user.getMessageEvent(eventId);
-        EventForm form = new EventForm();
-        
-        form.setSubject(event.getDataEntry().getSubject());
-        form.setBody(event.getDataEntry().getBody());
-        form.setEmailSendingInterval(event.getCheckingInterval());
-        
-        Collection<Contact> contacts = user.getContacts();       
-        List<Contact> checkedContacts = event.getContacts();
-        Long[] contactsId = new Long[checkedContacts.size()];
-        for (int i = 0; i < checkedContacts.size(); i++) {
-            contactsId[i] = checkedContacts.get(i).getContactId();
-        }
-        form.setEmailContacts(contactsId);
-        
-        Collection<Attachment> attachments = event.getDataEntry().getAttachments();
-        
-        model.put("eventForm", form);
-        model.put("token", token);
-        model.put("event", event);
-        model.put("contacts", contacts);
-        model.put("attachments", attachments);
-        model.put("emailIntervals", this.getIntervals());
-        
-        return new ModelAndView("causedevent/edit");
-    }
-
-//    @RequestMapping(value = "edit", method = RequestMethod.POST)
-//    public String edit() {
-//        return null;
-//    }
-    public String delete() {
-        return null;
-    }
-
-    private Token getToken(HttpSession session) {
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-        Long tokenId = (Long) session.getAttribute("tokenId");
-        Token token = tokens.get(tokenId);
-
-        return token;
-    }
-
-    private List<String> getIntervals() {
-//        List<String> intervals = new LinkedList<>();
-//        intervals.addAll(Arrays.asList(
-//                "Week", "Month", "3 Months",
-//                "6 Months", "Year"
-//        ));
-
-        List<String> intervals = new LinkedList<>();
-        for (Map.Entry<String, Integer> entry : MessageEventHelper.getIntervals().entrySet()) {
-            intervals.add(entry.getKey());
-        }
-        return intervals;
     }
 
     public static class EventForm {

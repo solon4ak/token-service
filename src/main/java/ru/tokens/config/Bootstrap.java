@@ -37,7 +37,7 @@ public class Bootstrap implements WebApplicationInitializer {
                 new DispatcherServlet(servletContext)
         );
         dispatcher.setLoadOnStartup(1);
-        // file size up to 5 mb
+        // file size up to 5 mb / request size up to 40 mb
         dispatcher.setMultipartConfig(
                 new MultipartConfigElement(null, 5_242_880L, 41_943_040L, 512_000)
         );

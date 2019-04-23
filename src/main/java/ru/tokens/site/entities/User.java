@@ -153,10 +153,14 @@ public class User {
         return this.getMessageEvents().values();
     }
 
-    public void addCausedEvent(MessageEvent msgEvent) {
+    public void addMessageEvent(MessageEvent msgEvent) {
         this.messageEvents.put(msgEvent.getId(), msgEvent);
     }
     
+    public void deleteMessageEvent(Long id) {
+        this.messageEvents.remove(id);
+    }
+        
     public MessageEvent getMessageEvent(Long id) {
         return this.messageEvents.get(id);
     }

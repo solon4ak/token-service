@@ -56,10 +56,12 @@ public class ImageController {
 
         Image image = user.getImage();
 
-        String path = fileUtil.getStorageDirectory();
-        File imageFile = new File(path
-                + File.separator
-                + image.getNewFilename());
+//        String path = fileUtil.getStorageDirectory();
+//        File imageFile = new File(path
+//                + File.separator
+//                + image.getNewFilename());
+
+        File imageFile = new File(image.getUrl());
 
         response.setContentType(image.getContentType());
         response.setContentLength(image.getSize().intValue());
@@ -78,10 +80,12 @@ public class ImageController {
 
         Image image = user.getImage();
 
-        String path = fileUtil.getStorageDirectory();
-        File imageFile = new File(path
-                + File.separator
-                + image.getThumbnailFilename());
+//        String path = fileUtil.getStorageDirectory();
+//        File imageFile = new File(path
+//                + File.separator
+//                + image.getThumbnailFilename());
+
+        File imageFile = new File(image.getThumbnailUrl());
 
         response.setContentType(image.getContentType());
         response.setContentLength(image.getThumbnailSize().intValue());
@@ -136,9 +140,9 @@ public class ImageController {
                 image.setSize(file.getSize());
                 image.setThumbnailSize(thumbnailFile.length());
 
-                image.setUrl("/view");
-                image.setThumbnailUrl("/thumbnail");
-                image.setDeleteUrl("/delete");
+                image.setUrl(newFile.getCanonicalPath());
+                image.setThumbnailUrl(thumbnailFile.getCanonicalPath());
+                image.setDeleteUrl(null);
                 user.setImage(image);
             } catch (ImagingOpException | IOException 
                     | IllegalArgumentException | IllegalStateException e) {
@@ -159,20 +163,22 @@ public class ImageController {
     public void deleteImage(Token token) {
         User user = token.getUser();
         Image image = user.getImage();
-        String path = fileUtil.getStorageDirectory();
-        
-        File imageFile = new File(path
-                + File.separator
-                + image.getNewFilename());
+//        String path = fileUtil.getStorageDirectory();
+//        
+//        File imageFile = new File(path
+//                + File.separator
+//                + image.getNewFilename());
+        File imageFile = new File(image.getUrl());
         imageFile.delete();
         
-        File thumbnailFile = new File(path
-                + File.separator
-                + image.getThumbnailFilename());
+//        File thumbnailFile = new File(path
+//                + File.separator
+//                + image.getThumbnailFilename());
+        File thumbnailFile = new File(image.getThumbnailUrl());
         thumbnailFile.delete();        
 
-        File directory = new File(path);
-        directory.delete();
+//        File directory = new File(path);
+//        directory.delete();
 
         user.setImage(null);
     }

@@ -4,7 +4,7 @@
 <template:basic htmlTitle="List Message Event" bodyTitle="List Message Event">
     <hr />
     <a href="<c:url context="/tkn" value="/token/user/view"/>">&lt;- Back</a>
-
+    <br /><br />
     <c:out value="Token ID: ${token.uuidString}"/><br />
     <c:out value="User E-mail: ${token.user.email}"/>
     <hr />
@@ -25,7 +25,9 @@
                             <td><tags:localDate date="${event.startDate}" /></td>
                             <td><c:url value="${event.dataEntry.subject}" /></td>
                             <td><c:url value="${event.checkingInterval}" /></td>
-                            <td><a href="<c:url context="/tkn" value="/token/user/csdevent/edit/${event.id}" />">Edit</a> / 
+                            <td>
+                                <a href="<c:url context="/tkn" value="/token/user/csdevent/view" />">View</a> /
+                                <a href="<c:url context="/tkn" value="/token/user/csdevent/edit/${event.id}" />">Edit</a> / 
                                 <a href="<c:url context="/tkn" value="/token/user/csdevent/delete/${event.id}" />">Delete</a>
                             </td>
                         </tr>
