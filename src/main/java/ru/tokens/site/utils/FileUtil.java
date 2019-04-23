@@ -1,7 +1,6 @@
 package ru.tokens.site.utils;
 
 import org.springframework.web.multipart.MultipartFile;
-import ru.tokens.site.entities.Token;
 
 /**
  *

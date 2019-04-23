@@ -62,7 +62,7 @@
                                     <c:out value="${attachment.contentSize}" />
                                 </td>
                                 <td>
-                                    <a href="<c:url value="/token/user/csdevent/${event.id}/${attachment.id}/delete"/>">
+                                    <a href="<c:url context="/tkn" value="/token/user/csdevent/${event.id}/${attachment.id}/delete"/>">
                                         Delete
                                     </a>
                                 </td>
