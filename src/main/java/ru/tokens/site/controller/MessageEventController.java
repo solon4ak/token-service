@@ -195,8 +195,7 @@ public class MessageEventController {
         }
 
         User user = token.getUser();
-        MessageEvent messageEvent = user.getMessageEvent(eventId);
-        messageEvent.setId(this.getNextMessageId());
+        MessageEvent messageEvent = user.getMessageEvent(eventId);        
 //        messageEvent.setUser(user);
 
         messageEvent.setCheckingInterval(form.getEmailSendingInterval());
@@ -212,11 +211,7 @@ public class MessageEventController {
 
         messageEvent.setContacts(contacts);
 
-        DataEntry entry = new DataEntry();
-        entry.setDateCreated(Instant.now());
-        entry.setSubject(form.getSubject());
-        entry.setBody(form.getBody());
-        entry.setId(this.getNextEntryId());
+        DataEntry entry = messageEvent.getDataEntry();
 
         this.uploadFiles(entry, form);
 
@@ -305,6 +300,7 @@ public class MessageEventController {
                     attachment.setNewFileName(newFileName);
                     attachment.setContentType(filePart.getContentType());
                     attachment.setSize(filePart.getSize());
+                    attachment.setUrl(newFile.getCanonicalPath());
 
                     entry.addAttachment(attachment);
                     System.out.println("Attachment was added:" + attachment.getName());

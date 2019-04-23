@@ -26,7 +26,7 @@
                             <td><c:url value="${event.dataEntry.subject}" /></td>
                             <td><c:url value="${event.checkingInterval}" /></td>
                             <td>
-                                <a href="<c:url context="/tkn" value="/token/user/csdevent/view" />">View</a> /
+                                <a href="<c:url context="/tkn" value="/token/user/csdevent/view/${event.id}" />">View</a> /
                                 <a href="<c:url context="/tkn" value="/token/user/csdevent/edit/${event.id}" />">Edit</a> / 
                                 <a href="<c:url context="/tkn" value="/token/user/csdevent/delete/${event.id}" />">Delete</a>
                             </td>

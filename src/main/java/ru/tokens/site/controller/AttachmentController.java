@@ -54,11 +54,8 @@ public class AttachmentController {
             MedicalHistory history = user.getMedicalHistory();
             DataEntry entry = history.getMedicalFormEntry(entryId);
             if (null != entry) {
-//                String path = fileUtil.getStorageDirectory();
                 Attachment attachment = entry.getAttachment(attachmentId);
-//                File atch = new File(path
-//                                + File.separator
-//                                + attachment.getNewFileName());
+
                 File atch = new File(attachment.getUrl());
                 atch.delete();
 
@@ -66,13 +63,12 @@ public class AttachmentController {
 
                 model.put("entry", entry);
                 model.put("user", user);
-                model.put("editable", true);
 //                return new ModelAndView("entry/edit");
             }
         }
         return new ModelAndView("entry/edit/view");
     }
-
+    
     @RequestMapping(value = "token/user/csdevent/{eventId}/{attachmentId}/delete",
             method = RequestMethod.GET)
     public ModelAndView deleteMessageEventAttachment(Map<String, Object> model,
@@ -94,11 +90,7 @@ public class AttachmentController {
             DataEntry entry = event.getDataEntry();
 
             if (null != entry) {
-//                String path = fileUtil.getStorageDirectory();
                 Attachment attachment = entry.getAttachment(attachmentId);
-//                File atch = new File(path
-//                        + File.separator
-//                        + attachment.getNewFileName());
                 File atch = new File(attachment.getUrl());
                 atch.delete();
 
@@ -106,10 +98,9 @@ public class AttachmentController {
 
                 model.put("entry", entry);
                 model.put("user", user);
-                model.put("editable", true);
 //                return new ModelAndView("entry/edit");
             }
         }
-        return new ModelAndView("token/user/csdevent/edit/" + eventId);
+        return new ModelAndView(new RedirectView("/token/user/csdevent/edit/" + eventId, true, false));
     }
 }
