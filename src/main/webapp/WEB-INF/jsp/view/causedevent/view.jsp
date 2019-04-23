@@ -56,7 +56,7 @@
         </tbody>
     </table>      
     <hr />
-    <b>Checking email sending interval:</b>&nbsp;<c:out value="${event.checkingInterval}" /><br /><br />
+    <b>Checking email sending interval:</b>&nbsp;<c:out value="${event.checkingInterval}" />
         <hr />        
         <a href="<c:url context="/tkn" value="/token/user/csdevent/edit/${event.id}" />">
             Edit
