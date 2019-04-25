@@ -26,6 +26,7 @@ import ru.tokens.site.entities.Contact;
 import ru.tokens.site.entities.DataEntry;
 import ru.tokens.site.entities.Token;
 import ru.tokens.site.entities.User;
+import ru.tokens.site.utils.EmailCheckingService;
 import ru.tokens.site.utils.FileUtil;
 import ru.tokens.site.utils.MessageEventHelper;
 
@@ -42,6 +43,10 @@ public class MessageEventController {
     @Autowired
     @Qualifier("fileService")
     private FileUtil fileUtil;
+
+    @Autowired
+    @Qualifier("schedular")
+    private EmailCheckingService schedular;
 
     private volatile long MESSAGE_ID_SEQUENCE = 1;
 
@@ -104,7 +109,7 @@ public class MessageEventController {
         User user = token.getUser();
         MessageEvent messageEvent = new MessageEvent();
         messageEvent.setId(this.getNextMessageId());
-//        messageEvent.setUser(user);
+        messageEvent.setUser(user);
 
         messageEvent.setCheckingInterval(form.getEmailSendingInterval());
 
@@ -130,7 +135,9 @@ public class MessageEventController {
         messageEvent.setDataEntry(entry);
         user.addMessageEvent(messageEvent);
 
-        // run messageEventTask
+        messageEvent.setExecutor(schedular.createTimerService());
+        schedular.runTimerService(messageEvent.getExecutor(), messageEvent);
+
         return new RedirectView("/token/user/csdevent/view/" + messageEvent.getId(), true, false);
     }
 
@@ -195,7 +202,7 @@ public class MessageEventController {
         }
 
         User user = token.getUser();
-        MessageEvent messageEvent = user.getMessageEvent(eventId);        
+        MessageEvent messageEvent = user.getMessageEvent(eventId);
 //        messageEvent.setUser(user);
 
         messageEvent.setCheckingInterval(form.getEmailSendingInterval());
@@ -237,25 +244,28 @@ public class MessageEventController {
         if (null != entry) {
             Map<Long, Attachment> attachments = entry.getAttachmentsMap();
             if (!attachments.isEmpty()) {
-                String path = fileUtil.getStorageDirectory();
+//                String path = fileUtil.getStorageDirectory();
                 for (Map.Entry<Long, Attachment> a : attachments.entrySet()) {
                     Attachment attachment = a.getValue();
-                    File attch = new File(path
-                            + File.separator
-                            + attachment.getNewFileName());
+//                    File attch = new File(path
+//                            + File.separator
+//                            + attachment.getNewFileName());
+                    File attch = new File(attachment.getUrl());
                     attch.delete();
                 }
             }
 
-//            messageEvent.setDataEntry(null);
+            messageEvent.setDataEntry(null);
             log.info("Entry '{}' for message event '{}' was deleted.", eventId, messageEvent.getId());
         }
-        
+
+        schedular.stopTimerService(messageEvent.getExecutor());
+        messageEvent.setExecutor(null);
         user.deleteMessageEvent(eventId);
 
         return new RedirectView("/token/user/csdevent/list", true, false);
     }
-    
+
     private Token getToken(HttpSession session) {
         Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
         Long tokenId = (Long) session.getAttribute("tokenId");

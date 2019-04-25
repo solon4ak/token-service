@@ -65,7 +65,7 @@
                value="/token/user/csdevent/delete/${event.id}" />">
             Delete
         </a><br /><br />
-        <a href="<c:url context="/tkn" value="/token/user/med/entry/create" />">
+        <a href="<c:url context="/tkn" value="/token/user/csdevent/add" />">
             Add entry
         </a>   
 </template:basic>

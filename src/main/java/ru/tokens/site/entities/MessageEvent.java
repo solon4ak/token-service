@@ -2,9 +2,8 @@ package ru.tokens.site.entities;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  *
@@ -13,7 +12,7 @@ import java.util.Map;
 public class MessageEvent implements Serializable {
     
     private long id;
-//    private User user;
+    private User user;
     
     private DataEntry dataEntry;
     
@@ -26,6 +25,7 @@ public class MessageEvent implements Serializable {
     private String checkingInterval;
     private boolean executed;
     
+    private ScheduledExecutorService executor;    
 
     public MessageEvent() {
         startDate = LocalDate.now();       
@@ -39,13 +39,13 @@ public class MessageEvent implements Serializable {
         this.id = id;
     }
 
-//    public User getUser() {
-//        return user;
-//    }
-//
-//    public void setUser(User user) {
-//        this.user = user;
-//    }
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public DataEntry getDataEntry() {
         return dataEntry;
@@ -91,6 +91,12 @@ public class MessageEvent implements Serializable {
         this.executed = executed;
     }
 
-    
+    public ScheduledExecutorService getExecutor() {
+        return executor;
+    }
+
+    public void setExecutor(ScheduledExecutorService executor) {
+        this.executor = executor;
+    }   
     
 }
