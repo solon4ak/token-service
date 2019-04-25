@@ -13,16 +13,17 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Service;
 import ru.tokens.site.entities.Attachment;
 import ru.tokens.site.entities.Email;
-import ru.tokens.site.entities.Token;
 
 /**
  *
  * @author solon4ak
  */
+@Service
 public class EmailSender {
-    
+
     private static final Logger log = LogManager.getLogger(EmailSender.class);
 
     @Autowired
@@ -32,14 +33,15 @@ public class EmailSender {
     @Qualifier("fileService")
     private FileUtil fileUtil;
 
-    public void sendEmail(Token token, Email email) {
-        
+    public void sendEmail(Email email) {
+
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
             helper.setTo(email.getTo());
-            helper.setFrom(new InternetAddress(email.getFrom()));
+//            helper.setFrom(new InternetAddress(email.getFrom()));
+            helper.setFrom(new InternetAddress("tag4life@yandex.ru"));
             helper.setSubject(email.getSubject());
             helper.setText(email.getContent());
             helper.setSentDate(new Date());
