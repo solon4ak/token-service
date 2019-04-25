@@ -28,6 +28,7 @@ public class User {
     private BirthCertificate birthCertificate;
     private Address address;
     private String phoneNumber;
+    private Token token;
 
     private LocalDate birthDate;
     private Image image;
@@ -239,6 +240,14 @@ public class User {
 
     public void setEmailActivated(boolean emailActivated) {
         this.emailActivated = emailActivated;
+    }
+
+    public Token getToken() {
+        return token;
+    }
+
+    public void setToken(Token token) {
+        this.token = token;
     }
     
     
