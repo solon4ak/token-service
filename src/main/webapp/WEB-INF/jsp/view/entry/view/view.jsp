@@ -3,7 +3,7 @@
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:loggedOut htmlTitle="View Medical Entry" bodyTitle="Entry #${entry.id} : ${entry.subject}">
     <c:out value="Token ID: ${token.uuidString}"/><br />
-    <c:out value="User E-mail: ${token.user.email}"/>
+    <c:out value="User E-mail: ${token.user.userEmailAddress}"/>
     <hr />
     <a href="<c:url context="/tkn" value="/token/${token.tokenId}/${token.uuidString}">
        <c:param name="showMH" value="true" />

@@ -11,7 +11,7 @@ import javax.servlet.http.HttpSessionListener;
 @WebListener
 public class SessionListener implements HttpSessionListener, HttpSessionIdListener {
 
-    private static final Logger log = LogManager.getLogger();
+    private static final Logger log = LogManager.getLogger("SessionListener");
 
     @Override
     public void sessionCreated(HttpSessionEvent e) {

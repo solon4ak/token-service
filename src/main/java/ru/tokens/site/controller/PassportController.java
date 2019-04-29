@@ -8,9 +8,11 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 import ru.tokens.site.entities.Passport;
@@ -26,61 +28,94 @@ import ru.tokens.site.exceptions.PassportIssueDateException;
 @RequestMapping("token/user/passport")
 public class PassportController {
 
+    @Autowired
+    private UserRegistrationController userRegistrationController;
+
     private static final Logger log = LogManager.getLogger("Passport");
 
     @RequestMapping(value = "add", method = RequestMethod.GET)
-    public String getPassportForm(Map<String, Object> model, HttpSession session) {
-        Long tokenId = (Long) session.getAttribute("tokenId");
-        Token token = TokenRegistrationController.getTokenDatabase().get(tokenId);
-        
+    public ModelAndView getPassportForm(Map<String, Object> model, HttpSession session) {
+
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return new ModelAndView(new RedirectView("/login", true, false));
+        }
+        User user = userRegistrationController.getUserDatabase().get(userId);
+
+        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
+
+        Token token = tokens.get(user.getToken().getTokenId());
+        if (token == null || !token.isActivated()) {
+            return new ModelAndView(new RedirectView("/token/register", true, false));
+        }
+
         model.put("token", token);
         model.put("passportForm", new PassportForm());
-        return "passport/edit/add";
+        model.put("user", user);
+        return new ModelAndView("passport/edit/add");
     }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
     public View addPassport(HttpSession session, PassportForm form) {
-        
-        Long tokenId = (Long) session.getAttribute("tokenId");
-        Token token = TokenRegistrationController.getTokenDatabase().get(tokenId);
-        User user = token.getUser();
-        
+
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return new RedirectView("/login", true, false);
+        }
+        User user = userRegistrationController.getUserDatabase().get(userId);
+
+        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
+        Token token = tokens.get(user.getToken().getTokenId());
+        if (token == null || !token.isActivated()) {
+            return new RedirectView("/token/register", true, false);
+        }
+
         Passport passport = new Passport();
         passport.setSeries(form.getSer());
         passport.setNumber(form.getNum());
         passport.setIssueDepartment(form.getIssueDep());
         passport.setIssueDepartmentCode(form.getIssueDepCode());
-        
+
         String issueDate = form.getDated();
         LocalDate iDate = null;
-        
+
         try {
-            iDate = LocalDate.parse(issueDate, DateTimeFormatter.ofPattern("dd.MM.yyyy"));            
+            iDate = LocalDate.parse(issueDate, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         } catch (DateTimeParseException e) {
             log.warn("Wrong date format '{}'", issueDate, e);
-        }      
-        
+        }
+
         if (!this.checkPassportIssueDate(user, iDate)) {
             String msg = "Указанный возраст получения паспорта менее 14 лет!";
             throw new PassportIssueDateException(msg);
         }
 
         passport.setIssueDate(iDate);
-        
+
         user.setPassport(passport);
 
-        log.info("Passport for token '{}' was added", tokenId);
+        log.info("Passport for token '{}' was added", token.getTokenId());
         return new RedirectView("/token/user/view", true, false);
     }
-    
+
     @RequestMapping(value = "edit", method = RequestMethod.GET)
-    public String editPassport(Map<String, Object> model, HttpSession session) {
-        
-        Long tokenId = (Long) session.getAttribute("tokenId");
-        Token token = TokenRegistrationController.getTokenDatabase().get(tokenId);
-        User user = token.getUser();
+    public ModelAndView editPassport(Map<String, Object> model, HttpSession session) {
+
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return new ModelAndView(new RedirectView("/login", true, false));
+        }
+        User user = userRegistrationController.getUserDatabase().get(userId);
+
+        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
+
+        Token token = tokens.get(user.getToken().getTokenId());
+        if (token == null || !token.isActivated()) {
+            return new ModelAndView(new RedirectView("/token/register", true, false));
+        }
+
         Passport passport = user.getPassport();
-        
+
         PassportForm pForm = new PassportForm();
         pForm.setSer(passport.getSeries());
         pForm.setNum(passport.getNumber());
@@ -89,62 +124,79 @@ public class PassportController {
         pForm.setDated(passport.getIssueDate() == null
                 ? "" : passport.getIssueDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
         );
-        
+
         model.put("token", token);
         model.put("passportForm", pForm);
-        return "passport/edit/edit";
+        model.put("user", user);
+        return new ModelAndView("passport/edit/edit");
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.POST)
     public View editPassport(HttpSession session, PassportForm form) {
-        
-        Long tokenId = (Long) session.getAttribute("tokenId");
-        Token token = TokenRegistrationController.getTokenDatabase().get(tokenId);
-        
-        User user = token.getUser();
+
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return new RedirectView("/login", true, false);
+        }
+        User user = userRegistrationController.getUserDatabase().get(userId);
+
+        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
+        Token token = tokens.get(user.getToken().getTokenId());
+        if (token == null || !token.isActivated()) {
+            return new RedirectView("/token/register", true, false);
+        }
+
         Passport passport = user.getPassport();
-        
+
         passport.setSeries(form.getSer());
         passport.setNumber(form.getNum());
         passport.setIssueDepartment(form.getIssueDep());
         passport.setIssueDepartmentCode(form.getIssueDepCode());
-        
+
         String issueDate = form.getDated();
         LocalDate iDate = null;
-        
+
         try {
             iDate = LocalDate.parse(issueDate, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         } catch (DateTimeParseException e) {
             log.warn("Wrong date format '{}'", issueDate, e);
         }
-        
+
         if (!this.checkPassportIssueDate(user, iDate)) {
             String msg = "Указанный возраст получения паспорта менее 14 лет!";
             throw new PassportIssueDateException(msg);
         }
-         
+
         passport.setIssueDate(iDate);
 
-        log.info("Passport for token '{}' has been edited", tokenId);
+        log.info("Passport for token '{}' has been edited", token.getTokenId());
         return new RedirectView("/token/user/view", true, false);
     }
-    
+
     @RequestMapping(value = "delete", method = RequestMethod.GET)
     public View deletePassport(HttpSession session) {
+          
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return new RedirectView("/login", true, false);
+        }
+        User user = userRegistrationController.getUserDatabase().get(userId);
+
+        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
+        Token token = tokens.get(user.getToken().getTokenId());
+        if (token == null || !token.isActivated()) {
+            return new RedirectView("/token/register", true, false);
+        }
         
-        Long tokenId = (Long) session.getAttribute("tokenId");
-        Token token = TokenRegistrationController.getTokenDatabase().get(tokenId);
-        
-        User user = token.getUser();
         user.setPassport(null);
-        
-        log.info("Passport for token '{}' has been deleted", tokenId);
+
+        log.info("Passport for token '{}' has been deleted", token.getTokenId());
         return new RedirectView("/token/user/view", true, false);
     }
-    
-    private boolean checkPassportIssueDate(User user, LocalDate issueDate) {
+
+    private synchronized boolean checkPassportIssueDate(final User user, final LocalDate issueDate) {
         LocalDate birthDate = user.getBirthDate();
-        int diff = Period.between(birthDate, issueDate).getYears();        
+        int diff = Period.between(birthDate, issueDate).getYears();
         return diff >= 14;
     }
 
@@ -195,8 +247,6 @@ public class PassportController {
         public void setDated(String dated) {
             this.dated = dated;
         }
-
-        
 
     }
 }

@@ -4,12 +4,13 @@
 <%--@elvariable id="contacts" type="java.util.LinkedList"--%>
 <%--@elvariable id="attachments" type="java.util.Collection"--%>
 <%--@elvariable id="event" type="ru.tokens.site.controller.MessageEvent"--%>
+<%--@elvariable id="user" type="ru.tokens.site.entities.User"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:basic htmlTitle="Adding Medical Entry" bodyTitle="Add Medical Entry">
     <c:out value="Token ID: ${token.uuidString}"/><br />
-    <c:out value="User E-mail: ${token.user.email}"/>
+    <c:out value="User E-mail: ${user.userEmailAddress}"/>
     <hr />
-    <a href="<c:url context="/tkn" value="/token/user/view"/>">&lt;- Back</a>
+    <a href="<c:url value="/token/user/view"/>">&lt;- Back</a>
     <form:form method="post" enctype="multipart/form-data" modelAttribute="eventForm">
         <fieldset>
             <legend>Message</legend>
@@ -62,7 +63,7 @@
                                     <c:out value="${attachment.contentSize}" />
                                 </td>
                                 <td>
-                                    <a href="<c:url context="/tkn" value="/token/user/csdevent/${event.id}/${attachment.id}/delete"/>">
+                                    <a href="<c:url value="/token/user/csdevent/${event.id}/${attachment.id}/delete"/>">
                                         Delete
                                     </a>
                                 </td>

@@ -1,9 +1,11 @@
 <%--@elvariable id="medicalForm" type="ru.tokens.site.controller.MedHistFormController.MedicalForm"--%>
 <%--@elvariable id="token" type="ru.tokens.site.entities.Token"--%>
+<%--@elvariable id="user" type="ru.tokens.site.entities.User"--%>
+<%--@elvariable id="bloodVariants" type="java.util.List"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:basic htmlTitle="Editing medical data" bodyTitle="Edit medical data">
     <c:out value="Token ID: ${token.uuidString}"/><br />
-    <c:out value="User E-mail: ${token.user.email}"/>
+    <c:out value="User E-mail: ${user.userEmailAddress}"/>
     <hr />
     <form:form method="post" modelAttribute="medicalForm">
         <table border="1" cellpadding="10">

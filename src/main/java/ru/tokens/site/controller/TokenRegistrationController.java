@@ -1,11 +1,13 @@
 package ru.tokens.site.controller;
 
+import java.time.Instant;
 import java.util.Hashtable;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,6 +25,9 @@ import ru.tokens.site.utils.AppInitUtil;
 @Controller
 @RequestMapping("token")
 public class TokenRegistrationController {
+    
+    @Autowired
+    private UserRegistrationController userRegistrationController;
 
     private static final Logger log = LogManager.getLogger("Token");
 
@@ -31,10 +36,8 @@ public class TokenRegistrationController {
     static {
         AppInitUtil util = new AppInitUtil();
         TokenUtils tokenUtils = util.getTokenUtils();
-
         Token t1 = tokenUtils.generateToken();
-        User u1 = new User();
-        t1.setUser(u1);
+
         tokenDatabase.put(t1.getTokenId(), t1);
         System.out.println("Token #1 id: " + t1.getTokenId());
         System.out.println("Token #1 uuidString: " + tokenDatabase.get(t1.getTokenId()).getUuidString());
@@ -42,8 +45,7 @@ public class TokenRegistrationController {
                 + tokenDatabase.get(t1.getTokenId()).getActivationCode());
 
         Token t2 = tokenUtils.generateToken();
-        User u2 = new User();
-        t2.setUser(u2);
+
         tokenDatabase.put(t2.getTokenId(), t2);
         System.out.println("Token #2 id: " + t2.getTokenId());
         System.out.println("Token #2 uuidString: " + tokenDatabase.get(t2.getTokenId()).getUuidString());
@@ -59,13 +61,19 @@ public class TokenRegistrationController {
     public String tokenRegisterForm(Map<String, Object> model) {
         model.put("registrationFailed", false);
         model.put("tokenRegistrationForm", new TokenRegistrationForm());
-
         return "token/view/registration";
     }
 
     @RequestMapping(value = "register", method = RequestMethod.POST)
     public ModelAndView tokenFormSubmit(Map<String, Object> model, HttpSession session,
             HttpServletRequest request, TokenRegistrationForm form) {
+        
+        Long userId = (Long) session.getAttribute("userId");        
+        if (userId == null) {
+            return new ModelAndView(new RedirectView("/login", true, false));
+        }
+        
+        User user = userRegistrationController.getUserDatabase().get(userId);
 
         // TODO валидация полей
         String msg;
@@ -81,14 +89,11 @@ public class TokenRegistrationController {
         }
 
         Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-        Long tokenId = null;
         Token token = null;
 
         for (Map.Entry<Long, Token> entry : tokens.entrySet()) {
-            Long key = entry.getKey();
             Token value = entry.getValue();
             if (uuidString.equals(value.getUuidString())) {
-                tokenId = key;
                 token = value;
             }
         }
@@ -116,10 +121,13 @@ public class TokenRegistrationController {
         }
 
         log.info("Token '{}' successfully entered.", uuidString);
-        session.setAttribute("tokenId", tokenId);
-        request.changeSessionId();
+        user.setToken(token);
+        token.setUser(user);
+        token.setActivated(true);
+        token.setActivatedDate(Instant.now());
+        
         return new ModelAndView(
-                new RedirectView("/token/add/user", true, true, true)
+                new RedirectView("/token/user/view", true, true, true)
         );
     }
 

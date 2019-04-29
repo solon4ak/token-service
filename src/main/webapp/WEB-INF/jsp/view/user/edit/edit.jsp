@@ -1,17 +1,19 @@
 <%--@elvariable id="userForm" type="ru.tokens.site.controller.UserDataController.UserForm"--%>
 <%--@elvariable id="token" type="ru.tokens.site.entities.Token"--%>
+<%--@elvariable id="user" type="ru.tokens.site.entities.User"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:basic htmlTitle="Edit Token" bodyTitle="Edit Token">
-    <c:out value="Token ID: ${token.uuidString}"/>    
+    <c:out value="Token ID: ${token.uuidString}"/><br />
+    <c:out value="User E-mail: ${user.userEmailAddress}"/>
     <hr />
     <form:form method="post" modelAttribute="userForm">
-        <fieldset>
+<!--        <fieldset>
             <legend>Will be used for user login</legend>
-            <form:label path="email">E-mail:*</form:label>
-            <form:input path="email"/>
-            <form:label path="password">Password*</form:label>
-            <form:input path="password"/>
-        </fieldset>
+            <%--<form:label path="email">E-mail:*</form:label>--%>
+            <%--<form:input path="email"/>--%>
+            <%--<form:label path="password">Password*</form:label>--%>
+            <%--<form:input path="password"/>--%>
+        </fieldset>-->
         <fieldset>
             <legend>User data</legend>
             <form:label path="firstName">First Name:*</form:label>

@@ -1,8 +1,11 @@
 package ru.tokens.site.entities;
 
+import java.io.Serializable;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -12,30 +15,37 @@ import java.util.logging.Logger;
  *
  * @author solon4ak
  */
-public class User {
+public class User implements Serializable {
 
     /**
      * User logger
      */
     private static final Logger LOGGER = Logger.getLogger("User");
+    
+    private Long userId;
 
+    /* User registration data */
     private String firstName;
     private String lastName;
     private String middleName;
     private String password;
-    private String email;
+    private String userEmailAddress;
+    private String phoneNumber;
+    private Address postAddress;
+    private Instant registered;
+    private boolean emailActivated;    
+    private List<ActivationLink> activationLinks = new LinkedList<>();
+    
+    /* Token related data */
+    private Token token;
+    private Address tokenAddress;
     private Passport passport;
     private BirthCertificate birthCertificate;
-    private Address address;
-    private String phoneNumber;
-    private Token token;
-
-    private LocalDate birthDate;
-    private Image image;
     
-    private boolean emailActivated;
+    private LocalDate birthDate;
+    private Image image;    
 
-    private final Map<Long, Contact> contacts = new Hashtable<>();
+    private final Map<Long, Contact> contacts = new LinkedHashMap<>();
 
     private final Map<Long, Email> emails = new Hashtable<>();
 
@@ -45,22 +55,31 @@ public class User {
     // со своим индикатором наступления
     private Map<Long, MessageEvent> messageEvents = new Hashtable<>();
 
-    private List<ActivationLink> activationLinks = new LinkedList<>();
-
     public User() {
         super();
         this.emailActivated = false;
     }
 
-    public User(String firstName, String lastName, String email, String password, LocalDate birthDate) {
+    public User(String firstName, String lastName, String email, 
+            String password, LocalDate birthDate) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.email = email;
+        this.userEmailAddress = email;
         this.birthDate = birthDate;
         if (password != null) {
             this.setPassword(password);
         }
     }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+    
+    
 
     public String getFirstName() {
         return firstName;
@@ -86,20 +105,28 @@ public class User {
         this.lastName = lastName;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUserEmailAddress() {
+        return userEmailAddress;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUserEmailAddress(String userEmailAddress) {
+        this.userEmailAddress = userEmailAddress;
     }
 
-    public Address getAddress() {
-        return address;
+    public Address getTokenAddress() {
+        return tokenAddress;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setTokenAddress(Address tokenAddress) {
+        this.tokenAddress = tokenAddress;
+    }
+
+    public Address getPostAddress() {
+        return postAddress;
+    }
+
+    public void setPostAddress(Address postAddress) {
+        this.postAddress = postAddress;
     }
 
     public String getPhoneNumber() {
@@ -249,7 +276,18 @@ public class User {
     public void setToken(Token token) {
         this.token = token;
     }
-    
-    
+
+    public Instant getRegistered() {
+        return registered;
+    }
+
+    public void setRegistered(Instant registered) {
+        this.registered = registered;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" + "firstName=" + firstName + ", lastName=" + lastName + '}';
+    }   
 
 }

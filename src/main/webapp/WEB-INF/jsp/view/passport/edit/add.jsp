@@ -1,11 +1,16 @@
 <%--@elvariable id="passportForm" type="ru.tokens.site.controller.PassportController.PassportForm"--%>
 <%--@elvariable id="token" type="ru.tokens.site.entities.Token"--%>
+<%--@elvariable id="user" type="ru.tokens.site.entities.User"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
-<template:basic htmlTitle="Add Passport" bodyTitle="Token owner passport">  
+<template:basic htmlTitle="Add Passport" bodyTitle="Token owner passport"> 
+    <c:out value="Token ID: ${token.uuidString}"/><br />
+    <c:out value="User E-mail: ${user.userEmailAddress}"/>
+    <hr />
     Birth Date: <wrox:formatDate value="${token.user.birthDate}" />
     <hr />
     <form:form method="post" modelAttribute="passportForm">
         <fieldset>
+            <label>Passport</label>
             <form:label path="ser">Серия:</form:label>
             <form:input path="ser"/><br />
             <form:label path="num">Номер паспорта:</form:label>

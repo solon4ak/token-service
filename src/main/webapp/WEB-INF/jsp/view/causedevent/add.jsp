@@ -3,10 +3,13 @@
 <%--@elvariable id="emailIntervals" type="java.util.LinkedList"--%>
 <%--@elvariable id="contacts" type="java.util.LinkedList"--%>
 <%--@elvariable id="eventForm" type="ru.tokens.site.controller.MessageEventController.EventForm"--%>
+<%--@elvariable id="user" type="ru.tokens.site.entities.User"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:basic htmlTitle="Adding Message Event" bodyTitle="Add Message Event">
+    <c:out value="Token ID: ${token.uuidString}"/><br />
+    <c:out value="User E-mail: ${user.userEmailAddress}"/>
     <hr />
-    <a href="<c:url context="/tkn" value="/token/user/view"/>">&lt;- Back</a>
+    <a href="<c:url value="/token/user/view"/>">&lt;- Back</a>
     <form:form method="post" enctype="multipart/form-data" modelAttribute="eventForm">
         <fieldset>
             <legend>Message</legend>
@@ -38,7 +41,7 @@
                 </tbody>
             </table>  
             <br /> 
-            <a href="<c:url context="/tkn" value="/token/user/contact/add" />">Add contact</a>
+            <a href="<c:url value="/token/user/contact/add" />">Add contact</a>
         </fieldset>
         <fieldset>
             <legend>Attachments</legend>

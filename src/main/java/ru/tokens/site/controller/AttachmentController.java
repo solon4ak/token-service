@@ -28,6 +28,9 @@ import ru.tokens.site.utils.FileUtil;
 @Controller
 public class AttachmentController {
 
+    @Autowired
+    private UserRegistrationController userRegistrationController;
+
     private static final Logger log = LogManager.getLogger("AttachmentController");
 
     @Autowired
@@ -40,67 +43,57 @@ public class AttachmentController {
             HttpSession session, @PathVariable("entryId") long entryId,
             @PathVariable("attachmentId") Long attachmentId) {
 
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-        Long tokenId = (Long) session.getAttribute("tokenId");
-        Token token = tokens.get(tokenId);
-
-        if (null == token) {
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
             return new ModelAndView(new RedirectView("/login", true, false));
         }
+        User user = userRegistrationController.getUserDatabase().get(userId);
 
-        User user = token.getUser();
+        MedicalHistory history = user.getMedicalHistory();
+        DataEntry entry = history.getMedicalFormEntry(entryId);
+        if (null != entry) {
+            Attachment attachment = entry.getAttachment(attachmentId);
 
-        if (null != user) {
-            MedicalHistory history = user.getMedicalHistory();
-            DataEntry entry = history.getMedicalFormEntry(entryId);
-            if (null != entry) {
-                Attachment attachment = entry.getAttachment(attachmentId);
+            File atch = new File(attachment.getUrl());
+            atch.delete();
 
-                File atch = new File(attachment.getUrl());
-                atch.delete();
+            entry.deleteAttachment(attachmentId);
 
-                entry.deleteAttachment(attachmentId);
-
-                model.put("entry", entry);
-                model.put("user", user);
-//                return new ModelAndView("entry/edit");
-            }
+            model.put("entry", entry);
+            model.put("user", user);
         }
+
         return new ModelAndView("entry/edit/view");
     }
-    
+
     @RequestMapping(value = "token/user/csdevent/{eventId}/{attachmentId}/delete",
             method = RequestMethod.GET)
     public ModelAndView deleteMessageEventAttachment(Map<String, Object> model,
             HttpSession session, @PathVariable("eventId") Long eventId,
             @PathVariable("attachmentId") Long attachmentId) {
 
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-        Long tokenId = (Long) session.getAttribute("tokenId");
-        Token token = tokens.get(tokenId);
-
-        if (null == token) {
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
             return new ModelAndView(new RedirectView("/login", true, false));
         }
+        User user = userRegistrationController.getUserDatabase().get(userId);
 
-        User user = token.getUser();
+        MessageEvent event = user.getMessageEvent(eventId);
+        DataEntry entry = event.getDataEntry();
 
-        if (null != user) {
-            MessageEvent event = user.getMessageEvent(eventId);
-            DataEntry entry = event.getDataEntry();
+        if (null != entry) {
+            Attachment attachment = entry.getAttachment(attachmentId);
+            File atch = new File(attachment.getUrl());
+            atch.delete();
 
-            if (null != entry) {
-                Attachment attachment = entry.getAttachment(attachmentId);
-                File atch = new File(attachment.getUrl());
-                atch.delete();
+            entry.deleteAttachment(attachmentId);
 
-                entry.deleteAttachment(attachmentId);
-
-                model.put("entry", entry);
-                model.put("user", user);
+            model.put("entry", entry);
+            model.put("user", user);
 //                return new ModelAndView("entry/edit");
-            }
         }
+        
         return new ModelAndView(new RedirectView("/token/user/csdevent/edit/" + eventId, true, false));
     }
+    
 }

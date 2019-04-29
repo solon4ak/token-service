@@ -12,16 +12,19 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
-import ru.tokens.site.entities.Token;
+import org.springframework.beans.factory.annotation.Autowired;
 import ru.tokens.site.entities.User;
 
 @Controller
 public class AuthenticationController {
+    
+    @Autowired
+    private UserRegistrationController userRegistrationController;
 
     private static final Logger log = LogManager.getLogger("AuthenticationController");
 
-    private Map<Long, Token> getTokenDatabase() {
-        return TokenRegistrationController.getTokenDatabase();
+    private Map<Long, User> getUserDatabase() {
+        return userRegistrationController.getUserDatabase();
     }
 
     @RequestMapping("logout")
@@ -36,8 +39,8 @@ public class AuthenticationController {
     @RequestMapping(value = "login", method = RequestMethod.GET)
     public ModelAndView login(Map<String, Object> model, HttpSession session) {
 
-        if (session.getAttribute("tokenId") != null) {
-            return this.getTokenRedirect();
+        if (session.getAttribute("userId") != null) {
+            return this.getUserRedirect();
         }
 
         model.put("loginFailed", false);
@@ -50,8 +53,8 @@ public class AuthenticationController {
     public ModelAndView login(Map<String, Object> model, HttpSession session,
             HttpServletRequest request, Form form) {
 
-        if (session.getAttribute("tokenId") != null) {
-            return this.getTokenRedirect();
+        if (session.getAttribute("userId") != null) {
+            return this.getUserRedirect();
         }
 
         String email = form.getEmail();
@@ -65,17 +68,15 @@ public class AuthenticationController {
             return new ModelAndView("login");
         }
 
-        Map<Long, Token> tokens = this.getTokenDatabase();
-        
-        User user = null;
-        for (Token tkn : tokens.values()) {
-            user = tkn.getUser();
-            if (user != null && email.equals(user.getEmail())
+        Map<Long, User> users = this.getUserDatabase();
+
+        for (User user : users.values()) {            
+            if (email.equals(user.getUserEmailAddress())
                     && password.equals(user.getPassword())) {
                 log.info("User {} successfully logged in.", email);
-                session.setAttribute("tokenId", tkn.getTokenId());
+                session.setAttribute("userId", user.getUserId());
                 request.changeSessionId();
-                return this.getTokenRedirect();
+                return this.getUserRedirect();
             }
         }
 
@@ -86,9 +87,9 @@ public class AuthenticationController {
         return new ModelAndView("login");
     }
 
-    private ModelAndView getTokenRedirect() {
+    private ModelAndView getUserRedirect() {
         return new ModelAndView(
-                new RedirectView("/token/user/view", true, false)
+                new RedirectView("/user/view", true, false)
         );
     }
 

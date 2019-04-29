@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,7 +47,10 @@ public class MessageEventController {
 
     @Autowired
     @Qualifier("schedular")
-    private EmailCheckingService schedular;
+    private EmailCheckingService schedular;    
+    
+    @Autowired
+    private UserRegistrationController userRegistrationController;
 
     private volatile long MESSAGE_ID_SEQUENCE = 1;
 
@@ -67,46 +71,72 @@ public class MessageEventController {
     }
 
     @RequestMapping(value = "view/{eventId}", method = RequestMethod.GET)
-    public String viewMessageEvent(Map<String, Object> model, HttpSession session,
+    public ModelAndView viewMessageEvent(Map<String, Object> model, HttpSession session,
             @PathVariable("eventId") Long eventId) {
-        Token token = this.getToken(session);
-        if (null == token) {
-            return "/login";
+        
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return new ModelAndView(new RedirectView("/login", true, false));
         }
-        User user = token.getUser();
+        User user = userRegistrationController.getUserDatabase().get(userId);
+
+        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
+
+        Token token = tokens.get(user.getToken().getTokenId());
+        if (token == null || !token.isActivated()) {
+            return new ModelAndView(new RedirectView("/token/register", true, false));
+        }
+        
         MessageEvent event = user.getMessageEvents().get(eventId);
 
         model.put("token", token);
         model.put("event", event);
+        model.put("user", user);
 
-        return "causedevent/view";
+        return new ModelAndView("causedevent/view");
     }
 
     @RequestMapping(value = "add", method = RequestMethod.GET)
-    public String getCausedEventForm(Map<String, Object> model, HttpSession session) {
-        Token token = this.getToken(session);
-        if (null == token) {
-            return "/login";
+    public ModelAndView getCausedEventForm(Map<String, Object> model, HttpSession session) {
+        
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return new ModelAndView(new RedirectView("/login", true, false));
         }
-        User user = token.getUser();
+        User user = userRegistrationController.getUserDatabase().get(userId);
+
+        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
+
+        Token token = tokens.get(user.getToken().getTokenId());
+        if (token == null || !token.isActivated()) {
+            return new ModelAndView(new RedirectView("/token/register", true, false));
+        }
+        
         Collection<Contact> contacts = user.getContacts();
 
         model.put("contacts", contacts);
         model.put("emailIntervals", this.getIntervals());
         model.put("eventForm", new EventForm());
-        return "causedevent/add";
+        model.put("user", user);
+        return new ModelAndView("causedevent/add");
     }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
     public View getCausedEventForm(Map<String, Object> model,
             HttpSession session, EventForm form) throws IOException {
-        System.out.println("--->Inside getCausedEventForm method");
-        Token token = this.getToken(session);
-        if (null == token) {
+        
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
             return new RedirectView("/login", true, false);
         }
+        User user = userRegistrationController.getUserDatabase().get(userId);
 
-        User user = token.getUser();
+        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
+        Token token = tokens.get(user.getToken().getTokenId());
+        if (token == null || !token.isActivated()) {
+            return new RedirectView("/token/register", true, false);
+        }
+        
         MessageEvent messageEvent = new MessageEvent();
         messageEvent.setId(this.getNextMessageId());
         messageEvent.setUser(user);
@@ -142,29 +172,45 @@ public class MessageEventController {
     }
 
     @RequestMapping(value = "list", method = RequestMethod.GET)
-    public String list(Map<String, Object> model, HttpSession ssession) {
+    public ModelAndView list(Map<String, Object> model, HttpSession session) {
 
-        Token token = this.getToken(ssession);
-        User user = token.getUser();
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return new ModelAndView(new RedirectView("/login", true, false));
+        }
+        User user = userRegistrationController.getUserDatabase().get(userId);
+
+        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
+        Token token = tokens.get(user.getToken().getTokenId());
+        if (token == null || !token.isActivated()) {
+            return new ModelAndView(new RedirectView("/token/register", true, false));
+        }
+        
         Collection<MessageEvent> messageEvents
                 = new LinkedList<>(user.getMessageEventsList());
 
         model.put("token", token);
         model.put("messageEvents", messageEvents);
-        return "causedevent/list";
+        model.put("user", user);
+        return new ModelAndView("causedevent/list");
     }
 
     @RequestMapping(value = "edit/{eventId}", method = RequestMethod.GET)
     public ModelAndView edit(Map<String, Object> model, HttpSession session,
             @PathVariable("eventId") Long eventId) {
 
-        Token token = this.getToken(session);
-
-        if (null == token) {
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
             return new ModelAndView(new RedirectView("/login", true, false));
         }
+        User user = userRegistrationController.getUserDatabase().get(userId);
 
-        User user = token.getUser();
+        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
+        Token token = tokens.get(user.getToken().getTokenId());
+        if (token == null || !token.isActivated()) {
+            return new ModelAndView(new RedirectView("/token/register", true, false));
+        }
+        
         MessageEvent event = user.getMessageEvent(eventId);
         EventForm form = new EventForm();
 
@@ -188,20 +234,27 @@ public class MessageEventController {
         model.put("contacts", contacts);
         model.put("attachments", attachments);
         model.put("emailIntervals", this.getIntervals());
+        model.put("user", user);
 
         return new ModelAndView("causedevent/edit");
     }
 
     @RequestMapping(value = "edit/{eventId}", method = RequestMethod.POST)
     public View edit(HttpSession session, EventForm form,
-            @PathVariable("eventId") long eventId) throws IOException {
+            @PathVariable("eventId") long eventId) {
 
-        Token token = this.getToken(session);
-        if (null == token) {
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
             return new RedirectView("/login", true, false);
         }
+        User user = userRegistrationController.getUserDatabase().get(userId);
 
-        User user = token.getUser();
+        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
+        Token token = tokens.get(user.getToken().getTokenId());
+        if (token == null || !token.isActivated()) {
+            return new RedirectView("/token/register", true, false);
+        }
+        
         MessageEvent messageEvent = user.getMessageEvent(eventId);
 //        messageEvent.setUser(user);
 
@@ -220,7 +273,11 @@ public class MessageEventController {
 
         DataEntry entry = messageEvent.getDataEntry();
 
-        this.uploadFiles(entry, form);
+        try {
+            this.uploadFiles(entry, form);
+        } catch (IOException ex) {
+            java.util.logging.Logger.getLogger(MessageEventController.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         messageEvent.setDataEntry(entry);
         user.addMessageEvent(messageEvent);
@@ -232,24 +289,26 @@ public class MessageEventController {
     @RequestMapping(value = "delete/{eventId}", method = RequestMethod.GET)
     public View delete(HttpSession session, @PathVariable("eventId") Long eventId) {
 
-        Token token = this.getToken(session);
-        if (null == token) {
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
             return new RedirectView("/login", true, false);
         }
+        User user = userRegistrationController.getUserDatabase().get(userId);
 
-        User user = token.getUser();
+        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
+        Token token = tokens.get(user.getToken().getTokenId());
+        if (token == null || !token.isActivated()) {
+            return new RedirectView("/token/register", true, false);
+        }
+        
         MessageEvent messageEvent = user.getMessageEvent(eventId);
         DataEntry entry = messageEvent.getDataEntry();
 
         if (null != entry) {
             Map<Long, Attachment> attachments = entry.getAttachmentsMap();
             if (!attachments.isEmpty()) {
-//                String path = fileUtil.getStorageDirectory();
                 for (Map.Entry<Long, Attachment> a : attachments.entrySet()) {
                     Attachment attachment = a.getValue();
-//                    File attch = new File(path
-//                            + File.separator
-//                            + attachment.getNewFileName());
                     File attch = new File(attachment.getUrl());
                     attch.delete();
                 }
@@ -266,20 +325,7 @@ public class MessageEventController {
         return new RedirectView("/token/user/csdevent/list", true, false);
     }
 
-    private Token getToken(HttpSession session) {
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-        Long tokenId = (Long) session.getAttribute("tokenId");
-        Token token = tokens.get(tokenId);
-
-        return token;
-    }
-
     private List<String> getIntervals() {
-//        List<String> intervals = new LinkedList<>();
-//        intervals.addAll(Arrays.asList(
-//                "Week", "Month", "3 Months",
-//                "6 Months", "Year"
-//        ));
 
         List<String> intervals = new LinkedList<>();
         for (Map.Entry<String, Integer> entry : MessageEventHelper.getIntervals().entrySet()) {

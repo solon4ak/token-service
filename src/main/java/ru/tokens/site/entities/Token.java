@@ -8,15 +8,16 @@ import java.time.Instant;
  * @author solon4ak
  */
 public class Token implements Serializable {
-    
-    private String uuidString;
+        
     private long tokenId;
+    private String uuidString;
     private String activationCode;
     private Instant activatedDate;
-    private boolean activated = false;
+    private boolean activated;
     private User user;
 
     public Token() {
+        this.activated = false;
     }
 
     public String getUuidString() {

@@ -19,6 +19,7 @@ import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 
 /**
  *
@@ -30,7 +31,7 @@ import org.springframework.stereotype.Controller;
 @EnableScheduling
 @ComponentScan(
         basePackages = "ru.tokens.site",
-        //        includeFilters = @ComponentScan.Filter(Service.class),
+        includeFilters = @ComponentScan.Filter(Service.class),
         excludeFilters = @ComponentScan.Filter(Controller.class)
 )
 public class RootContextConfiguration implements AsyncConfigurer, SchedulingConfigurer {
@@ -54,7 +55,7 @@ public class RootContextConfiguration implements AsyncConfigurer, SchedulingConf
         marshaller.setPackagesToScan(new String[]{"ru.tokens.site"});
         return marshaller;
     }
-    
+
     @Bean
     public ThreadPoolTaskScheduler taskScheduler() {
         log.info("Setting up thread pool task scheduler with {] threads", 120);
@@ -73,7 +74,7 @@ public class RootContextConfiguration implements AsyncConfigurer, SchedulingConf
                         "Execution of task {} was rejected for unknown reasons", r
                 )
         );
-        
+
         return scheduler;
     }
 
