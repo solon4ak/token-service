@@ -58,7 +58,12 @@ public class Bootstrap implements WebApplicationInitializer {
         );
         registration.addMappingForUrlPatterns(
                 null, false, 
-                "/token/user", "/token/user/", "/token/user/*"
+                "/token/user", "/token/user/*",
+                "/token/register", "/token/register/*",
+                "/token/add/user", "/token/add/user/*",
+                "/session", "/session/*",
+                "/user/view", "/user/view/*",
+                "/user/edit", "/user/edit/*"
         );
         
         

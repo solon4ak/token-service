@@ -1,7 +1,11 @@
 <%--@elvariable id="certForm" type="ru.tokens.site.controller.BirthCertificateController.BthCertForm"--%>
 <%--@elvariable id="token" type="ru.tokens.site.entities.Token"--%>
+<%--@elvariable id="user" type="ru.tokens.site.entities.User"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:basic htmlTitle="Edit Birth Certificate" bodyTitle="Edit token owner Birth Certificate">
+    <c:out value="Token ID: ${token.uuidString}"/><br />
+    <c:out value="User E-mail: ${user.userEmailAddress}"/>
+    <hr />
     Birth Date: <wrox:formatDate value="${token.user.birthDate}" />
     <hr />
     <form:form method="post" modelAttribute="certForm">

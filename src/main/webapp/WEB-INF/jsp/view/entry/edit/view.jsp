@@ -1,9 +1,10 @@
 <%--@elvariable id="entry" type="ru.tokens.site.entities.MedicalFormEntry"--%>
 <%--@elvariable id="token" type="ru.tokens.site.entities.Token"--%>
+<%--@elvariable id="user" type="ru.tokens.site.entities.User"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:basic htmlTitle="View Medical Entry" bodyTitle="Entry #${entry.id} : ${entry.subject}">
     <c:out value="Token ID: ${token.uuidString}"/><br />
-    <c:out value="User E-mail: ${token.user.email}"/>
+    <c:out value="User E-mail: ${user.userEmailAddress}"/>
     <hr />
     <a href="<c:url context="/tkn" value="/token/user/med/view" />">
         <- Back

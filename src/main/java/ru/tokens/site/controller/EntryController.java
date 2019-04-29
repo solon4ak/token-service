@@ -39,6 +39,9 @@ public class EntryController {
     @Qualifier("fileService")
     private FileUtil fileUtil;
 
+    @Autowired
+    private UserRegistrationController userRegistrationController;
+
     private volatile long ENTRY_ID_SEQUENCE = 1;
 
     private synchronized long getNextEntryId() {
@@ -113,44 +116,59 @@ public class EntryController {
     }
 
     @RequestMapping(value = "user/med/entry/{entryId}/view", method = RequestMethod.GET)
-    public String viewEntry(Map<String, Object> model, HttpSession session,
+    public ModelAndView viewEntry(Map<String, Object> model, HttpSession session,
             @PathVariable("entryId") long entryId) {
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return new ModelAndView(new RedirectView("/login", true, false));
+        }
+        User user = userRegistrationController.getUserDatabase().get(userId);
+
         Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-        Long tokenId = (Long) session.getAttribute("tokenId");
-        Token token = tokens.get(tokenId);
-        User user = token.getUser();
+        Token token = tokens.get(user.getToken().getTokenId());
+        if (token == null) {
+            return new ModelAndView(new RedirectView("/token/register", true, false));
+        }
+
         MedicalHistory history = user.getMedicalHistory();
         DataEntry entry = history.getMedicalFormEntry(entryId);
 
         model.put("entry", entry);
         model.put("token", token);
-        return "entry/edit/view";
+        model.put("user", user);
+        return new ModelAndView("entry/edit/view");
     }
 
     @RequestMapping(value = "user/med/entry/create", method = RequestMethod.GET)
-    public String create(Map<String, Object> model, HttpSession session) {
+    public ModelAndView create(Map<String, Object> model, HttpSession session) {
+
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return new ModelAndView(new RedirectView("/login", true, false));
+        }
+        User user = userRegistrationController.getUserDatabase().get(userId);
 
         Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-        Long tokenId = (Long) session.getAttribute("tokenId");
-        Token token = tokens.get(tokenId);
+
+        Token token = tokens.get(user.getToken().getTokenId());
+        if (token == null) {
+            return new ModelAndView(new RedirectView("/token/register", true, false));
+        }
 
         model.put("token", token);
+        model.put("user", user);
         model.put("entryForm", new EntryForm());
-        return "entry/edit/add";
+        return new ModelAndView("entry/edit/add");
     }
 
     @RequestMapping(value = "user/med/entry/create", method = RequestMethod.POST)
     public View create(HttpSession session, EntryForm form) throws IOException {
 
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-        Long tokenId = (Long) session.getAttribute("tokenId");
-        Token token = tokens.get(tokenId);
-
-        if (null == token) {
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
             return new RedirectView("/login", true, false);
         }
-
-        User user = token.getUser();
+        User user = userRegistrationController.getUserDatabase().get(userId);
 
         DataEntry entry = new DataEntry();
         entry.setId(this.getNextEntryId());
@@ -161,7 +179,7 @@ public class EntryController {
         entry.setSubject(subject);
         entry.setBody(form.getBody());
         entry.setDateCreated(Instant.now());
-        
+
         this.processAttachment(entry, form);
 
         user.getMedicalHistory().addMedicalFormEntry(entry);
@@ -171,35 +189,37 @@ public class EntryController {
     @RequestMapping(value = "user/med/entry/{entryId}/delete", method = RequestMethod.GET)
     public View delete(HttpSession session, @PathVariable("entryId") long entryId) {
 
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-        Long tokenId = (Long) session.getAttribute("tokenId");
-        Token token = tokens.get(tokenId);
-
-        if (null == token) {
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
             return new RedirectView("/login", true, false);
         }
+        User user = userRegistrationController.getUserDatabase().get(userId);
 
-        User user = token.getUser();
+        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
 
-        if (null != user) {
-            MedicalHistory medicalHistory = user.getMedicalHistory();
-            DataEntry entry = medicalHistory.getMedicalFormEntry(entryId);
-            if (null != entry) {
-
-                Map<Long, Attachment> attachments = entry.getAttachmentsMap();
-                if (!attachments.isEmpty()) {
-                    String path = fileUtil.getStorageDirectory();
-                    for (Map.Entry<Long, Attachment> a : attachments.entrySet()) {
-                        Attachment attachment = a.getValue();
-                        File atch = new File(attachment.getUrl());
-                        atch.delete();
-                    }
-                }
-
-                medicalHistory.deleteMedicalFormEntry(entryId);
-                log.info("Entry '{}' for token '{}' was deleted.", entryId, tokenId);
-            }
+        Token token = tokens.get(user.getToken().getTokenId());
+        if (token == null) {
+            return new RedirectView("/token/register", true, false);
         }
+
+        MedicalHistory medicalHistory = user.getMedicalHistory();
+        DataEntry entry = medicalHistory.getMedicalFormEntry(entryId);
+        if (null != entry) {
+
+            Map<Long, Attachment> attachments = entry.getAttachmentsMap();
+            if (!attachments.isEmpty()) {
+                String path = fileUtil.getStorageDirectory();
+                for (Map.Entry<Long, Attachment> a : attachments.entrySet()) {
+                    Attachment attachment = a.getValue();
+                    File atch = new File(attachment.getUrl());
+                    atch.delete();
+                }
+            }
+
+            medicalHistory.deleteMedicalFormEntry(entryId);
+            log.info("Entry '{}' for token '{}' was deleted.", entryId, token.getTokenId());
+        }
+
         return new RedirectView("/token/user/med/view", true, false);
     }
 
@@ -207,30 +227,33 @@ public class EntryController {
     public ModelAndView edit(Map<String, Object> model, HttpSession session,
             @PathVariable("entryId") long entryId) {
 
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-        Long tokenId = (Long) session.getAttribute("tokenId");
-        Token token = tokens.get(tokenId);
-
-        if (null == token) {
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
             return new ModelAndView(new RedirectView("/login", true, false));
         }
+        User user = userRegistrationController.getUserDatabase().get(userId);
 
-        User user = token.getUser();
+        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
+
+        Token token = tokens.get(user.getToken().getTokenId());
+        if (token == null) {
+            return new ModelAndView(new RedirectView("/token/register", true, false));
+        }
+
         EntryForm form = new EntryForm();
 
-        if (null != user) {
-            MedicalHistory medicalHistory = user.getMedicalHistory();
-            DataEntry entry = medicalHistory.getMedicalFormEntry(entryId);
-            if (null != entry) {
-                form.setSubject(entry.getSubject());
-                form.setBody(entry.getBody());
-                model.put("entry", entry);
-                model.put("user", user);
-                model.put("token", token);
-                model.put("entryForm", form);
-                return new ModelAndView("entry/edit/edit");
-            }
+        MedicalHistory medicalHistory = user.getMedicalHistory();
+        DataEntry entry = medicalHistory.getMedicalFormEntry(entryId);
+        if (null != entry) {
+            form.setSubject(entry.getSubject());
+            form.setBody(entry.getBody());
+            model.put("entry", entry);
+            model.put("user", user);
+            model.put("token", token);
+            model.put("entryForm", form);
+            return new ModelAndView("entry/edit/edit");
         }
+
         return new ModelAndView(new RedirectView("/token/user/med/view", true, false));
     }
 
@@ -238,30 +261,32 @@ public class EntryController {
     public View edit(HttpSession session, EntryForm form,
             @PathVariable("entryId") long entryId) throws IOException {
 
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-        Long tokenId = (Long) session.getAttribute("tokenId");
-        Token token = tokens.get(tokenId);
-
-        if (null == token) {
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
             return new RedirectView("/login", true, false);
         }
+        User user = userRegistrationController.getUserDatabase().get(userId);
 
-        User user = token.getUser();
+        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
 
-        if (null != user) {
-            MedicalHistory medicalHistory = user.getMedicalHistory();
-            DataEntry entry = medicalHistory.getMedicalFormEntry(entryId);
-            if (null != entry) {
-                entry.setSubject(form.getSubject());
-                entry.setBody(form.getBody());
-                
-                this.processAttachment(entry, form);
-                
-                log.info("Editing entry for token '{}'.", tokenId);
-                // user/med/entry/{entryId}/view
-                return new RedirectView("/token/user/med/entry/" + entry.getId() + "/view", true, false);
-            }
+        Token token = tokens.get(user.getToken().getTokenId());
+        if (token == null) {
+            return new RedirectView("/token/register", true, false);
         }
+
+        MedicalHistory medicalHistory = user.getMedicalHistory();
+        DataEntry entry = medicalHistory.getMedicalFormEntry(entryId);
+        if (null != entry) {
+            entry.setSubject(form.getSubject());
+            entry.setBody(form.getBody());
+
+            this.processAttachment(entry, form);
+
+            log.info("Editing entry for token '{}'.", token.getTokenId());
+
+            return new RedirectView("/token/user/med/entry/" + entry.getId() + "/view", true, false);
+        }
+
         return new RedirectView("/token/user/med/view", true, false);
     }
 
@@ -275,7 +300,7 @@ public class EntryController {
         );
     }
 
-    private void processAttachment(DataEntry entry, EntryForm form) 
+    private void processAttachment(DataEntry entry, EntryForm form)
             throws IOException {
         for (MultipartFile filePart : form.getAttachments()) {
             log.debug("Processing attachment for new entry.");

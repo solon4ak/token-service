@@ -8,7 +8,7 @@
         </c:if>
         <form:form method="post" modelAttribute="tokenRegistrationForm">
         <fieldset>
-            <form:label path="uuid">User Id:</form:label>
+            <form:label path="uuid">Token Id:</form:label>
             <form:input path="uuid" /><br />            
             <form:label path="activationCode">Activation Code:</form:label>
             <form:input path="activationCode" /><br /><br />            

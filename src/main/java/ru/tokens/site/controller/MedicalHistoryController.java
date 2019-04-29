@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,31 +27,56 @@ import ru.tokens.site.entities.User;
 @RequestMapping("token/user/med")
 public class MedicalHistoryController {
 
+    @Autowired
+    private UserRegistrationController userRegistrationController;
+
     private static final Logger log = LogManager.getLogger("MedHistFormController");
 
     @RequestMapping(value = {"view"}, method = RequestMethod.GET)
     public ModelAndView view(Map<String, Object> model, HttpSession session) {
 
-        Long tokenId = (Long) session.getAttribute("tokenId");
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-        Token token = tokens.get(tokenId);
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return new ModelAndView(new RedirectView("/login", true, false));
+        }
+        User user = userRegistrationController.getUserDatabase().get(userId);
 
-        if (token != null && token.isActivated()) {
-            model.put("token", token);
-            return new ModelAndView("medicaldata/edit/view");
+        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
+
+        Token token = tokens.get(user.getToken().getTokenId());
+
+        if (token == null || !token.isActivated()) {
+            return new ModelAndView(new RedirectView("/token/register", true, false));
         }
 
-        String message = "Token " + tokenId + "does not exist!";
-        model.put("message", message);
-        model.put("tokenId", tokenId);
-        return new ModelAndView("token/view/error");
+        model.put("token", token);
+        model.put("user", user);
+
+        return new ModelAndView("medicaldata/edit/view");
     }
 
     @RequestMapping(value = {"add"}, method = RequestMethod.GET)
-    public String create(Map<String, Object> model) {
+    public ModelAndView create(Map<String, Object> model, HttpSession session) {
+
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return new ModelAndView(new RedirectView("/login", true, false));
+        }
+        User user = userRegistrationController.getUserDatabase().get(userId);
+
+        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
+
+        Token token = tokens.get(user.getToken().getTokenId());
+
+        if (token == null || !token.isActivated()) {
+            return new ModelAndView(new RedirectView("/token/register", true, false));
+        }
+
+        model.put("token", token);
+        model.put("user", user);
         model.put("bloodVariants", this.getBloodTypes());
         model.put("medicalForm", new MedicalForm());
-        return "medicaldata/edit/add";
+        return new ModelAndView("medicaldata/edit/add");
     }
 
     @RequestMapping(value = {"add"}, method = RequestMethod.POST)
@@ -71,99 +97,101 @@ public class MedicalHistoryController {
         medHistory.setOrganDonor(form.isIsOrganDonor());
         medHistory.setMedicine(form.getMedicine());
 
-        Long tokenId = (Long) session.getAttribute("tokenId");
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-        Token token = tokens.get(tokenId);
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return new RedirectView("/login", true, false);
+        }
+        User user = userRegistrationController.getUserDatabase().get(userId);
 
-        if (token != null) {
-            User user = token.getUser();
-            if (user != null) {
-                user.setMedicalHistory(medHistory);
-                model.put("token", token);
-                log.info("Medical history for token '{}' has been added", tokenId);
-                return new RedirectView("/token/user/med/view", true, false);
-            }
+        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
+
+        Token token = tokens.get(user.getToken().getTokenId());
+
+        if (token == null || !token.isActivated()) {
+            return new RedirectView("/token/register", true, false);
         }
 
-        log.info("Medical history for token '{}' hasn't been added", tokenId);
-        String message = "Token " + tokenId + "does not exist!";
-        model.put("message", message);
-        model.put("tokenId", tokenId);
-        return new RedirectView("/token/view/error", true, false);
+        user.setMedicalHistory(medHistory);
+        model.put("token", token);
+        model.put("user", user);
+        log.info("Medical history for token '{}' has been added", token.getTokenId());
+        return new RedirectView("/token/user/med/view", true, false);
     }
 
     @RequestMapping(value = {"edit"}, method = RequestMethod.GET)
-    public String edit(Map<String, Object> model, HttpSession session) {
+    public ModelAndView edit(Map<String, Object> model, HttpSession session) {
 
-        Long tokenId = (Long) session.getAttribute("tokenId");
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return new ModelAndView(new RedirectView("/login", true, false));
+        }
+        User user = userRegistrationController.getUserDatabase().get(userId);
+
         Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-        Token token = tokens.get(tokenId);
-        if (token != null) {
-            User user = token.getUser();
-            if (user != null) {
-                MedicalHistory medicalHistory = user.getMedicalHistory();
 
-                MedicalForm form = new MedicalForm();
-                form.setOmsNumber(medicalHistory.getOmsNumber());
-                form.setAllergy(medicalHistory.getAllergy());
-                form.setChildhoodIllness(medicalHistory.getChildhoodIllness());
-                form.setChronicDiseases(medicalHistory.getChronicDiseases());
-                form.setDiseases(medicalHistory.getDiseases());
-                form.setInheritedDiseases(medicalHistory.getInheritedDiseases());
-                form.setInjuries(medicalHistory.getInjuries());
-                form.setSurgicalOperations(medicalHistory.getSurgicalOperations());
-                form.setBloodType(medicalHistory.getBloodType());
-                form.setIsOrganDonor(medicalHistory.isOrganDonor());
-                form.setMedicine(medicalHistory.getMedicine());
+        Token token = tokens.get(user.getToken().getTokenId());
 
-                model.put("bloodVariants", this.getBloodTypes());
-                model.put("medicalForm", form);
-                model.put("token", token);
-                return "medicaldata/edit/edit";
-            }
+        if (token == null || !token.isActivated()) {
+            return new ModelAndView(new RedirectView("/token/register", true, false));
         }
 
-        String message = "Token " + tokenId + "does not exist!";
-        model.put("message", message);
-        model.put("tokenId", tokenId);
-        return "token/view/error";
+        MedicalHistory medicalHistory = user.getMedicalHistory();
+
+        MedicalForm form = new MedicalForm();
+        form.setOmsNumber(medicalHistory.getOmsNumber());
+        form.setAllergy(medicalHistory.getAllergy());
+        form.setChildhoodIllness(medicalHistory.getChildhoodIllness());
+        form.setChronicDiseases(medicalHistory.getChronicDiseases());
+        form.setDiseases(medicalHistory.getDiseases());
+        form.setInheritedDiseases(medicalHistory.getInheritedDiseases());
+        form.setInjuries(medicalHistory.getInjuries());
+        form.setSurgicalOperations(medicalHistory.getSurgicalOperations());
+        form.setBloodType(medicalHistory.getBloodType());
+        form.setIsOrganDonor(medicalHistory.isOrganDonor());
+        form.setMedicine(medicalHistory.getMedicine());
+
+        model.put("bloodVariants", this.getBloodTypes());
+        model.put("medicalForm", form);
+        model.put("token", token);
+        model.put("user", user);
+        return new ModelAndView("medicaldata/edit/edit");
     }
 
     @RequestMapping(value = {"edit"}, method = RequestMethod.POST)
     public View edit(Map<String, Object> model,
             HttpSession session, MedicalForm form) {
 
-        Long tokenId = (Long) session.getAttribute("tokenId");
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return new RedirectView("/login", true, false);
+        }
+        User user = userRegistrationController.getUserDatabase().get(userId);
+
         Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-        Token token = tokens.get(tokenId);
-        if (token != null) {
-            User user = token.getUser();
-            if (user != null) {
-                MedicalHistory medicalHistory = user.getMedicalHistory();
 
-                medicalHistory.setOmsNumber(form.getOmsNumber());
-                medicalHistory.setAllergy(form.getAllergy());
-                medicalHistory.setChildhoodIllness(form.getChildhoodIllness());
-                medicalHistory.setChronicDiseases(form.getChronicDiseases());
-                medicalHistory.setDiseases(form.getDiseases());
-                medicalHistory.setInheritedDiseases(form.getInheritedDiseases());
-                medicalHistory.setInjuries(form.getInjuries());
-                medicalHistory.setSurgicalOperations(form.getSurgicalOperations());
-                medicalHistory.setBloodType(form.getBloodType());
-                medicalHistory.setOrganDonor(form.isIsOrganDonor());
-                medicalHistory.setMedicine(form.getMedicine());
+        Token token = tokens.get(user.getToken().getTokenId());
 
-                return new RedirectView("/token/user/med/view", true, false);
-            }
+        if (token == null || !token.isActivated()) {
+            return new RedirectView("/token/register", true, false);
         }
 
-        log.info("Medical history for token '{}' hasn't been edited", tokenId);
-        String message = "Token " + tokenId + "does not exist!";
-        model.put("message", message);
-        model.put("tokenId", tokenId);
-        return new RedirectView("/token/view/error", true, false);
+        MedicalHistory medicalHistory = user.getMedicalHistory();
+
+        medicalHistory.setOmsNumber(form.getOmsNumber());
+        medicalHistory.setAllergy(form.getAllergy());
+        medicalHistory.setChildhoodIllness(form.getChildhoodIllness());
+        medicalHistory.setChronicDiseases(form.getChronicDiseases());
+        medicalHistory.setDiseases(form.getDiseases());
+        medicalHistory.setInheritedDiseases(form.getInheritedDiseases());
+        medicalHistory.setInjuries(form.getInjuries());
+        medicalHistory.setSurgicalOperations(form.getSurgicalOperations());
+        medicalHistory.setBloodType(form.getBloodType());
+        medicalHistory.setOrganDonor(form.isIsOrganDonor());
+        medicalHistory.setMedicine(form.getMedicine());
+
+        return new RedirectView("/token/user/med/view", true, false);
     }
-    
+
     private List<String> getBloodTypes() {
         List<String> types = new LinkedList<>();
         types.addAll(Arrays.asList(
@@ -188,7 +216,7 @@ public class MedicalHistoryController {
         private String allergy;
         private String inheritedDiseases;
         private String medicine;
-        
+
         private Map<Long, DataEntry> medicalEntries;
 
         public String getOmsNumber() {

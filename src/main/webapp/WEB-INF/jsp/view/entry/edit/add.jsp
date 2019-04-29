@@ -3,7 +3,7 @@
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:basic htmlTitle="Adding Medical Entry" bodyTitle="Add Medical Entry">
     <c:out value="Token ID: ${token.uuidString}"/><br />
-    <c:out value="User E-mail: ${token.user.email}"/>
+    <c:out value="User E-mail: ${user.userEmailAddress}"/>
     <hr />
     <form:form method="post" enctype="multipart/form-data" modelAttribute="entryForm">
         <form:label path="subject">Subject</form:label>

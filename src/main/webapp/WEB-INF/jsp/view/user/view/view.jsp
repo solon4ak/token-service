@@ -12,8 +12,8 @@
                     <b>Token owner</b>
                 </td>
                 <td>
-                    <c:out value="${token.user.lastName}, 
-                           ${token.user.firstName} ${token.user.middleName} " />
+                    <c:out value="${user.lastName}, 
+                           ${user.firstName} ${user.middleName} " />
                 </td>
             </tr>
             <tr>
@@ -21,7 +21,7 @@
                     Birth date:
                 </td>
                 <td>
-                    <tags:localDate date="${token.user.birthDate}" />
+                    <tags:localDate date="${user.birthDate}" />
                 </td>
             </tr>
             <tr>
@@ -34,20 +34,23 @@
             </tr>
         </tbody>        
     </table>
-    
-    <c:if test="${token.user.image != null}">
-        <hr />
-        <a href="<c:url value="/token/user/image/view" />">
-            <img src="<c:url value="/token/user/image/thumbnail" />" 
-                 alt="${token.user.lastName}, ${token.user.firstName}"/>
-        </a>
+    <hr />
+    <c:if test="${user.image != null}">
+        <a href="<c:url value="/token/image">
+               <c:param name="userId" value="${user.userId}" />
+        </c:url>">
+            <img src="<c:url value="/token/thumb">
+                 <c:param name="userId" value="${user.userId}" />
+            </c:url>" 
+                 alt="${user.lastName}, ${user.firstName}"/>
+        </a>        
     </c:if>    
     <c:choose>
         <c:when test="${age > 14 && token.user.passport != null}">
             <hr />
             <h5>Пасспорт:</h5>
             <c:choose>
-                <c:when test="${token.user.passport == null}">
+                <c:when test="${user.passport == null}">
                     There is no passport binded to the token.                 
                 </c:when>
                 <c:otherwise>
@@ -61,23 +64,23 @@
                         <tbody>
                             <tr>
                                 <td>Серия:</td>
-                                <td><c:out value="${token.user.passport.series}" /></td>
+                                <td><c:out value="${user.passport.series}" /></td>
                             </tr>
                             <tr>
                                 <td>Номер:</td>
-                                <td><c:out value="${token.user.passport.number}" /></td>
+                                <td><c:out value="${user.passport.number}" /></td>
                             </tr>
                             <tr>
                                 <td>Кем выдан:</td>
-                                <td><c:out value="${token.user.passport.issueDepartment}" /></td>
+                                <td><c:out value="${user.passport.issueDepartment}" /></td>
                             </tr>
                             <tr>
                                 <td>Код подразделения:</td>
-                                <td><c:out value="${token.user.passport.issueDepartmentCode}" /></td>
+                                <td><c:out value="${user.passport.issueDepartmentCode}" /></td>
                             </tr>
                             <tr>
                                 <td>Дата выдачи:</td>
-                                <td><wrox:formatDate value="${token.user.passport.issueDate}" /></td>
+                                <td><wrox:formatDate value="${user.passport.issueDate}" /></td>
                             </tr>
                         </tbody>
                     </table>
@@ -88,7 +91,7 @@
             <hr />
             <h5>Birth Certificate:</h5>
             <c:choose>
-                <c:when test="${token.user.birthCertificate == null}">
+                <c:when test="${user.birthCertificate == null}">
                     There is no birth certificate binded to the token.                             
                 </c:when>
                 <c:otherwise>
@@ -102,19 +105,19 @@
                         <tbody>
                             <tr>
                                 <td>Серия:</td>
-                                <td><c:out value="${token.user.birthCertificate.series}" /></td>
+                                <td><c:out value="${user.birthCertificate.series}" /></td>
                             </tr>
                             <tr>
                                 <td>Номер:</td>
-                                <td><c:out value="${token.user.birthCertificate.number}" /></td>
+                                <td><c:out value="${user.birthCertificate.number}" /></td>
                             </tr>
                             <tr>
                                 <td>Кем выдано:</td>
-                                <td><c:out value="${token.user.birthCertificate.issueDepartment}" /></td>
+                                <td><c:out value="${user.birthCertificate.issueDepartment}" /></td>
                             </tr>
                             <tr>
                                 <td>Дата выдачи:</td>
-                                <td><wrox:formatDate value="${token.user.birthCertificate.issueDate}" /></td>
+                                <td><wrox:formatDate value="${user.birthCertificate.issueDate}" /></td>
                             </tr>
                         </tbody>
                     </table>            
@@ -125,7 +128,7 @@
     <hr />
     <h5>Address:</h5>
     <c:choose>
-        <c:when test="${token.user.address == null}">
+        <c:when test="${user.tokenAddress == null}">
             There is no address binded to the token!                            
         </c:when>
         <c:otherwise>
@@ -139,23 +142,27 @@
                 <tbody>
                     <tr>
                         <td>Country:</td>
-                        <td><c:out value="${token.user.address.country}" /></td>
+                        <td><c:out value="${user.tokenAddress.country}" /></td>
+                    </tr>
+                    <tr>
+                        <td>Region:</td>
+                        <td><c:out value="${user.tokenAddress.region}" /></td>
                     </tr>
                     <tr>
                         <td>City:</td>
-                        <td><c:out value="${token.user.address.city}" /></td>
+                        <td><c:out value="${user.tokenAddress.city}" /></td>
                     </tr>
                     <tr>
                         <td>Street:</td>
-                        <td><c:out value="${token.user.address.street}" /></td>
+                        <td><c:out value="${user.tokenAddress.street}" /></td>
                     </tr>
                     <tr>
                         <td>Building:</td>
-                        <td><c:out value="${token.user.address.building}" /></td>
+                        <td><c:out value="${user.tokenAddress.building}" /></td>
                     </tr>
                     <tr>
                         <td>Apartment:</td>
-                        <td><c:out value="${token.user.address.apartment}" /></td>
+                        <td><c:out value="${user.tokenAddress.apartment}" /></td>
                     </tr>
                 </tbody>
             </table>
@@ -165,11 +172,11 @@
     <hr />
 
     <h5>Contacts:</h5>
-    <c:if test="${fn:length(token.user.contacts) == 0}">
+    <c:if test="${fn:length(user.contacts) == 0}">
         There is no contacts binded to the token!
     </c:if>
     <table class="data_table">
-        <c:if test="${fn:length(token.user.contacts) > 0}">
+        <c:if test="${fn:length(user.contacts) > 0}">
             <thead>
                 <!-- here should go some titles... -->
                 <tr>                
@@ -181,7 +188,7 @@
             </thead>
         </c:if>
         <tbody>
-            <c:forEach items="${token.user.contacts}" var="contact">
+            <c:forEach items="${user.contacts}" var="contact">
                 <tr>                
                     <td>
                         <c:out value="${contact.firstName}" />
@@ -202,7 +209,7 @@
     <hr />
     <h5>Medical History:</h5>
     <c:choose>
-        <c:when test="${token.user.medicalHistory == null}">
+        <c:when test="${user.medicalHistory == null}">
             There is no medical history binded to the token<br /><br />                        
         </c:when>
         <c:otherwise>
@@ -217,20 +224,20 @@
                     <tr>
                         <td>Номер полиса ОМС</td>
                         <td>
-                            <c:out value="${token.user.medicalHistory.omsNumber}"/>
+                            <c:out value="${user.medicalHistory.omsNumber}"/>
                         </td>
                     </tr>
                     <tr>
                         <td>Группа крови</td>
                         <td>
-                            <c:out value="${token.user.medicalHistory.bloodType}"/>
+                            <c:out value="${user.medicalHistory.bloodType}"/>
                         </td>
                     </tr>
                     <tr>
                         <td>Разрешение на извлечение органов (донор органов)</td>
                         <td>
                             <c:choose>
-                                <c:when test="${token.user.medicalHistory.organDonor == true}">
+                                <c:when test="${user.medicalHistory.organDonor == true}">
                                     Разрешаю
                                 </c:when>
                                 <c:otherwise>
@@ -244,7 +251,7 @@
                             Перенесенные заболевания в детстве <br />(в том числе детские инфекции)
                         </td>
                         <td>
-                            <c:out value="${token.user.medicalHistory.childhoodIllness}"/>
+                            <c:out value="${user.medicalHistory.childhoodIllness}"/>
                         </td>
                     </tr>
                     <tr>
@@ -254,7 +261,7 @@
                             заболевания – гонорея, сифилис, СПИД)
                         </td>
                         <td>
-                            <c:out value="${token.user.medicalHistory.diseases}"/>
+                            <c:out value="${user.medicalHistory.diseases}"/>
                         </td>
                     </tr>
                     <tr>
@@ -262,7 +269,7 @@
                             Хронические заболевания
                         </td>
                         <td>
-                            <c:out value="${token.user.medicalHistory.chronicDiseases}"/>
+                            <c:out value="${user.medicalHistory.chronicDiseases}"/>
                         </td>
                     </tr>
                     <tr>
@@ -270,7 +277,7 @@
                             Операции
                         </td>
                         <td>
-                            <c:out value="${token.user.medicalHistory.surgicalOperations}"/>
+                            <c:out value="${user.medicalHistory.surgicalOperations}"/>
                         </td>
                     </tr>
                     <tr>
@@ -278,7 +285,7 @@
                             Травмы, ранения, контузии
                         </td>
                         <td>
-                            <c:out value="${token.user.medicalHistory.injuries}"/>
+                            <c:out value="${user.medicalHistory.injuries}"/>
                         </td>
                     </tr>
                     <tr>
@@ -287,7 +294,7 @@
                             пищевая аллергия, <br />сезонная аллергия)
                         </td>
                         <td>
-                            <c:out value="${token.user.medicalHistory.allergy}"/>
+                            <c:out value="${user.medicalHistory.allergy}"/>
                         </td>
                     </tr>
                     <tr>
@@ -295,7 +302,7 @@
                             Принимаемые лекарства
                         </td>
                         <td>
-                            <c:out value="${token.user.medicalHistory.medicine}"/>
+                            <c:out value="${user.medicalHistory.medicine}"/>
                         </td>
                     </tr>
                     <tr>
@@ -304,20 +311,19 @@
                             Наследственные заболевания
                         </td>
                         <td>
-                            <c:out value="${token.user.medicalHistory.inheritedDiseases}"/>
+                            <c:out value="${user.medicalHistory.inheritedDiseases}"/>
                         </td>
                     </tr>
                 </tbody>
             </table>             
             <hr />
-            <c:if test="${(token.user.medicalHistory.numberOfMedicalFormEntries) > 0}">
+            <c:if test="${(user.medicalHistory.numberOfMedicalFormEntries) > 0}">
                 <b>Entries: ${token.user.medicalHistory.numberOfMedicalFormEntries}</b><br /><br />
                 <ol>
-                    <c:forEach items="${token.user.medicalHistory.medicalFormEntries}" var="entry">
+                    <c:forEach items="${user.medicalHistory.medicalFormEntries}" var="entry">
                         <li>
-                            <a href="<c:url context="/tkn" 
-                                   value="/token/${token.tokenId}/${token.uuidString}/med/entry/view/${entry.id}" />">
-                               <c:out value="${entry.subject}" />                               
+                            <a href="<c:url value="/token/${token.tokenId}/${token.uuidString}/med/entry/view/${entry.id}" />">
+                                <c:out value="${entry.subject}" />                               
                             </a>                            
                         </li>
                     </c:forEach>

@@ -1,6 +1,10 @@
 <%--@elvariable id="contactForm" type="ru.tokens.site.controller.ContactController.ContactForm"--%>
+<%--@elvariable id="token" type="ru.tokens.site.entities.Token"--%>
+<%--@elvariable id="user" type="ru.tokens.site.entities.User"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:basic htmlTitle="Edit Contact" bodyTitle="Edit token owner contact">
+    <c:out value="Token ID: ${token.uuidString}"/><br />
+    <c:out value="User E-mail: ${user.userEmailAddress}"/>
     <hr />
     <form:form method="post" modelAttribute="contactForm">
         <form:label path="firstName">First name:</form:label>

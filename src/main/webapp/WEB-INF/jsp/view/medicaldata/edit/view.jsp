@@ -1,28 +1,11 @@
 <%--@elvariable id="token" type="ru.tokens.site.entities.Token"--%>
+<%--@elvariable id="user" type="ru.tokens.site.entities.User"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:basic htmlTitle="Token-${token.uuidString} :: Medical History"
                 bodyTitle="Medical History">    
-    <table class="data_table">
-        <tbody>
-            <tr>
-                <td>
-                    <b>User ID:</b>
-                </td>
-                <td>
-                    <c:out value="${token.uuidString}"/>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    User E-mail:
-                </td>
-                <td>
-                    <c:out value="${token.user.email}"/>
-                </td>
-            </tr>
-        </tbody>        
-    </table>
-    <br />
+    <c:out value="Token ID: ${token.uuidString}"/><br />
+    <c:out value="User E-mail: ${user.userEmailAddress}"/>
+    <hr />
     View my token page: 
     <a href="<c:url value="/token/${token.tokenId}/${token.uuidString}">
            <c:param name="showMH" value="false" />              
@@ -35,7 +18,7 @@
         Full
     </a>
     <hr />
-    <a href="<c:url context="/tkn" value="/token/user/view"/>"><- Back</a><br /><br />
+    <a href="<c:url value="/token/user/view"/>"><- Back</a><br /><br />
     <table class="data_table">
         <thead>
             <tr>
@@ -47,18 +30,18 @@
             <tr>
                 <td>Номер полиса ОМС</td>
                 <td>
-                    <c:out value="${token.user.medicalHistory.omsNumber}"/>
+                    <c:out value="${user.medicalHistory.omsNumber}"/>
                 </td>
             </tr>
             <tr>
                 <td>Группа крови</td>
-                <td><c:out value="${token.user.medicalHistory.bloodType}"/></td>
+                <td><c:out value="${user.medicalHistory.bloodType}"/></td>
             </tr>
             <tr>
                 <td>Разрешение на извлечение органов (донор органов)</td>
                 <td>
                     <c:choose>
-                        <c:when test="${token.user.medicalHistory.organDonor == true}">
+                        <c:when test="${user.medicalHistory.organDonor == true}">
                             Разрешаю
                         </c:when>
                         <c:otherwise>
@@ -72,7 +55,7 @@
                     Перенесенные заболевания в детстве <br />(в том числе детские инфекции)
                 </td>
                 <td>
-                    <c:out value="${token.user.medicalHistory.childhoodIllness}"/>
+                    <c:out value="${user.medicalHistory.childhoodIllness}"/>
                 </td>
             </tr>
             <tr>
@@ -82,7 +65,7 @@
                     заболевания – гонорея, сифилис, СПИД)
                 </td>
                 <td>
-                    <c:out value="${token.user.medicalHistory.diseases}"/>
+                    <c:out value="${user.medicalHistory.diseases}"/>
                 </td>
             </tr>
             <tr>
@@ -90,7 +73,7 @@
                     Хронические заболевания
                 </td>
                 <td>
-                    <c:out value="${token.user.medicalHistory.chronicDiseases}"/>
+                    <c:out value="${user.medicalHistory.chronicDiseases}"/>
                 </td>
             </tr>
             <tr>
@@ -98,7 +81,7 @@
                     Операции
                 </td>
                 <td>
-                    <c:out value="${token.user.medicalHistory.surgicalOperations}"/>
+                    <c:out value="${user.medicalHistory.surgicalOperations}"/>
                 </td>
             </tr>
             <tr>
@@ -106,7 +89,7 @@
                     Травмы, ранения, контузии
                 </td>
                 <td>
-                    <c:out value="${token.user.medicalHistory.injuries}"/>
+                    <c:out value="${user.medicalHistory.injuries}"/>
                 </td>
             </tr>
             <tr>
@@ -115,7 +98,7 @@
                     пищевая аллергия, <br />сезонная аллергия)
                 </td>
                 <td>
-                    <c:out value="${token.user.medicalHistory.allergy}"/>
+                    <c:out value="${user.medicalHistory.allergy}"/>
                 </td>
             </tr>
             <tr>
@@ -123,7 +106,7 @@
                     Принимаемые лекарства
                 </td>
                 <td>
-                    <c:out value="${token.user.medicalHistory.medicine}"/>
+                    <c:out value="${user.medicalHistory.medicine}"/>
                 </td>
             </tr>
             <tr>
@@ -131,18 +114,18 @@
                     Наследственные заболевания
                 </td>
                 <td>
-                    <c:out value="${token.user.medicalHistory.inheritedDiseases}"/>
+                    <c:out value="${user.medicalHistory.inheritedDiseases}"/>
                 </td>
             </tr>
         </tbody>
     </table> 
     <br />
-    <a href="<c:url context="/tkn" value="/token/user/med/edit" />">Edit</a>
+    <a href="<c:url value="/token/user/med/edit" />">Edit</a>
     <hr />
-    <c:if test="${(token.user.medicalHistory.numberOfMedicalFormEntries) > 0}">
-        <b>Entries: ${token.user.medicalHistory.numberOfMedicalFormEntries}</b><br /><br />
+    <c:if test="${(user.medicalHistory.numberOfMedicalFormEntries) > 0}">
+        <b>Entries: ${user.medicalHistory.numberOfMedicalFormEntries}</b><br /><br />
         <ol>
-            <c:forEach items="${token.user.medicalHistory.medicalFormEntries}" var="entry">
+            <c:forEach items="${user.medicalHistory.medicalFormEntries}" var="entry">
                 <li>
                     <a href="<c:url context="/tkn" 
                            value="/token/user/med/entry/${entry.id}/view" />">
@@ -152,6 +135,6 @@
             </c:forEach>
         </ol>
     </c:if>
-    <a href="<c:url context="/tkn" value="/token/user/med/entry/create" />">Add entry</a>
+    <a href="<c:url value="/token/user/med/entry/create" />">Add entry</a>
 
 </template:basic>

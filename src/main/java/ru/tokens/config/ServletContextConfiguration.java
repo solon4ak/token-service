@@ -18,6 +18,7 @@ import org.springframework.http.converter.xml.SourceHttpMessageConverter;
 import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.RequestToViewNameTranslator;
@@ -38,7 +39,7 @@ import org.springframework.web.servlet.view.JstlView;
 @ComponentScan(
         basePackages = "ru.tokens.site",
         useDefaultFilters = false,
-//        excludeFilters = @ComponentScan.Filter(Service.class),
+        excludeFilters = @ComponentScan.Filter(Service.class),
         includeFilters = @ComponentScan.Filter(Controller.class)
 )
 public class ServletContextConfiguration extends WebMvcConfigurerAdapter {

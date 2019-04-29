@@ -12,7 +12,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 import ru.tokens.site.entities.Address;
-import ru.tokens.site.entities.Token;
 import ru.tokens.site.entities.User;
 
 /**
@@ -20,13 +19,13 @@ import ru.tokens.site.entities.User;
  * @author solon4ak
  */
 @Controller
-@RequestMapping("token/user/address")
-public class AddressController {
-
+@RequestMapping("token/user/postaddress")
+public class PostAddressController {
+    
     @Autowired
     private UserRegistrationController userRegistrationController;
 
-    private static final Logger log = LogManager.getLogger("Address");
+    private static final Logger log = LogManager.getLogger("PostAddressController");
 
     @RequestMapping(value = "add", method = RequestMethod.GET)
     public ModelAndView addAddress(Map<String, Object> model, HttpSession session) {
@@ -35,28 +34,24 @@ public class AddressController {
             return new ModelAndView(new RedirectView("/login", true, false));
         }
         User user = userRegistrationController.getUserDatabase().get(userId);
-
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-
-        Token token = tokens.get(user.getToken().getTokenId());
-        if (token == null || !token.isActivated()) {
-            return new ModelAndView(new RedirectView("/token/register", true, false));
-        }
-        model.put("addressForm", new AddressForm());
-        model.put("token", token);
+        
+        model.put("addressForm", new PostAddressForm());
         model.put("user", user);
-        return new ModelAndView("address/edit/add");
+        return new ModelAndView("userreg/postaddr/add");
     }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public View addAddress(HttpSession session, AddressForm form) {
+    public View addAddress(HttpSession session, PostAddressForm form) {
+        
         Address address = new Address();
+        
         address.setCountry(form.getCountry());
         address.setCity(form.getCity());
         address.setStreet(form.getStreet());
         address.setBuilding(form.getBuilding());
         address.setApartment(form.getApartment());
         address.setRegion(form.getRegion());
+        address.setZipCode(form.getZipCode());
 
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) {
@@ -64,38 +59,10 @@ public class AddressController {
         }
         User user = userRegistrationController.getUserDatabase().get(userId);
 
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-        Token token = tokens.get(user.getToken().getTokenId());
-        if (token == null || !token.isActivated()) {
-            return new RedirectView("/token/register", true, false);
-        }
+        user.setPostAddress(address);
 
-        user.setTokenAddress(address);
-
-        log.info("Address for token '{}' was added", token.getTokenId());
-        return new RedirectView("/token/user/view", true, false);
-    }
-    
-    @RequestMapping(value = "addpostaddr", method = RequestMethod.GET)
-    public View usePostAddress(HttpSession session) {
-        
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new RedirectView("/login", true, false);
-        }
-        User user = userRegistrationController.getUserDatabase().get(userId);
-        
-        Address address = new Address();
-        address.setCountry(user.getPostAddress().getCountry());
-        address.setCity(user.getPostAddress().getCity());
-        address.setStreet(user.getPostAddress().getStreet());
-        address.setBuilding(user.getPostAddress().getBuilding());
-        address.setApartment(user.getPostAddress().getApartment());
-        address.setRegion(user.getPostAddress().getRegion());
-        
-        user.setTokenAddress(address);
-        
-        return new RedirectView("/token/user/view", true, false);
+        log.info("Address for user '{}' was added", user.toString());
+        return new RedirectView("/user/view", true, false);
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.GET)
@@ -106,45 +73,33 @@ public class AddressController {
             return new ModelAndView(new RedirectView("/login", true, false));
         }
         User user = userRegistrationController.getUserDatabase().get(userId);
-
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-
-        Token token = tokens.get(user.getToken().getTokenId());
-        if (token == null || !token.isActivated()) {
-            return new ModelAndView(new RedirectView("/token/register", true, false));
-        }
-
-        AddressForm form = new AddressForm();
-        form.setCountry(user.getTokenAddress().getCountry());
-        form.setCity(user.getTokenAddress().getCity());
-        form.setStreet(user.getTokenAddress().getStreet());
-        form.setBuilding(user.getTokenAddress().getBuilding());
-        form.setApartment(user.getTokenAddress().getApartment());
-        form.setRegion(user.getTokenAddress().getRegion());
         
-        model.put("token", token);
+        PostAddressForm form = new PostAddressForm();
+        
+        form.setCountry(user.getPostAddress().getCountry());
+        form.setCity(user.getPostAddress().getCity());
+        form.setStreet(user.getPostAddress().getStreet());
+        form.setBuilding(user.getPostAddress().getBuilding());
+        form.setApartment(user.getPostAddress().getApartment());
+        form.setRegion(user.getPostAddress().getRegion());
+        form.setZipCode(user.getPostAddress().getZipCode());
+        
         model.put("user", user);
         model.put("addressForm", form);
 
-        return new ModelAndView("address/edit/edit");
+        return new ModelAndView("userreg/postaddr/edit");
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.POST)
-    public View editAddress(HttpSession session, AddressForm form) {
+    public View editAddress(HttpSession session, PostAddressForm form) {
 
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) {
             return new RedirectView("/login", true, false);
         }
         User user = userRegistrationController.getUserDatabase().get(userId);
-
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-
-        Token token = tokens.get(user.getToken().getTokenId());
-        if (token == null || !token.isActivated()) {
-            return new RedirectView("/token/register", true, false);
-        }
-        Address address = user.getTokenAddress();
+       
+        Address address = user.getPostAddress();
 
         address.setCountry(form.getCountry());
         address.setCity(form.getCity());
@@ -152,19 +107,21 @@ public class AddressController {
         address.setBuilding(form.getBuilding());
         address.setApartment(form.getApartment());
         address.setRegion(form.getRegion());
+        address.setZipCode(form.getZipCode());
 
-        log.info("Address for token '{}' has been edited", token.getTokenId());
-        return new RedirectView("/token/user/view", true, false);
+        log.info("Address for user '{}' has been edited", user.toString());
+        return new RedirectView("/user/view", true, false);
     }
 
-    public static class AddressForm {
+    public static class PostAddressForm {
 
         private String country;
+        private String region;
         private String city;
         private String street;
         private String building;
         private String apartment;
-        private String region;
+        private String zipCode;
 
         public String getCountry() {
             return country;
@@ -214,5 +171,12 @@ public class AddressController {
             this.region = region;
         }
 
+        public String getZipCode() {
+            return zipCode;
+        }
+
+        public void setZipCode(String zipCode) {
+            this.zipCode = zipCode;
+        }
     }
 }
