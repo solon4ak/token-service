@@ -12,14 +12,19 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 import ru.tokens.site.entities.User;
+import ru.tokens.site.registration.OnRegistrationCompleteEvent;
+import ru.tokens.site.services.UserService;
 import ru.tokens.site.utils.PasswordUtil;
 
 /**
@@ -31,8 +36,17 @@ import ru.tokens.site.utils.PasswordUtil;
 public class UserRegistrationController {
 
     @Autowired
+    private Environment environment;
+
+    @Autowired
     @Qualifier(value = "passayPasswordUtil")
     private PasswordUtil passwordUtil;
+
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
+
+    @Autowired
+    private UserService userService;
 
     private static final Logger log = LogManager.getLogger("User");
 
@@ -68,9 +82,9 @@ public class UserRegistrationController {
         String midName = form.getMiddleName();
         String password = form.getPassword();
         String phoneNumber = form.getPhoneNumber();
-        
-        String email = form.getEmail();
 
+        // Проверка на наличие этого почтового адреса в базе
+        String email = form.getEmail();
         for (Map.Entry<Long, User> entry : userDatabase.entrySet()) {
 //            Long id = entry.getKey();
             User user = entry.getValue();
@@ -92,7 +106,9 @@ public class UserRegistrationController {
             String msg = "Неправильный формат даты. "
                     + "Введите дату в следующем формате '30.03.1985'.";
             model.put("message", msg);
-            return new ModelAndView(new RedirectView("/token/view/error", true, true, true));
+            model.put("userRegistrationFailed", true);
+            model.put("userRegistrationForm", form);
+            return new ModelAndView("userreg/registration");
         }
 
         User user = new User();
@@ -107,18 +123,72 @@ public class UserRegistrationController {
         // check date less than today date
         user.setBirthDate(bdate);
 
+        try {
+            String appUrl = environment.getProperty("host.name") + request.getContextPath();
+            eventPublisher.publishEvent(
+                    new OnRegistrationCompleteEvent(
+                            user,
+                            request.getLocale(),
+                            appUrl
+                    )
+            );
+        } catch (Exception me) {
+            String msg = "Почтовый ящик не подтвержден!";
+            model.put("message", msg);
+//            model.put("user", user);
+            return new ModelAndView("userreg/error");
+        }
+
+        log.debug("Registering user account with userId: {}", user.getUserId());
+
         this.userDatabase.put(user.getUserId(), user);
 
         log.info("User '{}' successfully registered.", user.getLastName() + ", " + user.getFirstName());
-        session.setAttribute("userId", user.getUserId());
-        request.changeSessionId();
-        return new ModelAndView(
-                new RedirectView("/user/view", true, true, true)
-        );
+//        session.setAttribute("userId", user.getUserId());
+//        request.changeSessionId();
+//        return new ModelAndView(
+//                new RedirectView("/user/view", true, true, true)
+//        );
+
+        System.out.println("User registered and added to repository");
+
+        return new ModelAndView(new RedirectView("/user/success", true, false));
     }
-    
+
+    @RequestMapping(value = "success")
+    public String successRegistration(Map<String, Object> model, HttpServletRequest request) {
+        String msg = "Завершите регистрацию перейдя по ссылке в полученном письме.";
+        request.changeSessionId();
+        model.put("message", msg);
+        return "userreg/result";
+    }
+
+    @RequestMapping(value = "registrationConfirm", method = RequestMethod.GET)
+    public ModelAndView confirmRegistration(Map<String, Object> model,
+            HttpServletRequest request, HttpSession session,
+            @RequestParam("token") String confimationToken) {
+
+//        Locale locale = request.getLocale();
+        final String result = userService.validateVerificationToken(confimationToken);
+        final User user = userService.getUser(confimationToken);
+        
+        if (result.equals("valid")) {
+            session.setAttribute("userId", user.getUserId());
+            request.changeSessionId();
+            return new ModelAndView(
+                    new RedirectView("/user/view", true, true, true)
+            );
+        }
+        /* Если пользователь не подтвердил почтовый адрес, пользователь удаляется из репозитория */
+        this.userDatabase.remove(user.getUserId());
+        final String msg = "Почтовый ящик не подтвержден. Причина: " + result;
+        model.put("message", msg);
+//        model.put("user", user);
+        return new ModelAndView("userreg/error");
+    }
+
     @RequestMapping(value = "edit", method = RequestMethod.GET)
-    public ModelAndView editUserData(Map<String, Object> model, HttpSession session){
+    public ModelAndView editUserData(Map<String, Object> model, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) {
             return new ModelAndView(new RedirectView("/login", true, false));
@@ -131,9 +201,9 @@ public class UserRegistrationController {
             model.put("message", msg);
             return new ModelAndView("userreg/error");
         }
-        
+
         UserRegistrationForm form = new UserRegistrationForm();
-        
+
         form.setFirstName(user.getFirstName());
         form.setMiddleName(user.getMiddleName());
         form.setLastName(user.getLastName());
@@ -142,17 +212,17 @@ public class UserRegistrationController {
                 ? "" : user.getBirthDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
         );
         form.setPassword(user.getPassword());
-        
+
         model.put("userRegistrationForm", form);
         model.put("user", user);
-        
+
         return new ModelAndView("userreg/edit");
     }
-    
+
     @RequestMapping(value = "edit", method = RequestMethod.POST)
-    public View editUserData(Map<String, Object> model, HttpSession session, 
+    public View editUserData(Map<String, Object> model, HttpSession session,
             UserRegistrationForm form) {
-        
+
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) {
             return new RedirectView("/login", true, false);
@@ -160,16 +230,16 @@ public class UserRegistrationController {
 
         User user = this.userDatabase.get(userId);
         if (user == null) {
-            log.error("User with id {} doesn't exist.", userId);            
+            log.error("User with id {} doesn't exist.", userId);
             return new RedirectView("/user/register", true, false);
         }
-        
+
         user.setFirstName(form.getFirstName());
         user.setMiddleName(form.getMiddleName());
         user.setLastName(form.getLastName());
         user.setPassword(form.getPassword());
         user.setPhoneNumber(form.getPhoneNumber());
-        
+
         String birthDate = form.getBirthDate();
         LocalDate bdate;
         try {
@@ -182,10 +252,10 @@ public class UserRegistrationController {
         }
         // check date less than today date
         user.setBirthDate(bdate);
-        
+
         return new RedirectView("/user/view", true, false);
     }
-    
+
     @RequestMapping(value = "view", method = RequestMethod.GET)
     public ModelAndView viewUserPage(Map<String, Object> model, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
@@ -270,6 +340,6 @@ public class UserRegistrationController {
         public void setBirthDate(String birthDate) {
             this.birthDate = birthDate;
         }
-    }    
+    }
 
 }
