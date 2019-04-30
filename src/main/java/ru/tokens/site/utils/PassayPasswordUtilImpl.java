@@ -29,7 +29,7 @@ public class PassayPasswordUtilImpl implements PasswordUtil {
 
         @Override
         public String getCharacters() {
-            return "!@#$%^&*()_+";
+            return "!@#$%&";
         }
     };
     private static final CharacterRule splCharRule = new CharacterRule(specialChars);

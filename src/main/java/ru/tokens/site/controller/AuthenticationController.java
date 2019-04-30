@@ -72,7 +72,8 @@ public class AuthenticationController {
 
         for (User user : users.values()) {            
             if (email.equals(user.getUserEmailAddress())
-                    && password.equals(user.getPassword())) {
+                    && password.equals(user.getPassword()) 
+                    && user.isEmailActivated()) {
                 log.info("User {} successfully logged in.", email);
                 session.setAttribute("userId", user.getUserId());
                 request.changeSessionId();
@@ -80,7 +81,7 @@ public class AuthenticationController {
             }
         }
 
-        log.info("User credentials do not correspond.");
+        log.info("User credentials doesn't correspond or user e-mail doesn't confirmed.");
         form.setPassword(null);
         model.put("loginFailed", true);
         model.put("loginForm", form);

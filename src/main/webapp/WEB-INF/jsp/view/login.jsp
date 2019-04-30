@@ -3,8 +3,7 @@
 <template:basic htmlTitle="Log In" bodyTitle="Log In">
     You must log in to access to your personal page.<br /><br />
     <c:if test="${loginFailed}">
-        <b>The username and password you entered are not correct. Please try
-            again.</b><br /><br />
+        <b>User credentials doesn't correspond or user e-mail doesn't confirmed.</b><br /><br />
     </c:if>
     <form:form method="post" modelAttribute="loginForm">
         <form:label path="email">E-mail:</form:label>

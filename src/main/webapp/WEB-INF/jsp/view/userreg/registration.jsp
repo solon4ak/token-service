@@ -2,7 +2,6 @@
 <%--@elvariable id="message" type="java.lang.String"--%>
 <%--@elvariable id="userRegistrationForm" type="ru.tokens.site.controller.UserRegistrationController.UserRegistrationForm"--%>
 <template:basic htmlTitle="User registration" bodyTitle="New user registration">
-
     <c:if test="${userRegistrationFailed}">
         <b><c:out value="${message}" /></b>
         <br /><br />

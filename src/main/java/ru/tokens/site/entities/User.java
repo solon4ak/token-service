@@ -21,7 +21,7 @@ public class User implements Serializable {
      * User logger
      */
     private static final Logger LOGGER = Logger.getLogger("User");
-    
+
     private Long userId;
 
     /* User registration data */
@@ -33,17 +33,16 @@ public class User implements Serializable {
     private String phoneNumber;
     private Address postAddress;
     private Instant registered;
-    private boolean emailActivated;    
-    private List<ActivationLink> activationLinks = new LinkedList<>();
-    
+    private boolean emailActivated;
+
     /* Token related data */
     private Token token;
     private Address tokenAddress;
     private Passport passport;
     private BirthCertificate birthCertificate;
-    
+
     private LocalDate birthDate;
-    private Image image;    
+    private Image image;
 
     private final Map<Long, Contact> contacts = new LinkedHashMap<>();
 
@@ -60,7 +59,7 @@ public class User implements Serializable {
         this.emailActivated = false;
     }
 
-    public User(String firstName, String lastName, String email, 
+    public User(String firstName, String lastName, String email,
             String password, LocalDate birthDate) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -78,8 +77,6 @@ public class User implements Serializable {
     public void setUserId(Long userId) {
         this.userId = userId;
     }
-    
-    
 
     public String getFirstName() {
         return firstName;
@@ -144,11 +141,11 @@ public class User implements Serializable {
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
-    
+
     public Collection<Contact> getContacts() {
         return this.contacts.values();
     }
-    
+
     public Contact getContact(Long id) {
         return this.contacts.get(id);
     }
@@ -156,11 +153,11 @@ public class User implements Serializable {
     public void addContact(Contact contact) {
         this.contacts.put(contact.getContactId(), contact);
     }
-    
+
     public void deleteContact(Long id) {
         this.contacts.remove(id);
     }
-    
+
     public int getNumberOfContacts() {
         return this.contacts.size();
     }
@@ -176,7 +173,7 @@ public class User implements Serializable {
     public Map<Long, MessageEvent> getMessageEvents() {
         return messageEvents;
     }
-    
+
     public Collection<MessageEvent> getMessageEventsList() {
         return this.getMessageEvents().values();
     }
@@ -184,11 +181,11 @@ public class User implements Serializable {
     public void addMessageEvent(MessageEvent msgEvent) {
         this.messageEvents.put(msgEvent.getId(), msgEvent);
     }
-    
+
     public void deleteMessageEvent(Long id) {
         this.messageEvents.remove(id);
     }
-        
+
     public MessageEvent getMessageEvent(Long id) {
         return this.messageEvents.get(id);
     }
@@ -253,14 +250,6 @@ public class User implements Serializable {
         return this.emails.get(id);
     }
 
-    public void addActivationLink(ActivationLink link) {
-        this.activationLinks.add(link);
-    }
-    
-    public List<ActivationLink> getActivationLinks() {
-        return this.activationLinks;
-    }
-
     public boolean isEmailActivated() {
         return emailActivated;
     }
@@ -288,6 +277,6 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "User{" + "firstName=" + firstName + ", lastName=" + lastName + '}';
-    }   
+    }
 
 }
