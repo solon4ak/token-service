@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
@@ -27,16 +28,17 @@ import ru.tokens.site.entities.Contact;
 import ru.tokens.site.entities.DataEntry;
 import ru.tokens.site.entities.Token;
 import ru.tokens.site.entities.User;
-import ru.tokens.site.utils.EmailCheckingService;
+import ru.tokens.site.services.MessageEventService;
 import ru.tokens.site.utils.FileUtil;
 import ru.tokens.site.utils.MessageEventHelper;
+import ru.tokens.site.services.TimerProlongationLinkService;
 
 /**
  *
  * @author solon4ak
  */
 @Controller
-@RequestMapping("token/user/csdevent")
+@RequestMapping("token")
 public class MessageEventController {
 
     private static final Logger log = LogManager.getLogger(MessageEventController.class);
@@ -46,17 +48,13 @@ public class MessageEventController {
     private FileUtil fileUtil;
 
     @Autowired
-    @Qualifier("schedular")
-    private EmailCheckingService schedular;    
-    
-    @Autowired
     private UserRegistrationController userRegistrationController;
 
-    private volatile long MESSAGE_ID_SEQUENCE = 1;
+    @Autowired
+    private MessageEventService eventService;
 
-    private synchronized long getNextMessageId() {
-        return this.MESSAGE_ID_SEQUENCE++;
-    }
+    @Autowired
+    private TimerProlongationLinkService linkService;
 
     private volatile long ENTRY_ID_SEQUENCE = 100;
 
@@ -70,10 +68,10 @@ public class MessageEventController {
         return this.ATTACHMENT_ID_SEQUENCE++;
     }
 
-    @RequestMapping(value = "view/{eventId}", method = RequestMethod.GET)
+    @RequestMapping(value = "user/csdevent/view/{eventId}", method = RequestMethod.GET)
     public ModelAndView viewMessageEvent(Map<String, Object> model, HttpSession session,
             @PathVariable("eventId") Long eventId) {
-        
+
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) {
             return new ModelAndView(new RedirectView("/login", true, false));
@@ -86,8 +84,8 @@ public class MessageEventController {
         if (token == null || !token.isActivated()) {
             return new ModelAndView(new RedirectView("/token/register", true, false));
         }
-        
-        MessageEvent event = user.getMessageEvents().get(eventId);
+
+        MessageEvent event = eventService.findMessageEventById(eventId);
 
         model.put("token", token);
         model.put("event", event);
@@ -96,9 +94,9 @@ public class MessageEventController {
         return new ModelAndView("causedevent/view");
     }
 
-    @RequestMapping(value = "add", method = RequestMethod.GET)
+    @RequestMapping(value = "user/csdevent/add", method = RequestMethod.GET)
     public ModelAndView getCausedEventForm(Map<String, Object> model, HttpSession session) {
-        
+
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) {
             return new ModelAndView(new RedirectView("/login", true, false));
@@ -111,7 +109,7 @@ public class MessageEventController {
         if (token == null || !token.isActivated()) {
             return new ModelAndView(new RedirectView("/token/register", true, false));
         }
-        
+
         Collection<Contact> contacts = user.getContacts();
 
         model.put("contacts", contacts);
@@ -121,10 +119,10 @@ public class MessageEventController {
         return new ModelAndView("causedevent/add");
     }
 
-    @RequestMapping(value = "add", method = RequestMethod.POST)
+    @RequestMapping(value = "user/csdevent/add", method = RequestMethod.POST)
     public View getCausedEventForm(Map<String, Object> model,
             HttpSession session, EventForm form) throws IOException {
-        
+
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) {
             return new RedirectView("/login", true, false);
@@ -136,11 +134,9 @@ public class MessageEventController {
         if (token == null || !token.isActivated()) {
             return new RedirectView("/token/register", true, false);
         }
-        
-        MessageEvent messageEvent = new MessageEvent();
-        messageEvent.setId(this.getNextMessageId());
-        messageEvent.setUser(user);
 
+        MessageEvent messageEvent = new MessageEvent();
+        messageEvent.setUser(user);
         messageEvent.setCheckingInterval(form.getEmailSendingInterval());
 
         Long[] contactIds = form.getEmailContacts();
@@ -163,15 +159,14 @@ public class MessageEventController {
         this.uploadFiles(entry, form);
 
         messageEvent.setDataEntry(entry);
-        user.addMessageEvent(messageEvent);
-
-        messageEvent.setExecutor(schedular.createTimerService());
-        schedular.runTimerService(messageEvent.getExecutor(), messageEvent);
+//        user.addMessageEvent(messageEvent);
+        messageEvent.setStatus(MessageEvent.MessageEventStatus.PENDING);
+        eventService.addMessageEvent(messageEvent);
 
         return new RedirectView("/token/user/csdevent/view/" + messageEvent.getId(), true, false);
     }
 
-    @RequestMapping(value = "list", method = RequestMethod.GET)
+    @RequestMapping(value = "user/csdevent/list", method = RequestMethod.GET)
     public ModelAndView list(Map<String, Object> model, HttpSession session) {
 
         Long userId = (Long) session.getAttribute("userId");
@@ -185,9 +180,9 @@ public class MessageEventController {
         if (token == null || !token.isActivated()) {
             return new ModelAndView(new RedirectView("/token/register", true, false));
         }
-        
+
         Collection<MessageEvent> messageEvents
-                = new LinkedList<>(user.getMessageEventsList());
+                = eventService.getMessageEventsForUser(user);
 
         model.put("token", token);
         model.put("messageEvents", messageEvents);
@@ -195,7 +190,7 @@ public class MessageEventController {
         return new ModelAndView("causedevent/list");
     }
 
-    @RequestMapping(value = "edit/{eventId}", method = RequestMethod.GET)
+    @RequestMapping(value = "user/csdevent/edit/{eventId}", method = RequestMethod.GET)
     public ModelAndView edit(Map<String, Object> model, HttpSession session,
             @PathVariable("eventId") Long eventId) {
 
@@ -210,8 +205,8 @@ public class MessageEventController {
         if (token == null || !token.isActivated()) {
             return new ModelAndView(new RedirectView("/token/register", true, false));
         }
-        
-        MessageEvent event = user.getMessageEvent(eventId);
+
+        MessageEvent event = eventService.findMessageEventById(eventId);
         EventForm form = new EventForm();
 
         form.setSubject(event.getDataEntry().getSubject());
@@ -239,7 +234,7 @@ public class MessageEventController {
         return new ModelAndView("causedevent/edit");
     }
 
-    @RequestMapping(value = "edit/{eventId}", method = RequestMethod.POST)
+    @RequestMapping(value = "user/csdevent/edit/{eventId}", method = RequestMethod.POST)
     public View edit(HttpSession session, EventForm form,
             @PathVariable("eventId") long eventId) {
 
@@ -254,8 +249,8 @@ public class MessageEventController {
         if (token == null || !token.isActivated()) {
             return new RedirectView("/token/register", true, false);
         }
-        
-        MessageEvent messageEvent = user.getMessageEvent(eventId);
+
+        MessageEvent messageEvent = eventService.findMessageEventById(eventId);
 //        messageEvent.setUser(user);
 
         messageEvent.setCheckingInterval(form.getEmailSendingInterval());
@@ -280,13 +275,15 @@ public class MessageEventController {
         }
 
         messageEvent.setDataEntry(entry);
-        user.addMessageEvent(messageEvent);
+//        user.addMessageEvent(messageEvent);
+        messageEvent.setStatus(MessageEvent.MessageEventStatus.PENDING);
+        eventService.addMessageEvent(messageEvent);
 
         // run messageEventTask
         return new RedirectView("/token/user/csdevent/view/" + messageEvent.getId(), true, false);
     }
 
-    @RequestMapping(value = "delete/{eventId}", method = RequestMethod.GET)
+    @RequestMapping(value = "user/csdevent/delete/{eventId}", method = RequestMethod.GET)
     public View delete(HttpSession session, @PathVariable("eventId") Long eventId) {
 
         Long userId = (Long) session.getAttribute("userId");
@@ -300,8 +297,8 @@ public class MessageEventController {
         if (token == null || !token.isActivated()) {
             return new RedirectView("/token/register", true, false);
         }
-        
-        MessageEvent messageEvent = user.getMessageEvent(eventId);
+
+        MessageEvent messageEvent = eventService.findMessageEventById(eventId);
         DataEntry entry = messageEvent.getDataEntry();
 
         if (null != entry) {
@@ -318,9 +315,51 @@ public class MessageEventController {
             log.info("Entry '{}' for message event '{}' was deleted.", eventId, messageEvent.getId());
         }
 
-        schedular.stopTimerService(messageEvent.getExecutor());
-        messageEvent.setExecutor(null);
-        user.deleteMessageEvent(eventId);
+        eventService.deleteMessageEvent(eventId);
+
+        return new RedirectView("/token/user/csdevent/list", true, false);
+    }
+
+    @RequestMapping(value = "prolongationConfirm", method = RequestMethod.GET)
+    public void processProlongationLink(@RequestParam("token") String prolongationTokenString,
+            @RequestParam("eventId") String eventId) {
+
+        MessageEvent event = eventService.findMessageEventById(Long.valueOf(eventId));
+        // установили флаг prolonged в MessageEvent
+        linkService.checkProlongationToken(event, eventId);
+        if (event.isProlonged()) {
+            event.setWaitingProlongation(false);
+        }
+
+        log.warn("Prolongtion link was confirmed. "
+                + "Event was prolonged for subject {}", event.getDataEntry().getSubject());
+    }
+
+    @RequestMapping(value = "user/csdevent/start/{eventId}", method = RequestMethod.GET)
+    public View startMessageEvent(@PathVariable("eventId") Long eventId) {
+        MessageEvent event = eventService.findMessageEventById(eventId);
+        linkService.startTimerService(event);
+
+        log.warn("Event was started for subject {}", event.getDataEntry().getSubject());
+
+        return new RedirectView("/token/user/csdevent/list", true, false);
+    }
+
+    @RequestMapping(value = "user/csdevent/stop/{eventId}", method = RequestMethod.GET)
+    public View stopMessageEvent(@PathVariable("eventId") Long eventId) {
+        MessageEvent event = eventService.findMessageEventById(eventId);
+        linkService.stopTimerService(event);
+        log.warn("Event was stopped for subject {}", event.getDataEntry().getSubject());
+
+        return new RedirectView("/token/user/csdevent/list", true, false);
+    }
+
+    @RequestMapping(value = "user/csdevent/confirm/{eventId}", method = RequestMethod.GET)
+    public View confirmMessageEventUserStatus(@PathVariable("eventId") Long eventId) {
+        MessageEvent event = eventService.findMessageEventById(eventId);
+        event.setProlonged(true);
+        event.setWaitingProlongation(false);
+        log.warn("Event was prolonged for subject {}", event.getDataEntry().getSubject());
 
         return new RedirectView("/token/user/csdevent/list", true, false);
     }
@@ -334,7 +373,7 @@ public class MessageEventController {
         return intervals;
     }
 
-    private void uploadFiles(DataEntry entry, EventForm form) throws IOException {
+    private synchronized void uploadFiles(DataEntry entry, EventForm form) throws IOException {
         for (MultipartFile filePart : form.getAttachments()) {
             log.debug("Processing attachment for new entry.");
             Attachment attachment = new Attachment();

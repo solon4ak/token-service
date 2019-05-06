@@ -7,6 +7,8 @@ import ru.tokens.site.entities.ActivationLink;
 import ru.tokens.site.entities.User;
 import ru.tokens.site.repository.ActivationLinkRepository;
 
+// import org.springframework.security.crypto.password.PasswordEncoder;
+
 /**
  *
  * @author solon4ak
@@ -63,5 +65,5 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(User user) {
     
     }
-
+ 
 }

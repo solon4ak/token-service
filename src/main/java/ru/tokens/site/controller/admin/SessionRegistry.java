@@ -1,4 +1,4 @@
-package ru.tokens.site.controller;
+package ru.tokens.site.controller.admin;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;

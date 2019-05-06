@@ -18,13 +18,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 import ru.tokens.site.entities.User;
 import ru.tokens.site.registration.OnRegistrationCompleteEvent;
 import ru.tokens.site.services.UserService;
+import ru.tokens.site.utils.EmailSender;
 import ru.tokens.site.utils.PasswordUtil;
 
 /**
@@ -47,6 +47,9 @@ public class UserRegistrationController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private EmailSender emailSender;
 
     private static final Logger log = LogManager.getLogger("User");
 
@@ -144,14 +147,7 @@ public class UserRegistrationController {
         this.userDatabase.put(user.getUserId(), user);
 
         log.info("User '{}' successfully registered.", user.getLastName() + ", " + user.getFirstName());
-//        session.setAttribute("userId", user.getUserId());
-//        request.changeSessionId();
-//        return new ModelAndView(
-//                new RedirectView("/user/view", true, true, true)
-//        );
-
         System.out.println("User registered and added to repository");
-
         return new ModelAndView(new RedirectView("/user/success", true, false));
     }
 
@@ -171,8 +167,15 @@ public class UserRegistrationController {
 //        Locale locale = request.getLocale();
         final String result = userService.validateVerificationToken(confimationToken);
         final User user = userService.getUser(confimationToken);
-        
+
         if (result.equals("valid")) {
+            
+            String subject = "Thank u for registration.";
+            String email = user.getUserEmailAddress();
+            String body = "Your e-mail: " + email
+                    + "; password: " + user.getPassword();
+            emailSender.sendSimpleEmail(email, subject, body);
+            
             session.setAttribute("userId", user.getUserId());
             request.changeSessionId();
             return new ModelAndView(

@@ -18,4 +18,7 @@ public interface UserService {
     User getUser(final String activationToken);
     
     void deleteUser(User user);
+    
+//    User findUserByEmail(final String email);    
+    
 }

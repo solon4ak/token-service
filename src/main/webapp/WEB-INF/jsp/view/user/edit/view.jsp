@@ -225,6 +225,9 @@
         </c:otherwise>
     </c:choose>
     <hr />
-    <a href="<c:url value="/token/user/csdevent/add" />">Add Caused Message</a>
+    <a href="<c:url value="/token/user/csdevent/add" />">Add Caused Message</a> 
+    / <a href="<c:url value="/token/user/csdevent/list" />">
+        List entries
+    </a>
 
 </template:basic>
