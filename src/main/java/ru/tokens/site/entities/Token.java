@@ -34,9 +34,7 @@ public class Token implements Serializable {
 
     public void setTokenId(long tokenId) {
         this.tokenId = tokenId;
-    }
-
-    
+    }    
 
     public String getActivationCode() {
         return activationCode;
@@ -68,8 +66,7 @@ public class Token implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
-    }
-    
+    }   
     
     
 }

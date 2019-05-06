@@ -12,4 +12,6 @@
         <form:password path="password" /><br /><br />
         <input type="submit" value="Log In" />
     </form:form>
+    <hr />
+    <a href="<c:url value="/user/passwordreset" />">Reset password</a>
 </template:basic>

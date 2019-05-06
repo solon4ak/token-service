@@ -17,7 +17,7 @@
             <form:label path="phoneNumber">Phone number:</form:label>
             <form:input path="phoneNumber" />
             <form:label path="password">Password:</form:label>
-            <form:input path="password" /> 
+            <form:input path="password" readonly="true" /> 
         </fieldset>        
         <input type="submit" value="Submit" />
     </form:form>

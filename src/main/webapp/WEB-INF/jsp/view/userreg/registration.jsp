@@ -20,7 +20,7 @@
             <form:label path="email">Email:</form:label>
             <form:input path="email" />     
             <form:label path="password">Password:</form:label>
-            <form:input path="password" /> 
+            <form:input path="password" readonly="true" /> 
             <form:label path="phoneNumber">Phone number:</form:label>
             <form:input path="phoneNumber" /> 
         </fieldset>        

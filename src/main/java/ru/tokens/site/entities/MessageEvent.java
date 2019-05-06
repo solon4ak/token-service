@@ -3,7 +3,6 @@ package ru.tokens.site.entities;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.concurrent.ScheduledExecutorService;
 
 /**
  *
@@ -23,12 +22,22 @@ public class MessageEvent implements Serializable {
     
     // checking email sending interval
     private String checkingInterval;
-    private boolean executed;
     
-    private ScheduledExecutorService executor;    
+    // состояние события
+    private MessageEventStatus status;
+    private boolean started;
+    private boolean executed;
+           
+    // флаг пролонгации
+    private String prolongationToken;
+    private boolean prolonged;
+    private boolean waitingProlongation;
 
     public MessageEvent() {
-        startDate = LocalDate.now();       
+        this.startDate = LocalDate.now();   
+        this.status = MessageEventStatus.PENDING;
+        this.started = false;
+        this.executed = false;
     }
 
     public long getId() {
@@ -83,20 +92,51 @@ public class MessageEvent implements Serializable {
         this.checkingInterval = checkingInterval;
     }
 
+    public MessageEventStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(MessageEventStatus status) {
+        this.status = status;
+    }    
+
+    public String getProlongationToken() {
+        return prolongationToken;
+    }
+
+    public void setProlongationToken(String prolongationToken) {
+        this.prolongationToken = prolongationToken;
+    }
+
+    public boolean isProlonged() {
+        return prolonged;
+    }
+
+    public void setProlonged(boolean prolonged) {
+        this.prolonged = prolonged;
+    }
+
+    public boolean isStarted() {
+        return this.status == MessageEventStatus.STARTED;
+    }
+
+    public boolean isWaitingProlongation() {
+        return waitingProlongation;
+    }
+
+    public void setWaitingProlongation(boolean waitingProlongation) {
+        this.waitingProlongation = waitingProlongation;
+    }
+
     public boolean isExecuted() {
-        return executed;
+        return this.status == MessageEventStatus.FIRED;
     }
 
     public void setExecuted(boolean executed) {
         this.executed = executed;
-    }
-
-    public ScheduledExecutorService getExecutor() {
-        return executor;
-    }
-
-    public void setExecutor(ScheduledExecutorService executor) {
-        this.executor = executor;
-    }   
-    
+    }    
+                
+    public enum MessageEventStatus {
+        PENDING, STARTED, CANCELED, FIRED
+    }    
 }

@@ -17,7 +17,9 @@
                         <th>Created</th>
                         <th>Subject</th>
                         <th>Check Interval</th>
-                        <th>Action</th>
+                        <th>Edit</th>
+                        <th>Control</th>
+                        <th>Confirm user status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -27,9 +29,26 @@
                             <td><c:url value="${event.dataEntry.subject}" /></td>
                             <td><c:url value="${event.checkingInterval}" /></td>
                             <td>
-                                <a href="<c:url value="/token/user/csdevent/view/${event.id}" />">View</a> /
+                                <a href="<c:url value="/token/user/csdevent/view/${event.id}" />">View</a> /                                                                
                                 <a href="<c:url value="/token/user/csdevent/edit/${event.id}" />">Edit</a> / 
                                 <a href="<c:url value="/token/user/csdevent/delete/${event.id}" />">Delete</a>
+                            </td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${event.started}">
+                                        <b>Started</b> /
+                                        <a href="<c:url value="/token/user/csdevent/stop/${event.id}" />">Stop</a>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <a href="<c:url value="/token/user/csdevent/start/${event.id}" />">Start</a> /
+                                        <b>Stopped</b>
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
+                            <td>
+                                <c:if test="${event.waitingProlongation && !event.executed}">
+                                    <a href="<c:url value="/token/user/csdevent/confirm/${event.id}" />">Confirm</a>
+                                </c:if>
                             </td>
                         </tr>
                     </c:forEach>            

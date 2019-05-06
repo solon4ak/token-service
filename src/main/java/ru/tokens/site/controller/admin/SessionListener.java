@@ -1,4 +1,4 @@
-package ru.tokens.site.controller;
+package ru.tokens.site.controller.admin;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
