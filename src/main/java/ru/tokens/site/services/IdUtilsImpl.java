@@ -1,4 +1,4 @@
-package ru.tokens.site.utils;
+package ru.tokens.site.services;
 
 import com.fasterxml.uuid.Generators;
 import java.util.Random;

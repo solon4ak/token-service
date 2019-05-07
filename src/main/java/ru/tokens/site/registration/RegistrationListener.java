@@ -8,7 +8,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 import ru.tokens.site.entities.User;
 import ru.tokens.site.services.UserService;
-import ru.tokens.site.utils.EmailSender;
+import ru.tokens.site.services.EmailSender;
 
 /**
  *

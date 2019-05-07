@@ -23,8 +23,8 @@ import org.springframework.web.servlet.view.RedirectView;
 import ru.tokens.site.entities.User;
 import ru.tokens.site.registration.OnRegistrationCompleteEvent;
 import ru.tokens.site.services.UserService;
-import ru.tokens.site.utils.EmailSender;
-import ru.tokens.site.utils.PasswordUtil;
+import ru.tokens.site.services.EmailSender;
+import ru.tokens.site.services.PasswordUtil;
 
 /**
  *

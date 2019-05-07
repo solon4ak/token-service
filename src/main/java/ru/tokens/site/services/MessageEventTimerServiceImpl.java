@@ -19,7 +19,6 @@ import ru.tokens.site.entities.Attachment;
 import ru.tokens.site.entities.Contact;
 import ru.tokens.site.entities.Email;
 import ru.tokens.site.entities.MessageEvent;
-import ru.tokens.site.utils.EmailSender;
 import ru.tokens.site.utils.MessageEventHelper;
 
 /**

@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service;
 import ru.tokens.site.entities.Token;
 import ru.tokens.site.entities.User;
 import ru.tokens.site.repository.TokenRepository;
-import ru.tokens.site.utils.IdUtils;
-import ru.tokens.site.utils.PasswordUtil;
 
 /**
  *

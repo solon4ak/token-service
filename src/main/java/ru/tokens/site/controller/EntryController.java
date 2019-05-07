@@ -25,7 +25,7 @@ import ru.tokens.site.entities.Token;
 import ru.tokens.site.entities.User;
 import ru.tokens.site.services.TokenService;
 import ru.tokens.site.services.UserService;
-import ru.tokens.site.utils.FileUtil;
+import ru.tokens.site.services.FileUtil;
 
 /**
  *

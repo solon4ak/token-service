@@ -20,7 +20,7 @@ import ru.tokens.site.entities.MessageEvent;
 import ru.tokens.site.entities.User;
 import ru.tokens.site.services.MessageEventService;
 import ru.tokens.site.services.UserService;
-import ru.tokens.site.utils.FileUtil;
+import ru.tokens.site.services.FileUtil;
 
 /**
  *
