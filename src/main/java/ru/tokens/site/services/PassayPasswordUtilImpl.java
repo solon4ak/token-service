@@ -1,4 +1,4 @@
-package ru.tokens.site.utils;
+package ru.tokens.site.services;
 
 import org.passay.CharacterData;
 import org.passay.CharacterRule;

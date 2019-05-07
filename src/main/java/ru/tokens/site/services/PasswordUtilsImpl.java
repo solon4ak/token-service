@@ -1,4 +1,4 @@
-package ru.tokens.site.utils;
+package ru.tokens.site.services;
 
 import java.security.SecureRandom;
 import org.springframework.stereotype.Service;
