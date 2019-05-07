@@ -57,7 +57,6 @@ public class UserRegistrationController {
         UserRegistrationForm form = new UserRegistrationForm();
         String password = passwordUtil.generatePassword();
         form.setPassword(password);
-//        System.out.println("--- Passworg generated: " + password);
         log.info("Password generated {}", password);
         model.put("userRegistrationFailed", false);
         model.put("userRegistrationForm", form);
@@ -118,19 +117,18 @@ public class UserRegistrationController {
                             appUrl
                     )
             );
+            log.info("Event published for User: {}", user.toString());
         } catch (Exception me) {
             String msg = "Почтовый ящик не подтвержден!";
             model.put("message", msg);
 //            model.put("user", user);
             return new ModelAndView("userreg/error");
-        }
-
-        log.warn("Registering user account with userId: {}", user.getUserId());
+        }        
 
         this.userService.saveUser(user);
-
+        log.warn("Registering user account with userId: {}", user.getUserId());
         log.info("User '{}' successfully registered.", user.getLastName() + ", " + user.getFirstName());
-        System.out.println("User registered and added to repository");
+        
         return new ModelAndView(new RedirectView("/user/success", true, false));
     }
 

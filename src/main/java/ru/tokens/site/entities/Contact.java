@@ -9,7 +9,7 @@ import java.util.Objects;
  */
 public class Contact implements Serializable {
     
-    private Long contactId;
+    private long contactId;
     private String firstName;
     private String lastName;
     private String email;

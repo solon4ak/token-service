@@ -1,8 +1,6 @@
 package ru.tokens.site.controller;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.Map;
 import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
@@ -14,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 import ru.tokens.site.entities.Token;
 import ru.tokens.site.entities.User;
+import ru.tokens.site.services.TokenService;
 import ru.tokens.site.services.UserService;
 import ru.tokens.site.utils.TimeUtils;
 
@@ -31,6 +29,9 @@ public class UserDataController {
 
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private TokenService tokenService;
 
     private static final Logger log = LogManager.getLogger("TokenUserData");
 
@@ -39,8 +40,7 @@ public class UserDataController {
             @PathVariable("tokenId") Long tokenId,
             @PathVariable("uuidString") String uuidString,
             @RequestParam("showMH") boolean showMH) {
-
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
+        
         String msg;
 
         if (tokenId == null || uuidString == null) {
@@ -50,7 +50,7 @@ public class UserDataController {
             return new ModelAndView("token/view/error");
         }
 
-        Token token = tokens.get(tokenId);
+        Token token = tokenService.findTokenById(tokenId);
 
         if (token == null || !token.isActivated()
                 || !uuidString.equals(token.getUuidString())) {
@@ -84,9 +84,7 @@ public class UserDataController {
         }
         User user = userService.findUserById(userId);
 
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-
-        Token token = tokens.get(user.getToken().getTokenId());
+        Token token = tokenService.findTokenByUser(user);
         if (token == null || !token.isActivated()) {
             return new ModelAndView(new RedirectView("/token/register", true, false));
         }

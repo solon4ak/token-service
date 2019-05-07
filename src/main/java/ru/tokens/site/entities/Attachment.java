@@ -9,7 +9,7 @@ import org.apache.commons.io.FileUtils;
  */
 public class Attachment implements Serializable {
 
-    private Long id;
+    private long id;
     
     private String name;    
     private String description;

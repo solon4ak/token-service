@@ -7,7 +7,8 @@ import java.io.Serializable;
  * @author solon4ak
  */
 public class Image implements Serializable {
-    private Long id;
+    
+    private long id;
     private String name;
     private String thumbnailFilename;
     private String newFilename;

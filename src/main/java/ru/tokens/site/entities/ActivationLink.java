@@ -13,7 +13,7 @@ public class ActivationLink implements Serializable {
     
     private static final int EXPIRATION = 60 * 24;
     
-    private Long id;
+    private long id;
     private String token;
     
     private User user;
