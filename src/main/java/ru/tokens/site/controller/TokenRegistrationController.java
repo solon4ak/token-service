@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 import ru.tokens.site.entities.Token;
 import ru.tokens.site.entities.User;
+import ru.tokens.site.services.UserService;
 import ru.tokens.site.utils.TokenUtils;
 import ru.tokens.site.utils.AppInitUtil;
 import ru.tokens.site.utils.EmailSender;
@@ -28,7 +29,7 @@ import ru.tokens.site.utils.EmailSender;
 public class TokenRegistrationController {
     
     @Autowired
-    private UserRegistrationController userRegistrationController;    
+    private UserService userService;    
     
     @Autowired
     private EmailSender emailSender;
@@ -77,7 +78,7 @@ public class TokenRegistrationController {
             return new ModelAndView(new RedirectView("/login", true, false));
         }
         
-        User user = userRegistrationController.getUserDatabase().get(userId);
+        User user = userService.findUserById(userId);
 
         // TODO валидация полей
         String msg;

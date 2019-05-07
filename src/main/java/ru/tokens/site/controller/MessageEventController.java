@@ -31,6 +31,7 @@ import ru.tokens.site.services.MessageEventService;
 import ru.tokens.site.utils.FileUtil;
 import ru.tokens.site.utils.MessageEventHelper;
 import ru.tokens.site.services.TimerProlongationLinkService;
+import ru.tokens.site.services.UserService;
 
 /**
  *
@@ -47,7 +48,7 @@ public class MessageEventController {
     private FileUtil fileUtil;
 
     @Autowired
-    private UserRegistrationController userRegistrationController;
+    private UserService userService;
 
     @Autowired
     private MessageEventService eventService;
@@ -75,7 +76,7 @@ public class MessageEventController {
         if (userId == null) {
             return new ModelAndView(new RedirectView("/login", true, false));
         }
-        User user = userRegistrationController.getUserDatabase().get(userId);
+        User user = userService.findUserById(userId);
 
         Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
 
@@ -100,7 +101,7 @@ public class MessageEventController {
         if (userId == null) {
             return new ModelAndView(new RedirectView("/login", true, false));
         }
-        User user = userRegistrationController.getUserDatabase().get(userId);
+        User user = userService.findUserById(userId);
 
         Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
 
@@ -126,7 +127,7 @@ public class MessageEventController {
         if (userId == null) {
             return new RedirectView("/login", true, false);
         }
-        User user = userRegistrationController.getUserDatabase().get(userId);
+        User user = userService.findUserById(userId);
 
         Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
         Token token = tokens.get(user.getToken().getTokenId());
@@ -172,7 +173,7 @@ public class MessageEventController {
         if (userId == null) {
             return new ModelAndView(new RedirectView("/login", true, false));
         }
-        User user = userRegistrationController.getUserDatabase().get(userId);
+        User user = userService.findUserById(userId);
 
         Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
         Token token = tokens.get(user.getToken().getTokenId());
@@ -197,7 +198,7 @@ public class MessageEventController {
         if (userId == null) {
             return new ModelAndView(new RedirectView("/login", true, false));
         }
-        User user = userRegistrationController.getUserDatabase().get(userId);
+        User user = userService.findUserById(userId);
 
         Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
         Token token = tokens.get(user.getToken().getTokenId());
@@ -241,7 +242,7 @@ public class MessageEventController {
         if (userId == null) {
             return new RedirectView("/login", true, false);
         }
-        User user = userRegistrationController.getUserDatabase().get(userId);
+        User user = userService.findUserById(userId);
 
         Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
         Token token = tokens.get(user.getToken().getTokenId());
@@ -289,7 +290,7 @@ public class MessageEventController {
         if (userId == null) {
             return new RedirectView("/login", true, false);
         }
-        User user = userRegistrationController.getUserDatabase().get(userId);
+        User user = userService.findUserById(userId);
 
         Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
         Token token = tokens.get(user.getToken().getTokenId());

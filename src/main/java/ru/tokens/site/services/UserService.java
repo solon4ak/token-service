@@ -1,5 +1,6 @@
 package ru.tokens.site.services;
 
+import java.util.List;
 import ru.tokens.site.entities.ActivationLink;
 import ru.tokens.site.entities.User;
 
@@ -19,6 +20,16 @@ public interface UserService {
     
     void deleteUser(User user);
     
-//    User findUserByEmail(final String email);    
+    void deleteUser(long id);
+    
+    User findUserByEmail(final String email);    
+    
+    User findUserById(final long id);
+    
+    void saveUser(final User user);
+    
+    List<User> getAllUsers();
+    
+    List<User> getAllUsersWithToken();
     
 }

@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -53,24 +52,13 @@ public class UserRegistrationController {
 
     private static final Logger log = LogManager.getLogger("User");
 
-    private volatile long USER_ID_SEQUENCE = 1;
-
-    private synchronized long getNextUserId() {
-        return this.USER_ID_SEQUENCE++;
-    }
-
-    private final Map<Long, User> userDatabase = new LinkedHashMap<>();
-
-    public Map<Long, User> getUserDatabase() {
-        return userDatabase;
-    }
-
     @RequestMapping(value = "register", method = RequestMethod.GET)
     public String register(Map<String, Object> model) {
         UserRegistrationForm form = new UserRegistrationForm();
         String password = passwordUtil.generatePassword();
         form.setPassword(password);
-        System.out.println("--- Passworg generated: " + password);
+//        System.out.println("--- Passworg generated: " + password);
+        log.info("Password generated {}", password);
         model.put("userRegistrationFailed", false);
         model.put("userRegistrationForm", form);
         return "userreg/registration";
@@ -88,17 +76,13 @@ public class UserRegistrationController {
 
         // Проверка на наличие этого почтового адреса в базе
         String email = form.getEmail();
-        for (Map.Entry<Long, User> entry : userDatabase.entrySet()) {
-//            Long id = entry.getKey();
-            User user = entry.getValue();
-            if (email.equals(user.getUserEmailAddress())) {
-                String msg = "User with email: " + email + " has already registered.";
-                model.put("message", msg);
-                model.put("userRegistrationFailed", true);
-                form.setEmail("");
-                model.put("userRegistrationForm", form);
-                return new ModelAndView("userreg/registration");
-            }
+        if (userService.findUserByEmail(email) != null) {
+            String msg = "User with email: " + email + " has already registered.";
+            model.put("message", msg);
+            model.put("userRegistrationFailed", true);
+            form.setEmail("");
+            model.put("userRegistrationForm", form);
+            return new ModelAndView("userreg/registration");
         }
 
         String birthDate = form.getBirthDate();
@@ -116,7 +100,6 @@ public class UserRegistrationController {
 
         User user = new User();
         user.setRegistered(Instant.now());
-        user.setUserId(this.getNextUserId());
         user.setLastName(lastName);
         user.setFirstName(firstName);
         user.setMiddleName(midName);
@@ -144,7 +127,7 @@ public class UserRegistrationController {
 
         log.warn("Registering user account with userId: {}", user.getUserId());
 
-        this.userDatabase.put(user.getUserId(), user);
+        this.userService.saveUser(user);
 
         log.info("User '{}' successfully registered.", user.getLastName() + ", " + user.getFirstName());
         System.out.println("User registered and added to repository");
@@ -169,13 +152,13 @@ public class UserRegistrationController {
         final User user = userService.getUser(confimationToken);
 
         if (result.equals("valid")) {
-            
+
             String subject = "Thank u for registration.";
             String email = user.getUserEmailAddress();
             String body = "Your e-mail: " + email
                     + "; password: " + user.getPassword();
             emailSender.sendSimpleEmail(email, subject, body);
-            
+
             session.setAttribute("userId", user.getUserId());
             request.changeSessionId();
             return new ModelAndView(
@@ -183,7 +166,7 @@ public class UserRegistrationController {
             );
         }
         /* Если пользователь не подтвердил почтовый адрес, пользователь удаляется из репозитория */
-        this.userDatabase.remove(user.getUserId());
+        this.userService.deleteUser(user);
         final String msg = "Почтовый ящик не подтвержден. Причина: " + result;
         model.put("message", msg);
 //        model.put("user", user);
@@ -197,7 +180,7 @@ public class UserRegistrationController {
             return new ModelAndView(new RedirectView("/login", true, false));
         }
 
-        User user = this.userDatabase.get(userId);
+        User user = this.userService.findUserById(userId);
         if (user == null) {
             log.error("User with id {} doesn't exist.", userId);
             String msg = "User doesn't exist.";
@@ -231,7 +214,7 @@ public class UserRegistrationController {
             return new RedirectView("/login", true, false);
         }
 
-        User user = this.userDatabase.get(userId);
+        User user = this.userService.findUserById(userId);
         if (user == null) {
             log.error("User with id {} doesn't exist.", userId);
             return new RedirectView("/user/register", true, false);
@@ -266,7 +249,7 @@ public class UserRegistrationController {
             return new ModelAndView(new RedirectView("/login", true, false));
         }
 
-        User user = this.userDatabase.get(userId);
+        User user = this.userService.findUserById(userId);
         if (user == null) {
             log.error("User with id {} doesn't exist.", userId);
             String msg = "User doesn't exist.";
