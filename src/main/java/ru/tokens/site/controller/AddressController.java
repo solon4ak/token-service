@@ -14,6 +14,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import ru.tokens.site.entities.Address;
 import ru.tokens.site.entities.Token;
 import ru.tokens.site.entities.User;
+import ru.tokens.site.services.UserService;
 
 /**
  *
@@ -24,7 +25,7 @@ import ru.tokens.site.entities.User;
 public class AddressController {
 
     @Autowired
-    private UserRegistrationController userRegistrationController;
+    private UserService userService;
 
     private static final Logger log = LogManager.getLogger("Address");
 
@@ -34,7 +35,7 @@ public class AddressController {
         if (userId == null) {
             return new ModelAndView(new RedirectView("/login", true, false));
         }
-        User user = userRegistrationController.getUserDatabase().get(userId);
+        User user = userService.findUserById(userId);
 
         Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
 
@@ -62,7 +63,7 @@ public class AddressController {
         if (userId == null) {
             return new RedirectView("/login", true, false);
         }
-        User user = userRegistrationController.getUserDatabase().get(userId);
+        User user = userService.findUserById(userId);
 
         Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
         Token token = tokens.get(user.getToken().getTokenId());
@@ -83,7 +84,8 @@ public class AddressController {
         if (userId == null) {
             return new RedirectView("/login", true, false);
         }
-        User user = userRegistrationController.getUserDatabase().get(userId);
+        
+        User user = userService.findUserById(userId);
         
         Address address = new Address();
         address.setCountry(user.getPostAddress().getCountry());
@@ -105,7 +107,8 @@ public class AddressController {
         if (userId == null) {
             return new ModelAndView(new RedirectView("/login", true, false));
         }
-        User user = userRegistrationController.getUserDatabase().get(userId);
+        
+        User user = userService.findUserById(userId);
 
         Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
 
@@ -136,7 +139,8 @@ public class AddressController {
         if (userId == null) {
             return new RedirectView("/login", true, false);
         }
-        User user = userRegistrationController.getUserDatabase().get(userId);
+        
+        User user = userService.findUserById(userId);
 
         Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
 

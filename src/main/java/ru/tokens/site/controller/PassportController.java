@@ -19,6 +19,7 @@ import ru.tokens.site.entities.Passport;
 import ru.tokens.site.entities.Token;
 import ru.tokens.site.entities.User;
 import ru.tokens.site.exceptions.PassportIssueDateException;
+import ru.tokens.site.services.UserService;
 
 /**
  *
@@ -29,7 +30,7 @@ import ru.tokens.site.exceptions.PassportIssueDateException;
 public class PassportController {
 
     @Autowired
-    private UserRegistrationController userRegistrationController;
+    private UserService userService;
 
     private static final Logger log = LogManager.getLogger("Passport");
 
@@ -40,7 +41,7 @@ public class PassportController {
         if (userId == null) {
             return new ModelAndView(new RedirectView("/login", true, false));
         }
-        User user = userRegistrationController.getUserDatabase().get(userId);
+        User user = userService.findUserById(userId);
 
         Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
 
@@ -62,7 +63,7 @@ public class PassportController {
         if (userId == null) {
             return new RedirectView("/login", true, false);
         }
-        User user = userRegistrationController.getUserDatabase().get(userId);
+        User user = userService.findUserById(userId);
 
         Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
         Token token = tokens.get(user.getToken().getTokenId());
@@ -105,7 +106,7 @@ public class PassportController {
         if (userId == null) {
             return new ModelAndView(new RedirectView("/login", true, false));
         }
-        User user = userRegistrationController.getUserDatabase().get(userId);
+        User user = userService.findUserById(userId);
 
         Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
 
@@ -138,7 +139,7 @@ public class PassportController {
         if (userId == null) {
             return new RedirectView("/login", true, false);
         }
-        User user = userRegistrationController.getUserDatabase().get(userId);
+        User user = userService.findUserById(userId);
 
         Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
         Token token = tokens.get(user.getToken().getTokenId());
@@ -180,7 +181,7 @@ public class PassportController {
         if (userId == null) {
             return new RedirectView("/login", true, false);
         }
-        User user = userRegistrationController.getUserDatabase().get(userId);
+        User user = userService.findUserById(userId);
 
         Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
         Token token = tokens.get(user.getToken().getTokenId());

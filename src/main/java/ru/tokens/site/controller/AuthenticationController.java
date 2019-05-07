@@ -8,24 +8,20 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.tokens.site.entities.User;
+import ru.tokens.site.services.UserService;
 
 @Controller
 public class AuthenticationController {
     
     @Autowired
-    private UserRegistrationController userRegistrationController;
+    private UserService userService;
 
     private static final Logger log = LogManager.getLogger("AuthenticationController");
-
-    private Map<Long, User> getUserDatabase() {
-        return userRegistrationController.getUserDatabase();
-    }
 
     @RequestMapping("logout")
     public View logout(HttpSession session) {
@@ -68,9 +64,7 @@ public class AuthenticationController {
             return new ModelAndView("login");
         }
 
-        Map<Long, User> users = this.getUserDatabase();
-
-        for (User user : users.values()) {            
+        for (User user : userService.getAllUsers()) {            
             if (email.equals(user.getUserEmailAddress())
                     && password.equals(user.getPassword()) 
                     && user.isEmailActivated()) {

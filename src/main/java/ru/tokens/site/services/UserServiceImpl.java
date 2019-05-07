@@ -1,11 +1,14 @@
 package ru.tokens.site.services;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.tokens.site.entities.ActivationLink;
 import ru.tokens.site.entities.User;
 import ru.tokens.site.repository.ActivationLinkRepository;
+import ru.tokens.site.repository.UserRepository;
 
 // import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -15,6 +18,9 @@ import ru.tokens.site.repository.ActivationLinkRepository;
  */
 @Service
 public class UserServiceImpl implements UserService {
+    
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private ActivationLinkRepository activationLinkRepository;
@@ -63,7 +69,52 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(User user) {
-    
+        this.userRepository.delete(user.getUserId());
     }
+    
+    @Override
+    public void deleteUser(long id) {
+        this.userRepository.delete(id);
+    }
+
+    @Override
+    public User findUserByEmail(String email) {
+        for (User user : this.userRepository.getAll()) {
+            if (email.equals(user.getUserEmailAddress())) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public User findUserById(long id) {
+        return this.userRepository.get(id);
+    }
+
+    @Override
+    public void saveUser(User user) {
+        if(user.getUserId() < 1) {
+            userRepository.add(user);
+        } else {
+            userRepository.update(user);
+        }
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return this.userRepository.getAll();
+    }
+    
+    @Override
+    public List<User> getAllUsersWithToken() {
+        List<User> usersWithToken = new ArrayList<>();
+        for (User user : this.userRepository.getAll()) {
+            if (user.getToken() != null) {
+                usersWithToken.add(user);
+            }
+        }
+        return usersWithToken;
+    }    
  
 }

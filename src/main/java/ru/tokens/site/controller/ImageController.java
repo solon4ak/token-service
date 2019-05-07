@@ -27,6 +27,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import ru.tokens.site.entities.Image;
 import ru.tokens.site.entities.Token;
 import ru.tokens.site.entities.User;
+import ru.tokens.site.services.UserService;
 import ru.tokens.site.utils.FileUtil;
 
 /**
@@ -44,7 +45,7 @@ public class ImageController {
     private FileUtil fileUtil;
 
     @Autowired
-    private UserRegistrationController userRegistrationController;
+    private UserService userService;
 
     private volatile long IMAGE_ID_SEQUENCE = 1;
 
@@ -57,7 +58,7 @@ public class ImageController {
 
         Long userId = (Long) session.getAttribute("userId");    
         
-        User user = userRegistrationController.getUserDatabase().get(userId);
+        User user = userService.findUserById(userId);
 
         Image image = user.getImage();
 
@@ -76,7 +77,7 @@ public class ImageController {
     public void picture(HttpServletResponse response, 
             @RequestParam("userId") Long userId) {
 
-        User user = userRegistrationController.getUserDatabase().get(userId);
+        User user = userService.findUserById(userId);
 
         Image image = user.getImage();
 
@@ -96,7 +97,7 @@ public class ImageController {
 
         Long userId = (Long) session.getAttribute("userId");
         
-        User user = userRegistrationController.getUserDatabase().get(userId);
+        User user = userService.findUserById(userId);
 
         Image image = user.getImage();
 
@@ -115,7 +116,7 @@ public class ImageController {
     public void thumbnail(HttpServletResponse response,
             @RequestParam("userId") Long userId) {
         
-        User user = userRegistrationController.getUserDatabase().get(userId);
+        User user = userService.findUserById(userId);
 
         Image image = user.getImage();
 
@@ -137,7 +138,7 @@ public class ImageController {
         if (userId == null) {
             return new ModelAndView(new RedirectView("/login", true, false));
         }
-        User user = userRegistrationController.getUserDatabase().get(userId);
+        User user = userService.findUserById(userId);
 
         Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
 
@@ -156,7 +157,7 @@ public class ImageController {
     public View upload(HttpSession session, ImageForm form) {
 
         Long userId = (Long) session.getAttribute("userId");
-        User user = userRegistrationController.getUserDatabase().get(userId);
+        User user = userService.findUserById(userId);
 
         if (user.getImage() != null) {
             this.deleteImage(user);
@@ -204,7 +205,7 @@ public class ImageController {
     public View delete(HttpSession session) {
 
         Long userId = (Long) session.getAttribute("userId");
-        User user = userRegistrationController.getUserDatabase().get(userId);
+        User user = userService.findUserById(userId);
 
         this.deleteImage(user);
         return new RedirectView("/token/user/view", true, false);

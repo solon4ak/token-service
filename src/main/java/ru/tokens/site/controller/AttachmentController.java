@@ -19,6 +19,7 @@ import ru.tokens.site.entities.MedicalHistory;
 import ru.tokens.site.entities.MessageEvent;
 import ru.tokens.site.entities.User;
 import ru.tokens.site.services.MessageEventService;
+import ru.tokens.site.services.UserService;
 import ru.tokens.site.utils.FileUtil;
 
 /**
@@ -29,11 +30,11 @@ import ru.tokens.site.utils.FileUtil;
 public class AttachmentController {
 
     @Autowired
-    private UserRegistrationController userRegistrationController;
+    private UserService userService;
 
-    @Autowired
-    @Qualifier("fileService")
-    private FileUtil fileUtil;
+//    @Autowired
+//    @Qualifier("fileService")
+//    private FileUtil fileUtil;
 
     @Autowired
     private MessageEventService eventService;
@@ -50,7 +51,7 @@ public class AttachmentController {
         if (userId == null) {
             return new ModelAndView(new RedirectView("/login", true, false));
         }
-        User user = userRegistrationController.getUserDatabase().get(userId);
+        User user = userService.findUserById(userId);
 
         MedicalHistory history = user.getMedicalHistory();
         DataEntry entry = history.getMedicalFormEntry(entryId);
@@ -79,7 +80,7 @@ public class AttachmentController {
         if (userId == null) {
             return new ModelAndView(new RedirectView("/login", true, false));
         }
-        User user = userRegistrationController.getUserDatabase().get(userId);
+        User user = userService.findUserById(userId);
 
         MessageEvent event = eventService.findMessageEventById(eventId);
         DataEntry entry = event.getDataEntry();

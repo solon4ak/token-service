@@ -13,6 +13,7 @@ import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 import ru.tokens.site.entities.Address;
 import ru.tokens.site.entities.User;
+import ru.tokens.site.services.UserService;
 
 /**
  *
@@ -23,7 +24,7 @@ import ru.tokens.site.entities.User;
 public class PostAddressController {
     
     @Autowired
-    private UserRegistrationController userRegistrationController;
+    private UserService userService;
 
     private static final Logger log = LogManager.getLogger("PostAddressController");
 
@@ -33,7 +34,7 @@ public class PostAddressController {
         if (userId == null) {
             return new ModelAndView(new RedirectView("/login", true, false));
         }
-        User user = userRegistrationController.getUserDatabase().get(userId);
+        User user = userService.findUserById(userId);
         
         model.put("addressForm", new PostAddressForm());
         model.put("user", user);
@@ -57,7 +58,7 @@ public class PostAddressController {
         if (userId == null) {
             return new RedirectView("/login", true, false);
         }
-        User user = userRegistrationController.getUserDatabase().get(userId);
+        User user = userService.findUserById(userId);
 
         user.setPostAddress(address);
 
@@ -72,7 +73,7 @@ public class PostAddressController {
         if (userId == null) {
             return new ModelAndView(new RedirectView("/login", true, false));
         }
-        User user = userRegistrationController.getUserDatabase().get(userId);
+        User user = userService.findUserById(userId);
         
         PostAddressForm form = new PostAddressForm();
         
@@ -97,7 +98,7 @@ public class PostAddressController {
         if (userId == null) {
             return new RedirectView("/login", true, false);
         }
-        User user = userRegistrationController.getUserDatabase().get(userId);
+        User user = userService.findUserById(userId);
        
         Address address = user.getPostAddress();
 

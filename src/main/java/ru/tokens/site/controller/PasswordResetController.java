@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 import ru.tokens.site.entities.User;
+import ru.tokens.site.services.UserService;
 import ru.tokens.site.utils.EmailSender;
 import ru.tokens.site.utils.PasswordUtil;
 
@@ -21,7 +22,7 @@ import ru.tokens.site.utils.PasswordUtil;
 public class PasswordResetController {
     
     @Autowired
-    private UserRegistrationController userRegistrationController;
+    private UserService userService;
         
     @Autowired
     private EmailSender emailSender;
@@ -41,16 +42,7 @@ public class PasswordResetController {
     public ModelAndView resetPassword(Map<String, Object> model, 
             PasswordResetForm form) {
         String email = form.getEmail();
-        User user = null;
-        
-        Map<Long, User> userDatabase = userRegistrationController.getUserDatabase();
-        
-        for (Map.Entry<Long, User> entry : userDatabase.entrySet()) {
-            User aUser = entry.getValue();
-            if (email.equals(aUser.getUserEmailAddress())) {
-                user = aUser;
-            }
-        }
+        User user = userService.findUserByEmail(email);
         
         if (null == user) {
             String msg = "Пользователь с данным адресом электронной почты не существует.";
