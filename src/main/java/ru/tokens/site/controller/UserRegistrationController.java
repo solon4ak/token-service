@@ -142,7 +142,7 @@ public class UserRegistrationController {
             return new ModelAndView("userreg/error");
         }
 
-        log.debug("Registering user account with userId: {}", user.getUserId());
+        log.warn("Registering user account with userId: {}", user.getUserId());
 
         this.userDatabase.put(user.getUserId(), user);
 

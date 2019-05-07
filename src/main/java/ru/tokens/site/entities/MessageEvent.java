@@ -38,6 +38,8 @@ public class MessageEvent implements Serializable {
         this.status = MessageEventStatus.PENDING;
         this.started = false;
         this.executed = false;
+        this.prolonged = false;
+        this.waitingProlongation = false;
     }
 
     public long getId() {

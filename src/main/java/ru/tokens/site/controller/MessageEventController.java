@@ -17,7 +17,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
@@ -146,8 +145,8 @@ public class MessageEventController {
             for (Long id : contactIds) {
                 contacts.add(user.getContact(id));
             }
-        }
-
+        }        
+        
         messageEvent.setContacts(contacts);
 
         DataEntry entry = new DataEntry();
@@ -320,26 +319,34 @@ public class MessageEventController {
         return new RedirectView("/token/user/csdevent/list", true, false);
     }
 
-    @RequestMapping(value = "prolongationConfirm", method = RequestMethod.GET)
-    public void processProlongationLink(@RequestParam("token") String prolongationTokenString,
-            @RequestParam("eventId") String eventId) {
+    @RequestMapping(value = "prolongationConfirm/{eventId}/{tokenString}", method = RequestMethod.GET)
+    public View processProlongationLink(HttpSession session,
+            @PathVariable("tokenString") String prolongationTokenString,
+            @PathVariable("eventId") Long eventId) {
 
-        MessageEvent event = eventService.findMessageEventById(Long.valueOf(eventId));
+        MessageEvent event = eventService.findMessageEventById(eventId);
         // установили флаг prolonged в MessageEvent
-        linkService.checkProlongationToken(event, eventId);
+        linkService.checkProlongationToken(event, prolongationTokenString);
+        
         if (event.isProlonged()) {
             event.setWaitingProlongation(false);
+            log.warn("Prolongtion link was confirmed. "
+                    + "Event was prolonged for subject {}", event.getDataEntry().getSubject());
         }
 
-        log.warn("Prolongtion link was confirmed. "
-                + "Event was prolonged for subject {}", event.getDataEntry().getSubject());
+        session.setAttribute("userId", event.getUser().getUserId());
+        return new RedirectView("/token/user/csdevent/list", true, false);
     }
 
     @RequestMapping(value = "user/csdevent/start/{eventId}", method = RequestMethod.GET)
     public View startMessageEvent(@PathVariable("eventId") Long eventId) {
         MessageEvent event = eventService.findMessageEventById(eventId);
+        
+        if (event.getContacts().isEmpty()) {
+            return new RedirectView("/token/user/csdevent/edit/" + event.getId(), true, false);
+        }
+        
         linkService.startTimerService(event);
-
         log.warn("Event was started for subject {}", event.getDataEntry().getSubject());
 
         return new RedirectView("/token/user/csdevent/list", true, false);

@@ -8,9 +8,20 @@
     <hr />
     <a href="<c:url value="/token/user/view"/>">&lt;- Back</a><br /><br />
     Created: <tags:localDate date="${event.startDate}" /><br /><br />
+    <c:choose>
+        <c:when test="${event.started}">
+            <b>Started</b> /
+            <a href="<c:url value="/token/user/csdevent/stop/${event.id}" />">Stop</a>
+        </c:when>
+        <c:otherwise>
+            <a href="<c:url value="/token/user/csdevent/start/${event.id}" />">Start</a> /
+            <b>Stopped</b>
+        </c:otherwise>
+    </c:choose>
+    <br /><br />
     <c:out value="${event.dataEntry.body}" />
-    <hr />
     <c:if test="${event.dataEntry.numberOfAttachments > 0}">
+        <hr />
         <b>Attachments: <c:out value="${event.dataEntry.numberOfAttachments}" /></b><br /><br />
 
         <table class="data_table">

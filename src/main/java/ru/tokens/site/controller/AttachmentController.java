@@ -17,8 +17,8 @@ import ru.tokens.site.entities.Attachment;
 import ru.tokens.site.entities.DataEntry;
 import ru.tokens.site.entities.MedicalHistory;
 import ru.tokens.site.entities.MessageEvent;
-import ru.tokens.site.entities.Token;
 import ru.tokens.site.entities.User;
+import ru.tokens.site.services.MessageEventService;
 import ru.tokens.site.utils.FileUtil;
 
 /**
@@ -31,11 +31,14 @@ public class AttachmentController {
     @Autowired
     private UserRegistrationController userRegistrationController;
 
-    private static final Logger log = LogManager.getLogger("AttachmentController");
-
     @Autowired
     @Qualifier("fileService")
     private FileUtil fileUtil;
+
+    @Autowired
+    private MessageEventService eventService;
+    
+    private static final Logger log = LogManager.getLogger("AttachmentController");
 
     @RequestMapping(value = "token/user/med/entry/{entryId}/{attachmentId}/delete",
             method = RequestMethod.GET)
@@ -78,7 +81,7 @@ public class AttachmentController {
         }
         User user = userRegistrationController.getUserDatabase().get(userId);
 
-        MessageEvent event = user.getMessageEvent(eventId);
+        MessageEvent event = eventService.findMessageEventById(eventId);
         DataEntry entry = event.getDataEntry();
 
         if (null != entry) {

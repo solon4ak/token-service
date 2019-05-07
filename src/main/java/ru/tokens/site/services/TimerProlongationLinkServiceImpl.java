@@ -47,6 +47,7 @@ public class TimerProlongationLinkServiceImpl implements TimerProlongationLinkSe
 
     @Override
     public void checkProlongationToken(MessageEvent event, String tokenString) {
+        
         if (tokenString.equals(event.getProlongationToken())) {
             event.setProlonged(true);
             LOG.warn("Prolongation token was confirmed.");
