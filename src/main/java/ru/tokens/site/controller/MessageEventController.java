@@ -31,6 +31,7 @@ import ru.tokens.site.services.MessageEventService;
 import ru.tokens.site.utils.FileUtil;
 import ru.tokens.site.utils.MessageEventHelper;
 import ru.tokens.site.services.TimerProlongationLinkService;
+import ru.tokens.site.services.TokenService;
 import ru.tokens.site.services.UserService;
 
 /**
@@ -52,6 +53,9 @@ public class MessageEventController {
 
     @Autowired
     private MessageEventService eventService;
+    
+    @Autowired
+    private TokenService tokenService;
 
     @Autowired
     private TimerProlongationLinkService linkService;
@@ -78,9 +82,7 @@ public class MessageEventController {
         }
         User user = userService.findUserById(userId);
 
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-
-        Token token = tokens.get(user.getToken().getTokenId());
+        Token token = tokenService.findTokenByUser(user);
         if (token == null || !token.isActivated()) {
             return new ModelAndView(new RedirectView("/token/register", true, false));
         }
@@ -103,9 +105,7 @@ public class MessageEventController {
         }
         User user = userService.findUserById(userId);
 
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-
-        Token token = tokens.get(user.getToken().getTokenId());
+        Token token = tokenService.findTokenByUser(user);
         if (token == null || !token.isActivated()) {
             return new ModelAndView(new RedirectView("/token/register", true, false));
         }
@@ -129,8 +129,7 @@ public class MessageEventController {
         }
         User user = userService.findUserById(userId);
 
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-        Token token = tokens.get(user.getToken().getTokenId());
+        Token token = tokenService.findTokenByUser(user);
         if (token == null || !token.isActivated()) {
             return new RedirectView("/token/register", true, false);
         }
@@ -175,8 +174,7 @@ public class MessageEventController {
         }
         User user = userService.findUserById(userId);
 
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-        Token token = tokens.get(user.getToken().getTokenId());
+        Token token = tokenService.findTokenByUser(user);
         if (token == null || !token.isActivated()) {
             return new ModelAndView(new RedirectView("/token/register", true, false));
         }
@@ -200,8 +198,7 @@ public class MessageEventController {
         }
         User user = userService.findUserById(userId);
 
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-        Token token = tokens.get(user.getToken().getTokenId());
+        Token token = tokenService.findTokenByUser(user);
         if (token == null || !token.isActivated()) {
             return new ModelAndView(new RedirectView("/token/register", true, false));
         }
@@ -244,8 +241,7 @@ public class MessageEventController {
         }
         User user = userService.findUserById(userId);
 
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-        Token token = tokens.get(user.getToken().getTokenId());
+        Token token = tokenService.findTokenByUser(user);
         if (token == null || !token.isActivated()) {
             return new RedirectView("/token/register", true, false);
         }
@@ -292,8 +288,7 @@ public class MessageEventController {
         }
         User user = userService.findUserById(userId);
 
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-        Token token = tokens.get(user.getToken().getTokenId());
+        Token token = tokenService.findTokenByUser(user);
         if (token == null || !token.isActivated()) {
             return new RedirectView("/token/register", true, false);
         }

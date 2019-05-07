@@ -33,6 +33,7 @@ public class RegistrationListener
 
     private void confirmRegistration(final OnRegistrationCompleteEvent event) {
         final User user = event.getUser();
+        log.info("Insight listener. User: {}", user.toString());
         final String token = UUID.randomUUID().toString();
         userService.createActivationLink(user, token);
         

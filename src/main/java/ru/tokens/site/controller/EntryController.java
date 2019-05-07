@@ -23,6 +23,7 @@ import ru.tokens.site.entities.DataEntry;
 import ru.tokens.site.entities.MedicalHistory;
 import ru.tokens.site.entities.Token;
 import ru.tokens.site.entities.User;
+import ru.tokens.site.services.TokenService;
 import ru.tokens.site.services.UserService;
 import ru.tokens.site.utils.FileUtil;
 
@@ -42,6 +43,9 @@ public class EntryController {
 
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private TokenService tokenService;
 
     private volatile long ENTRY_ID_SEQUENCE = 1;
 
@@ -64,8 +68,7 @@ public class EntryController {
             @PathVariable("uuidString") String uuidString,
             @PathVariable("entryId") long entryId) {
 
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-        Token token = tokens.get(tokenId);
+        Token token = tokenService.findTokenById(tokenId);
 
         if (token != null && token.isActivated()) {
             User user = token.getUser();
@@ -93,8 +96,7 @@ public class EntryController {
             @PathVariable("entryId") long entryId,
             @PathVariable("attachment") String name) {
 
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-        Token token = tokens.get(tokenId);
+        Token token = tokenService.findTokenById(tokenId);
 
         if (token != null && token.isActivated()) {
             User user = token.getUser();
@@ -125,8 +127,7 @@ public class EntryController {
         }
         User user = userService.findUserById(userId);
 
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-        Token token = tokens.get(user.getToken().getTokenId());
+        Token token = tokenService.findTokenByUser(user);
         if (token == null) {
             return new ModelAndView(new RedirectView("/token/register", true, false));
         }
@@ -149,9 +150,7 @@ public class EntryController {
         }
         User user = userService.findUserById(userId);
 
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-
-        Token token = tokens.get(user.getToken().getTokenId());
+        Token token = tokenService.findTokenByUser(user);
         if (token == null) {
             return new ModelAndView(new RedirectView("/token/register", true, false));
         }
@@ -196,9 +195,7 @@ public class EntryController {
         }
         User user = userService.findUserById(userId);
 
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-
-        Token token = tokens.get(user.getToken().getTokenId());
+        Token token = tokenService.findTokenByUser(user);
         if (token == null) {
             return new RedirectView("/token/register", true, false);
         }
@@ -234,9 +231,7 @@ public class EntryController {
         }
         User user = userService.findUserById(userId);
 
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-
-        Token token = tokens.get(user.getToken().getTokenId());
+        Token token = tokenService.findTokenByUser(user);
         if (token == null) {
             return new ModelAndView(new RedirectView("/token/register", true, false));
         }
@@ -268,9 +263,7 @@ public class EntryController {
         }
         User user = userService.findUserById(userId);
 
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-
-        Token token = tokens.get(user.getToken().getTokenId());
+        Token token = tokenService.findTokenByUser(user);
         if (token == null) {
             return new RedirectView("/token/register", true, false);
         }

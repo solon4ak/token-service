@@ -27,6 +27,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import ru.tokens.site.entities.Image;
 import ru.tokens.site.entities.Token;
 import ru.tokens.site.entities.User;
+import ru.tokens.site.services.TokenService;
 import ru.tokens.site.services.UserService;
 import ru.tokens.site.utils.FileUtil;
 
@@ -46,6 +47,9 @@ public class ImageController {
 
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private TokenService tokenService;
 
     private volatile long IMAGE_ID_SEQUENCE = 1;
 
@@ -56,12 +60,9 @@ public class ImageController {
     @RequestMapping(value = "user/image/view", method = RequestMethod.GET)
     public void picture(HttpSession session, HttpServletResponse response) {
 
-        Long userId = (Long) session.getAttribute("userId");    
-        
+        Long userId = (Long) session.getAttribute("userId");          
         User user = userService.findUserById(userId);
-
         Image image = user.getImage();
-
         File imageFile = new File(image.getUrl());
 
         response.setContentType(image.getContentType());
@@ -78,9 +79,7 @@ public class ImageController {
             @RequestParam("userId") Long userId) {
 
         User user = userService.findUserById(userId);
-
         Image image = user.getImage();
-
         File imageFile = new File(image.getUrl());
 
         response.setContentType(image.getContentType());
@@ -95,12 +94,9 @@ public class ImageController {
     @RequestMapping(value = "user/image/thumbnail", method = RequestMethod.GET)
     public void thumbnail(HttpSession session, HttpServletResponse response) {
 
-        Long userId = (Long) session.getAttribute("userId");
-        
+        Long userId = (Long) session.getAttribute("userId");        
         User user = userService.findUserById(userId);
-
         Image image = user.getImage();
-
         File imageFile = new File(image.getThumbnailUrl());
 
         response.setContentType(image.getContentType());
@@ -117,9 +113,7 @@ public class ImageController {
             @RequestParam("userId") Long userId) {
         
         User user = userService.findUserById(userId);
-
         Image image = user.getImage();
-
         File imageFile = new File(image.getThumbnailUrl());
 
         response.setContentType(image.getContentType());
@@ -140,9 +134,7 @@ public class ImageController {
         }
         User user = userService.findUserById(userId);
 
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-
-        Token token = tokens.get(user.getToken().getTokenId());
+        Token token = tokenService.findTokenByUser(user);
         if (token == null || !token.isActivated()) {
             return new ModelAndView(new RedirectView("/token/register", true, false));
         }

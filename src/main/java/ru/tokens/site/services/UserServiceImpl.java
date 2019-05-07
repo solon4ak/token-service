@@ -3,9 +3,12 @@ package ru.tokens.site.services;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.tokens.site.entities.ActivationLink;
+import ru.tokens.site.entities.Token;
 import ru.tokens.site.entities.User;
 import ru.tokens.site.repository.ActivationLinkRepository;
 import ru.tokens.site.repository.UserRepository;
@@ -18,6 +21,8 @@ import ru.tokens.site.repository.UserRepository;
  */
 @Service
 public class UserServiceImpl implements UserService {
+    
+    private static final Logger log = LogManager.getLogger("User Service");
     
     @Autowired
     private UserRepository userRepository;
@@ -32,12 +37,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public void createActivationLink(final User user, final String activationUUIDString) {
         final ActivationLink activationLink = new ActivationLink(user, activationUUIDString);
+        log.info("Activation link created for User: {}", user);
         activationLinkRepository.save(activationLink);
     }
 
     @Override
     public ActivationLink getActivationLink(final String activationToken) {
-        return activationLinkRepository.findByToken(activationToken);
+        ActivationLink link = activationLinkRepository.findByToken(activationToken);
+        log.info("Activation link {} found for User: {}", link.getToken(), link.getUser().toString());
+        return link;
     }
 
     @Override
@@ -90,6 +98,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findUserById(long id) {
         return this.userRepository.get(id);
+    }
+    @Override
+    public User findByToken(Token token) {
+        for (User user : this.userRepository.getAll()) {
+            if (token.equals(user.getToken())) {
+                return user;
+            }
+        }
+        return null;
     }
 
     @Override

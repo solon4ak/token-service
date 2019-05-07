@@ -19,6 +19,7 @@ import ru.tokens.site.entities.Passport;
 import ru.tokens.site.entities.Token;
 import ru.tokens.site.entities.User;
 import ru.tokens.site.exceptions.PassportIssueDateException;
+import ru.tokens.site.services.TokenService;
 import ru.tokens.site.services.UserService;
 
 /**
@@ -31,6 +32,9 @@ public class PassportController {
 
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private TokenService tokenService;
 
     private static final Logger log = LogManager.getLogger("Passport");
 
@@ -43,9 +47,7 @@ public class PassportController {
         }
         User user = userService.findUserById(userId);
 
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-
-        Token token = tokens.get(user.getToken().getTokenId());
+        Token token = tokenService.findTokenByUser(user);
         if (token == null || !token.isActivated()) {
             return new ModelAndView(new RedirectView("/token/register", true, false));
         }
@@ -65,8 +67,7 @@ public class PassportController {
         }
         User user = userService.findUserById(userId);
 
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-        Token token = tokens.get(user.getToken().getTokenId());
+        Token token = tokenService.findTokenByUser(user);
         if (token == null || !token.isActivated()) {
             return new RedirectView("/token/register", true, false);
         }
@@ -108,9 +109,7 @@ public class PassportController {
         }
         User user = userService.findUserById(userId);
 
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-
-        Token token = tokens.get(user.getToken().getTokenId());
+        Token token = tokenService.findTokenByUser(user);
         if (token == null || !token.isActivated()) {
             return new ModelAndView(new RedirectView("/token/register", true, false));
         }
@@ -141,8 +140,7 @@ public class PassportController {
         }
         User user = userService.findUserById(userId);
 
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-        Token token = tokens.get(user.getToken().getTokenId());
+        Token token = tokenService.findTokenByUser(user);
         if (token == null || !token.isActivated()) {
             return new RedirectView("/token/register", true, false);
         }
@@ -183,8 +181,7 @@ public class PassportController {
         }
         User user = userService.findUserById(userId);
 
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-        Token token = tokens.get(user.getToken().getTokenId());
+        Token token = tokenService.findTokenByUser(user);
         if (token == null || !token.isActivated()) {
             return new RedirectView("/token/register", true, false);
         }

@@ -14,6 +14,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import ru.tokens.site.entities.Address;
 import ru.tokens.site.entities.Token;
 import ru.tokens.site.entities.User;
+import ru.tokens.site.services.TokenService;
 import ru.tokens.site.services.UserService;
 
 /**
@@ -27,6 +28,9 @@ public class AddressController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private TokenService tokenService;
+
     private static final Logger log = LogManager.getLogger("Address");
 
     @RequestMapping(value = "add", method = RequestMethod.GET)
@@ -36,10 +40,8 @@ public class AddressController {
             return new ModelAndView(new RedirectView("/login", true, false));
         }
         User user = userService.findUserById(userId);
+        Token token = tokenService.findTokenByUser(user);
 
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-
-        Token token = tokens.get(user.getToken().getTokenId());
         if (token == null || !token.isActivated()) {
             return new ModelAndView(new RedirectView("/token/register", true, false));
         }
@@ -64,9 +66,8 @@ public class AddressController {
             return new RedirectView("/login", true, false);
         }
         User user = userService.findUserById(userId);
+        Token token = tokenService.findTokenByUser(user);
 
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-        Token token = tokens.get(user.getToken().getTokenId());
         if (token == null || !token.isActivated()) {
             return new RedirectView("/token/register", true, false);
         }
@@ -76,17 +77,17 @@ public class AddressController {
         log.info("Address for token '{}' was added", token.getTokenId());
         return new RedirectView("/token/user/view", true, false);
     }
-    
+
     @RequestMapping(value = "addpostaddr", method = RequestMethod.GET)
     public View usePostAddress(HttpSession session) {
-        
+
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) {
             return new RedirectView("/login", true, false);
         }
-        
+
         User user = userService.findUserById(userId);
-        
+
         Address address = new Address();
         address.setCountry(user.getPostAddress().getCountry());
         address.setCity(user.getPostAddress().getCity());
@@ -94,9 +95,9 @@ public class AddressController {
         address.setBuilding(user.getPostAddress().getBuilding());
         address.setApartment(user.getPostAddress().getApartment());
         address.setRegion(user.getPostAddress().getRegion());
-        
+
         user.setTokenAddress(address);
-        
+
         return new RedirectView("/token/user/view", true, false);
     }
 
@@ -107,12 +108,10 @@ public class AddressController {
         if (userId == null) {
             return new ModelAndView(new RedirectView("/login", true, false));
         }
-        
+
         User user = userService.findUserById(userId);
+        Token token = tokenService.findTokenByUser(user);
 
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-
-        Token token = tokens.get(user.getToken().getTokenId());
         if (token == null || !token.isActivated()) {
             return new ModelAndView(new RedirectView("/token/register", true, false));
         }
@@ -124,7 +123,7 @@ public class AddressController {
         form.setBuilding(user.getTokenAddress().getBuilding());
         form.setApartment(user.getTokenAddress().getApartment());
         form.setRegion(user.getTokenAddress().getRegion());
-        
+
         model.put("token", token);
         model.put("user", user);
         model.put("addressForm", form);
@@ -139,12 +138,10 @@ public class AddressController {
         if (userId == null) {
             return new RedirectView("/login", true, false);
         }
-        
+
         User user = userService.findUserById(userId);
-
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-
-        Token token = tokens.get(user.getToken().getTokenId());
+        Token token = tokenService.findTokenByUser(user);
+        
         if (token == null || !token.isActivated()) {
             return new RedirectView("/token/register", true, false);
         }

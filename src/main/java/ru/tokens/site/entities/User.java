@@ -6,8 +6,6 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -22,7 +20,7 @@ public class User implements Serializable {
      */
     private static final Logger LOGGER = Logger.getLogger("User");
 
-    private Long userId;
+    private long userId;
 
     /* User registration data */
     private String firstName;

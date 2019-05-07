@@ -1,7 +1,6 @@
 package ru.tokens.site.controller;
 
 import java.time.Instant;
-import java.util.Hashtable;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -15,9 +14,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 import ru.tokens.site.entities.Token;
 import ru.tokens.site.entities.User;
+import ru.tokens.site.services.TokenService;
 import ru.tokens.site.services.UserService;
-import ru.tokens.site.utils.TokenUtils;
-import ru.tokens.site.utils.AppInitUtil;
 import ru.tokens.site.utils.EmailSender;
 
 /**
@@ -34,33 +32,36 @@ public class TokenRegistrationController {
     @Autowired
     private EmailSender emailSender;
     
+    @Autowired
+    private TokenService tokenService;
+    
     private static final Logger log = LogManager.getLogger("Token");
     
-    private static final Map<Long, Token> tokenDatabase = new Hashtable<>();
+//    private static final Map<Long, Token> tokenDatabase = new Hashtable<>();
     
-    static {
-        AppInitUtil util = new AppInitUtil();
-        TokenUtils tokenUtils = util.getTokenUtils();
-        Token t1 = tokenUtils.generateToken();
-        
-        tokenDatabase.put(t1.getTokenId(), t1);
-        System.out.println("Token #1 id: " + t1.getTokenId());
-        System.out.println("Token #1 uuidString: " + tokenDatabase.get(t1.getTokenId()).getUuidString());
-        System.out.println("Token #1 Activation String: "
-                + tokenDatabase.get(t1.getTokenId()).getActivationCode());
-        
-        Token t2 = tokenUtils.generateToken();
-        
-        tokenDatabase.put(t2.getTokenId(), t2);
-        System.out.println("Token #2 id: " + t2.getTokenId());
-        System.out.println("Token #2 uuidString: " + tokenDatabase.get(t2.getTokenId()).getUuidString());
-        System.out.println("Token #2 Activation String: "
-                + tokenDatabase.get(t2.getTokenId()).getActivationCode());
-    }
+//    static {
+//        AppInitUtil util = new AppInitUtil();
+//        TokenUtils_ tokenUtils = util.getTokenUtils();
+//        Token t1 = tokenSe
+//        
+//        tokenDatabase.put(t1.getTokenId(), t1);
+//        System.out.println("Token #1 id: " + t1.getTokenId());
+//        System.out.println("Token #1 uuidString: " + tokenDatabase.get(t1.getTokenId()).getUuidString());
+//        System.out.println("Token #1 Activation String: "
+//                + tokenDatabase.get(t1.getTokenId()).getActivationCode());
+//        
+//        Token t2 = tokenUtils.generateToken();
+//        
+//        tokenDatabase.put(t2.getTokenId(), t2);
+//        System.out.println("Token #2 id: " + t2.getTokenId());
+//        System.out.println("Token #2 uuidString: " + tokenDatabase.get(t2.getTokenId()).getUuidString());
+//        System.out.println("Token #2 Activation String: "
+//                + tokenDatabase.get(t2.getTokenId()).getActivationCode());
+//    }
     
-    public static Map<Long, Token> getTokenDatabase() {
-        return tokenDatabase;
-    }
+//    public static Map<Long, Token> getTokenDatabase() {
+//        return tokenDatabase;
+//    }
     
     @RequestMapping(value = "register", method = RequestMethod.GET)
     public String tokenRegisterForm(Map<String, Object> model) {
@@ -93,15 +94,17 @@ public class TokenRegistrationController {
             return new ModelAndView("token/view/error");
         }
         
-        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-        Token token = null;
+        Token token = this.tokenService.findTokenByUUIDString(uuidString);
         
-        for (Map.Entry<Long, Token> entry : tokens.entrySet()) {
-            Token value = entry.getValue();
-            if (uuidString.equals(value.getUuidString())) {
-                token = value;
-            }
-        }
+//        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
+//        Token token = null;
+//        
+//        for (Map.Entry<Long, Token> entry : tokens.entrySet()) {
+//            Token value = entry.getValue();
+//            if (uuidString.equals(value.getUuidString())) {
+//                token = value;
+//            }
+//        }
         
         if (token == null) {
             msg = "Жетон с таким номером не существует.";

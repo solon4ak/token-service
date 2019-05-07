@@ -80,7 +80,7 @@ public class EmailSender {
         final String confirmationUrl = event.getAppUrl()
                 + "/user/registrationConfirm?token=" + activationUUIDString;
         // final String message = messages.getMessage("message.regSucc", null, event.getLocale());
-        final String message = "Confirm your registration<br /><br />";
+        final String message = "Confirm your registration<br />";
         final String htmlMessage = message + " \r\n" + "<a href='" + confirmationUrl + "'>Confirm</a>";
 
         try {
@@ -114,7 +114,7 @@ public class EmailSender {
                 + "письма для продления действия сервиса. Если вы не перейдете по <br />"
                 + "ссылке или не подтвердите свое намерение продолжить действие <br />"
                 + "запущенного вами сервиса на вашей странице, в течение <b>5 дней</b>, <br />"
-                + "сервис запустит отправку созданных вами сообщений.<br /><br />";
+                + "сервис запустит отправку созданных вами сообщений.<br />";
         final String htmlMessage = message + "<a href='" + confirmationUrl + "'>Confirm</a>";
 
         try {
