@@ -1,7 +1,6 @@
 package ru.tokens.site.controller;
 
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -39,7 +38,7 @@ public class PasswordResetController {
     }
     
     @RequestMapping(value = "passwordreset", method = RequestMethod.POST)
-    public ModelAndView resetPassword(Map<String, Object> model, HttpServletRequest request, 
+    public ModelAndView resetPassword(Map<String, Object> model, 
             PasswordResetForm form) {
         String email = form.getEmail();
         User user = null;

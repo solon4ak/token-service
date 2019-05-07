@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TimerTask;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -100,13 +101,19 @@ public class MessageEventTimerServiceImpl implements MessageEventTimerService {
                 if (event.getStatus() == MessageEvent.MessageEventStatus.STARTED) {
                     LOG.warn("fireMessageEventPeriodicalTimer task start running");
                     // отправить проверочное письмо
-                    emailSender.sendTriggerEmail(event);
+                    final String eventProlongationToken = UUID.randomUUID().toString();
+                    event.setProlongationToken(eventProlongationToken);
+                    LOG.warn("Created eventProlongationToken: {}", event.getProlongationToken());
+                    emailSender.sendTriggerEmail(event);                   
+                    System.out.println("Sending prolongation email");
                     LOG.warn("starting fireMessageEventCheckingTimer");
+                    
+                    event.setProlonged(false);                    
                     fireMessageEventCheckingTimer(
                             event,
                             Long.valueOf(environment.getProperty("timer.confirm.interval")
-                        )
-                    );
+                            )
+                    );                    
                     event.setWaitingProlongation(true);
                 }
                 System.out.println("-----> fireMessageEventPeriodicalTimer() executed");
@@ -115,73 +122,4 @@ public class MessageEventTimerServiceImpl implements MessageEventTimerService {
 
         scheduler.getScheduledExecutor().schedule(checkingTask, delay, TimeUnit.MINUTES);
     }
-
-//    @Override
-//    public synchronized Timer createRepeatedAction(final MessageEvent event, 
-//            final String contextUrl, final User user) {
-//
-//        final TimerTask timerTask = new TimerTask() {
-//            @Override
-//            public void run() {
-//                sender.sendTriggerEmail(event, contextUrl, user);
-//                System.out.println("Event subject: " + event.getDataEntry().getSubject());
-//            }
-//        };
-//
-//        final Long period = new Long(
-//                MessageEventHelper
-//                        .getIntervals()
-//                        .get(event.getCheckingInterval()
-//                        )
-//        );
-//
-////        final Long periodInMinutes = period * DAY;
-//        final Long periodInMinutes = period * MINUTE;
-//        final Timer timer = new Timer(event.getDataEntry().getSubject() + "-periodical Timer");
-//        timer.scheduleAtFixedRate(timerTask, periodInMinutes, periodInMinutes);
-//        event.setPeriodicalTimer(timer);
-//
-//        return timer;
-//    }
-//
-//    @Override
-//    public synchronized Timer createCheckingTimer(final MessageEvent event) {
-//
-//        final List<Contact> contacts = event.getContacts();
-//        final String subject = event.getDataEntry().getSubject();
-//        final String body = event.getDataEntry().getBody();
-//        final Collection<Attachment> attachments = event.getDataEntry().getAttachments();
-////        String from = event.getUser().getEmail();
-//
-//        final TimerTask timerTask = new TimerTask() {
-//            @Override
-//            public void run() {
-//                for (Contact contact : contacts) {
-//                    final Email e = new Email();
-//                    e.setTo(contact.getEmail());
-////                    e.setFrom(from);
-//                    e.setSubject(subject);
-//                    e.setContent(body);
-//                    e.setAttachments(new LinkedList<>(attachments));
-//                    e.setCreated(Instant.now());
-//                    sender.sendEventHappenedEmail(e);
-//                }
-//
-//                System.out.println("Event subject: " + event.getDataEntry().getSubject());
-//            }
-//        };
-//
-////        final Long delay = Long.valueOf(environment.getProperty("timer.confirm.interval")) * DAY;
-//        final Long delay = Long.valueOf(environment.getProperty("timer.confirm.interval")) * MINUTE;
-//        final Timer timer = new Timer(event.getDataEntry().getSubject() + "-checking Timer");
-//        timer.schedule(timerTask, delay);
-//        event.setConfirmationTimer(timer);
-//        return timer;
-//    }
-//
-//    @Override
-//    public synchronized void cancelTimer(final Timer timer) {
-//        timer.cancel();
-//        timer.purge();
-//    }
 }

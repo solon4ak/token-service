@@ -3,6 +3,7 @@ package ru.tokens.site.utils;
 import java.io.File;
 import java.time.Instant;
 import java.util.Date;
+import java.util.UUID;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -42,7 +43,7 @@ public class EmailSender {
     private FileUtil fileUtil;
 
     public synchronized void sendEventHappenedEmail(Email email) {
-        
+
         log.warn("Insight sendEventHappenedEmail method");
         try {
             MimeMessage message = mailSender.createMimeMessage();
@@ -97,25 +98,24 @@ public class EmailSender {
             log.error("Email sending error {}", ex.getMessage());
         }
     }
-    
+
     public synchronized void sendTriggerEmail(final MessageEvent event) {
 
         log.warn("Insight sendTriggerEmail method");
-        final String prolongeUUIDString = event.getProlongationToken();
+
         final String recipientAddress = event.getUser().getUserEmailAddress();
+        final String prolongationUUIDString = event.getProlongationToken();
         final String subject = "tag4life: periodical user status checking email";
-        final String contextUrl = environment.getProperty("host.name") + "/tkn";
-        final String confirmationUrl = contextUrl
-                + "/token/prolongationConfirm?eventId=" + event.getId()
-                + "&token=" + prolongeUUIDString;
-        // final String message = messages.getMessage("message.regSucc", null, event.getLocale());
+        final String contextUrl = environment.getProperty("host.name");
+        final String confirmationUrl = contextUrl + "/tkn/token/prolongationConfirm/" 
+                + event.getId() + "/" + prolongationUUIDString;
         final String message = "Вы получили это письмо так как используете сервис <br />"
                 + "отсроченного отправления сообщения. Перейдите по ссылке в теле <br />"
                 + "письма для продления действия сервиса. Если вы не перейдете по <br />"
                 + "ссылке или не подтвердите свое намерение продолжить действие <br />"
                 + "запущенного вами сервиса на вашей странице, в течение <b>5 дней</b>, <br />"
                 + "сервис запустит отправку созданных вами сообщений.<br /><br />";
-        final String htmlMessage = message + " \r\n" + "<a href='" + confirmationUrl + "'>Confirm</a>";
+        final String htmlMessage = message + "<a href='" + confirmationUrl + "'>Confirm</a>";
 
         try {
             final MimeMessage mimeMessage = mailSender.createMimeMessage();
@@ -124,7 +124,7 @@ public class EmailSender {
             helper.setTo(new InternetAddress(recipientAddress));
             helper.setFrom(environment.getProperty("mail.smtp.user"));
             helper.setSubject(subject);
-            mimeMessage.setContent(htmlMessage, "UTF-8");
+            mimeMessage.setContent(htmlMessage, "text/html;charset=UTF-8");
             mailSender.send(mimeMessage);
 
             log.warn("Message Event prolongation email sending complete");
@@ -147,10 +147,10 @@ public class EmailSender {
 
         System.out.println("User reset password email sending complete.");
     }
-    
-    public synchronized void sendSimpleEmail(final String email, final String subject, 
+
+    public synchronized void sendSimpleEmail(final String email, final String subject,
             final String body) {
-        
+
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(email);
         mailMessage.setFrom(environment.getProperty("mail.smtp.user"));
