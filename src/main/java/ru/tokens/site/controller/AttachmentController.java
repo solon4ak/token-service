@@ -6,7 +6,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,9 +17,9 @@ import ru.tokens.site.entities.DataEntry;
 import ru.tokens.site.entities.MedicalHistory;
 import ru.tokens.site.entities.MessageEvent;
 import ru.tokens.site.entities.User;
+import ru.tokens.site.services.AttachmentService;
 import ru.tokens.site.services.MessageEventService;
 import ru.tokens.site.services.UserService;
-import ru.tokens.site.services.FileUtil;
 
 /**
  *
@@ -32,12 +31,11 @@ public class AttachmentController {
     @Autowired
     private UserService userService;
 
-//    @Autowired
-//    @Qualifier("fileService")
-//    private FileUtil fileUtil;
-
     @Autowired
     private MessageEventService eventService;
+    
+    @Autowired
+    private AttachmentService attachmentService;
     
     private static final Logger log = LogManager.getLogger("AttachmentController");
 
@@ -62,12 +60,13 @@ public class AttachmentController {
             atch.delete();
 
             entry.deleteAttachment(attachmentId);
+            attachmentService.delete(attachmentId);
 
             model.put("entry", entry);
             model.put("user", user);
         }
 
-        return new ModelAndView("entry/edit/view");
+        return new ModelAndView(new RedirectView("/token/user/med/entry/" + entryId + "/edit", true, false));
     }
 
     @RequestMapping(value = "token/user/csdevent/{eventId}/{attachmentId}/delete",
@@ -91,6 +90,7 @@ public class AttachmentController {
             atch.delete();
 
             entry.deleteAttachment(attachmentId);
+            attachmentService.delete(attachmentId);
 
             model.put("entry", entry);
             model.put("user", user);

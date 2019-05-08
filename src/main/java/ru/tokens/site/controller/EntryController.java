@@ -3,6 +3,7 @@ package ru.tokens.site.controller;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpSession;
@@ -23,9 +24,11 @@ import ru.tokens.site.entities.DataEntry;
 import ru.tokens.site.entities.MedicalHistory;
 import ru.tokens.site.entities.Token;
 import ru.tokens.site.entities.User;
+import ru.tokens.site.services.AttachmentService;
 import ru.tokens.site.services.TokenService;
 import ru.tokens.site.services.UserService;
 import ru.tokens.site.services.FileUtil;
+import ru.tokens.site.services.DataEntryService;
 
 /**
  *
@@ -47,17 +50,11 @@ public class EntryController {
     @Autowired
     private TokenService tokenService;
 
-    private volatile long ENTRY_ID_SEQUENCE = 1;
+    @Autowired
+    private DataEntryService dataEntryService;
 
-    private synchronized long getNextEntryId() {
-        return this.ENTRY_ID_SEQUENCE++;
-    }
-
-    private volatile long ATTACHMENT_ID_SEQUENCE = 1;
-
-    private synchronized long getNextAttachmentId() {
-        return this.ATTACHMENT_ID_SEQUENCE++;
-    }
+    @Autowired
+    private AttachmentService attachmentService;
 
     @RequestMapping(
             value = {"{tokenId}/{uuidString}/med/entry/view/{entryId}"},
@@ -171,7 +168,6 @@ public class EntryController {
         User user = userService.findUserById(userId);
 
         DataEntry entry = new DataEntry();
-        entry.setId(this.getNextEntryId());
         String subject = form.getSubject();
         if (subject.isEmpty() || subject.equals("")) {
             subject = "new";
@@ -182,6 +178,7 @@ public class EntryController {
 
         this.processAttachment(entry, form);
 
+        dataEntryService.save(entry);
         user.getMedicalHistory().addMedicalFormEntry(entry);
         return new RedirectView("/token/user/med/view", true, false);
     }
@@ -202,19 +199,19 @@ public class EntryController {
 
         MedicalHistory medicalHistory = user.getMedicalHistory();
         DataEntry entry = medicalHistory.getMedicalFormEntry(entryId);
-        if (null != entry) {
-
-            Map<Long, Attachment> attachments = entry.getAttachmentsMap();
+        if (null != entry) {            
+            Collection<Attachment> attachments = entry.getAttachments();
             if (!attachments.isEmpty()) {
-                String path = fileUtil.getStorageDirectory();
-                for (Map.Entry<Long, Attachment> a : attachments.entrySet()) {
-                    Attachment attachment = a.getValue();
-                    File atch = new File(attachment.getUrl());
+                for (Attachment a : attachments) {
+                    File atch = new File(a.getUrl());
                     atch.delete();
+//                    entry.getAttachmentsMap().remove(a.getId());
+                    attachmentService.delete(a.getId());
                 }
             }
 
             medicalHistory.deleteMedicalFormEntry(entryId);
+            dataEntryService.delete(entryId);
             log.info("Entry '{}' for token '{}' was deleted.", entryId, token.getTokenId());
         }
 
@@ -275,9 +272,9 @@ public class EntryController {
             entry.setBody(form.getBody());
 
             this.processAttachment(entry, form);
-
-            log.info("Editing entry for token '{}'.", token.getTokenId());
-
+            
+            dataEntryService.save(entry);
+            log.info("Editing entry for token '{}'.", token.getTokenId());            
             return new RedirectView("/token/user/med/entry/" + entry.getId() + "/view", true, false);
         }
 
@@ -294,7 +291,7 @@ public class EntryController {
         );
     }
 
-    private void processAttachment(DataEntry entry, EntryForm form)
+    private synchronized void processAttachment(DataEntry entry, EntryForm form)
             throws IOException {
         for (MultipartFile filePart : form.getAttachments()) {
             log.debug("Processing attachment for new entry.");
@@ -312,13 +309,13 @@ public class EntryController {
                 try {
                     filePart.transferTo(newFile);
 
-                    attachment.setId(this.getNextAttachmentId());
                     attachment.setName(filePart.getOriginalFilename());
                     attachment.setNewFileName(newFileName);
                     attachment.setContentType(filePart.getContentType());
                     attachment.setSize(filePart.getSize());
                     attachment.setUrl(newFile.getCanonicalPath());
 
+                    attachmentService.save(attachment);
                     entry.addAttachment(attachment);
                 } catch (IOException
                         | IllegalArgumentException | IllegalStateException e) {

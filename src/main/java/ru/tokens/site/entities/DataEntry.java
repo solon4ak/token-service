@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  *
@@ -85,5 +86,48 @@ public class DataEntry {
     public Map<Long, Attachment> getAttachmentsMap() {
         return this.attachments;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 67 * hash + (int) (this.id ^ (this.id >>> 32));
+        hash = 67 * hash + Objects.hashCode(this.subject);
+        hash = 67 * hash + Objects.hashCode(this.body);
+        hash = 67 * hash + Objects.hashCode(this.dateCreated);
+        hash = 67 * hash + Objects.hashCode(this.attachments);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final DataEntry other = (DataEntry) obj;
+        if (this.id != other.id) {
+            return false;
+        }
+        if (!Objects.equals(this.subject, other.subject)) {
+            return false;
+        }
+        if (!Objects.equals(this.body, other.body)) {
+            return false;
+        }
+        if (!Objects.equals(this.dateCreated, other.dateCreated)) {
+            return false;
+        }
+        if (!Objects.equals(this.attachments, other.attachments)) {
+            return false;
+        }
+        return true;
+    }
+    
+    
     
 }

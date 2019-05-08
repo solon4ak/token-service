@@ -27,6 +27,9 @@ import ru.tokens.site.entities.Contact;
 import ru.tokens.site.entities.DataEntry;
 import ru.tokens.site.entities.Token;
 import ru.tokens.site.entities.User;
+import ru.tokens.site.services.AttachmentService;
+import ru.tokens.site.services.ContactService;
+import ru.tokens.site.services.DataEntryService;
 import ru.tokens.site.services.MessageEventService;
 import ru.tokens.site.services.FileUtil;
 import ru.tokens.site.utils.MessageEventHelper;
@@ -56,21 +59,18 @@ public class MessageEventController {
     
     @Autowired
     private TokenService tokenService;
+    
+    @Autowired
+    private ContactService contactService;
 
     @Autowired
     private TimerProlongationLinkService linkService;
+    
+    @Autowired
+    private DataEntryService entryService;
 
-    private volatile long ENTRY_ID_SEQUENCE = 100;
-
-    private synchronized long getNextEntryId() {
-        return this.ENTRY_ID_SEQUENCE++;
-    }
-
-    private volatile long ATTACHMENT_ID_SEQUENCE = 100;
-
-    private synchronized long getNextAttachmentId() {
-        return this.ATTACHMENT_ID_SEQUENCE++;
-    }
+    @Autowired
+    private AttachmentService attachmentService;
 
     @RequestMapping(value = "user/csdevent/view/{eventId}", method = RequestMethod.GET)
     public ModelAndView viewMessageEvent(Map<String, Object> model, HttpSession session,
@@ -143,7 +143,7 @@ public class MessageEventController {
 
         if (contactIds != null && contactIds.length > 0) {
             for (Long id : contactIds) {
-                contacts.add(user.getContact(id));
+                contacts.add(contactService.findById(id));
             }
         }        
         
@@ -153,14 +153,15 @@ public class MessageEventController {
         entry.setDateCreated(Instant.now());
         entry.setSubject(form.getSubject());
         entry.setBody(form.getBody());
-        entry.setId(this.getNextEntryId());
 
         this.uploadFiles(entry, form);
 
+        entryService.save(entry);
         messageEvent.setDataEntry(entry);
-//        user.addMessageEvent(messageEvent);
         messageEvent.setStatus(MessageEvent.MessageEventStatus.PENDING);
-        eventService.addMessageEvent(messageEvent);
+        
+        eventService.addMessageEvent(messageEvent);        
+        user.addMessageEvent(messageEvent);
 
         return new RedirectView("/token/user/csdevent/view/" + messageEvent.getId(), true, false);
     }
@@ -247,7 +248,7 @@ public class MessageEventController {
         }
 
         MessageEvent messageEvent = eventService.findMessageEventById(eventId);
-//        messageEvent.setUser(user);
+        messageEvent.setUser(user);
 
         messageEvent.setCheckingInterval(form.getEmailSendingInterval());
 
@@ -256,7 +257,7 @@ public class MessageEventController {
 
         if (contactIds != null && contactIds.length > 0) {
             for (Long id : contactIds) {
-                contacts.add(user.getContact(id));
+                contacts.add(contactService.findById(id));
             }
         }
 
@@ -267,11 +268,12 @@ public class MessageEventController {
         try {
             this.uploadFiles(entry, form);
         } catch (IOException ex) {
-            java.util.logging.Logger.getLogger(MessageEventController.class.getName()).log(Level.SEVERE, null, ex);
+            log.warn("Exeption while processing files: {}", ex);
         }
 
         messageEvent.setDataEntry(entry);
-//        user.addMessageEvent(messageEvent);
+        entryService.save(entry);
+        user.addMessageEvent(messageEvent);
         messageEvent.setStatus(MessageEvent.MessageEventStatus.PENDING);
         eventService.addMessageEvent(messageEvent);
 
@@ -296,20 +298,23 @@ public class MessageEventController {
         MessageEvent messageEvent = eventService.findMessageEventById(eventId);
         DataEntry entry = messageEvent.getDataEntry();
 
-        if (null != entry) {
-            Map<Long, Attachment> attachments = entry.getAttachmentsMap();
+        if (null != entry) {            
+            Collection<Attachment> attachments = entry.getAttachments();
             if (!attachments.isEmpty()) {
-                for (Map.Entry<Long, Attachment> a : attachments.entrySet()) {
-                    Attachment attachment = a.getValue();
-                    File attch = new File(attachment.getUrl());
-                    attch.delete();
+                for (Attachment a : attachments) {
+                    File atch = new File(a.getUrl());
+                    atch.delete();
+//                    entry.getAttachmentsMap().remove(a.getId());
+                    attachmentService.delete(a.getId());
                 }
             }
 
             messageEvent.setDataEntry(null);
+            entryService.delete(entry.getId());
             log.info("Entry '{}' for message event '{}' was deleted.", eventId, messageEvent.getId());
         }
 
+        user.deleteMessageEvent(eventId);
         eventService.deleteMessageEvent(eventId);
 
         return new RedirectView("/token/user/csdevent/list", true, false);
@@ -393,13 +398,13 @@ public class MessageEventController {
                 try {
                     filePart.transferTo(newFile);
 
-                    attachment.setId(this.getNextAttachmentId());
                     attachment.setName(filePart.getOriginalFilename());
                     attachment.setNewFileName(newFileName);
                     attachment.setContentType(filePart.getContentType());
                     attachment.setSize(filePart.getSize());
                     attachment.setUrl(newFile.getCanonicalPath());
 
+                    attachmentService.save(attachment);
                     entry.addAttachment(attachment);
                     System.out.println("Attachment was added:" + attachment.getName());
                 } catch (IOException | IllegalArgumentException | IllegalStateException e) {
