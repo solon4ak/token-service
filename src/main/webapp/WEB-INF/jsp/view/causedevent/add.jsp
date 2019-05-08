@@ -39,9 +39,7 @@
                         </tr>
                     </c:forEach>
                 </tbody>
-            </table>  
-            <br /> 
-            <a href="<c:url value="/token/user/contact/add" />">Add contact</a>
+            </table>
         </fieldset>
         <fieldset>
             <legend>Attachments</legend>

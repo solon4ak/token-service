@@ -15,6 +15,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import ru.tokens.site.entities.Contact;
 import ru.tokens.site.entities.Token;
 import ru.tokens.site.entities.User;
+import ru.tokens.site.services.ContactService;
 import ru.tokens.site.services.TokenService;
 import ru.tokens.site.services.UserService;
 
@@ -31,14 +32,11 @@ public class ContactController {
     
     @Autowired
     private TokenService tokenService;
+    
+    @Autowired
+    private ContactService contactService;
 
     private static final Logger log = LogManager.getLogger("ContactController");
-
-    private volatile long CONTACT_ID_SEQUENCE = 1;
-
-    private synchronized long getNextContactId() {
-        return this.CONTACT_ID_SEQUENCE++;
-    }
 
     @RequestMapping(value = {"add"}, method = RequestMethod.GET)
     public ModelAndView addContact(Map<String, Object> model, HttpSession session) {
@@ -65,7 +63,6 @@ public class ContactController {
     public View addContact(HttpSession session, ContactForm form) {
 
         Contact contact = new Contact();
-        contact.setContactId(this.getNextContactId());
         contact.setFirstName(form.getFirstName());
         contact.setLastName(form.getLastName());
         contact.setPhoneNumber(form.getPhoneNumber());
@@ -81,7 +78,8 @@ public class ContactController {
         if (token == null || !token.isActivated()) {
             return new RedirectView("/token/register", true, false);
         }
-
+        
+        contactService.saveContact(contact);
         user.addContact(contact);
 
         log.info("Contact for token '{}' was added", token.getTokenId());
@@ -103,6 +101,7 @@ public class ContactController {
         }
 
         user.deleteContact(contactId);
+        contactService.deleteContact(contactId);
 
         log.info("Contact '{}' for token '{}' was deleted.", contactId, token.getTokenId());
         return new RedirectView("/token/user/view", true, false);
@@ -124,7 +123,7 @@ public class ContactController {
         }
 
         ContactForm form = new ContactForm();
-        Contact contact = user.getContact(contactId);
+        Contact contact = contactService.findById(contactId);
 
         if (contact != null) {
             form.setFirstName(contact.getFirstName());
@@ -159,14 +158,15 @@ public class ContactController {
             return new RedirectView("/token/register", true, false);
         }
 
-        Contact contact = user.getContact(contactId);
+        Contact contact = contactService.findById(contactId);
 
         if (contact != null) {
             contact.setFirstName(form.getFirstName());
             contact.setLastName(form.getLastName());
             contact.setPhoneNumber(form.getPhoneNumber());
             contact.setEmail(form.getEmail());
-
+            
+            contactService.saveContact(contact);
             log.info("Contact for token '{}' has been edited", token.getTokenId());
         }
 

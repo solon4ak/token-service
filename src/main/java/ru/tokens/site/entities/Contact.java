@@ -18,11 +18,11 @@ public class Contact implements Serializable {
     public Contact() {
     }
 
-    public Long getContactId() {
+    public long getContactId() {
         return contactId;
     }
 
-    public void setContactId(Long contactId) {
+    public void setContactId(long contactId) {
         this.contactId = contactId;
     }
     
@@ -57,7 +57,7 @@ public class Contact implements Serializable {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
-
+    
     @Override
     public int hashCode() {
         int hash = 7;
