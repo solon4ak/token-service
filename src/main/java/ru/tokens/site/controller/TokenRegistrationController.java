@@ -1,9 +1,9 @@
 package ru.tokens.site.controller;
 
+import java.security.Principal;
 import java.time.Instant;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,32 +37,6 @@ public class TokenRegistrationController {
     
     private static final Logger log = LogManager.getLogger("Token");
     
-//    private static final Map<Long, Token> tokenDatabase = new Hashtable<>();
-    
-//    static {
-//        AppInitUtil util = new AppInitUtil();
-//        TokenUtils_ tokenUtils = util.getTokenUtils();
-//        Token t1 = tokenSe
-//        
-//        tokenDatabase.put(t1.getTokenId(), t1);
-//        System.out.println("Token #1 id: " + t1.getTokenId());
-//        System.out.println("Token #1 uuidString: " + tokenDatabase.get(t1.getTokenId()).getUuidString());
-//        System.out.println("Token #1 Activation String: "
-//                + tokenDatabase.get(t1.getTokenId()).getActivationCode());
-//        
-//        Token t2 = tokenUtils.generateToken();
-//        
-//        tokenDatabase.put(t2.getTokenId(), t2);
-//        System.out.println("Token #2 id: " + t2.getTokenId());
-//        System.out.println("Token #2 uuidString: " + tokenDatabase.get(t2.getTokenId()).getUuidString());
-//        System.out.println("Token #2 Activation String: "
-//                + tokenDatabase.get(t2.getTokenId()).getActivationCode());
-//    }
-    
-//    public static Map<Long, Token> getTokenDatabase() {
-//        return tokenDatabase;
-//    }
-    
     @RequestMapping(value = "register", method = RequestMethod.GET)
     public String tokenRegisterForm(Map<String, Object> model) {
         model.put("registrationFailed", false);
@@ -71,14 +45,10 @@ public class TokenRegistrationController {
     }
     
     @RequestMapping(value = "register", method = RequestMethod.POST)
-    public ModelAndView tokenFormSubmit(Map<String, Object> model, HttpSession session,
+    public ModelAndView tokenFormSubmit(Map<String, Object> model, Principal principal,
             HttpServletRequest request, TokenRegistrationForm form) {
         
-        Long userId = (Long) session.getAttribute("userId");        
-        if (userId == null) {
-            return new ModelAndView(new RedirectView("/login", true, false));
-        }
-        
+        Long userId = Long.valueOf(principal.getName());        
         User user = userService.findUserById(userId);
 
         // TODO валидация полей
@@ -95,16 +65,6 @@ public class TokenRegistrationController {
         }
         
         Token token = this.tokenService.findTokenByUUIDString(uuidString);
-        
-//        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-//        Token token = null;
-//        
-//        for (Map.Entry<Long, Token> entry : tokens.entrySet()) {
-//            Token value = entry.getValue();
-//            if (uuidString.equals(value.getUuidString())) {
-//                token = value;
-//            }
-//        }
         
         if (token == null) {
             msg = "Жетон с таким номером не существует.";

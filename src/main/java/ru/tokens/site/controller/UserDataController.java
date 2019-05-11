@@ -1,5 +1,6 @@
 package ru.tokens.site.controller;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.Map;
 import javax.servlet.http.HttpSession;
@@ -76,12 +77,9 @@ public class UserDataController {
     }
 
     @RequestMapping(value = "user/view", method = RequestMethod.GET)
-    public ModelAndView view(Map<String, Object> model, HttpSession session) {
+    public ModelAndView view(Map<String, Object> model, Principal principal) {
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new ModelAndView(new RedirectView("/login", true, false));
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
 
         Token token = tokenService.findTokenByUser(user);
@@ -95,175 +93,4 @@ public class UserDataController {
         return new ModelAndView("user/edit/view");
     }
 
-//    @RequestMapping(value = {"add/user"}, method = RequestMethod.GET)
-//    public ModelAndView addUserForm(Map<String, Object> model, HttpSession session) {
-//
-//        Long userId = (Long) session.getAttribute("userId");
-//        if (userId == null) {
-//            return new ModelAndView(new RedirectView("/login", true, false));
-//        }
-//        User user = userRegistrationController.getUserDatabase().get(userId);
-//
-//        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-//        Token token = tokens.get(user.getToken().getTokenId());
-//        if (token == null || !token.isActivated()) {
-//            return new ModelAndView(new RedirectView("/token/register", true, false));
-//        }
-//
-//        UserForm userForm = new UserForm();
-//        userForm.setFirstName(user.getFirstName());
-//        userForm.setLastName(user.getLastName());
-//        userForm.setMiddleName(user.getMiddleName());
-//        
-//        model.put("userForm", userForm);
-//        model.put("token", token);
-//        model.put("user", user);
-//        System.out.println("--- entering adding user form");
-//        return new ModelAndView("user/edit/add");
-//    }
-
-//    @RequestMapping(value = {"add/user"}, method = RequestMethod.POST)
-//    private View addUser(Map<String, Object> model, HttpSession session,
-//            UserForm userForm) {
-//
-//        Long userId = (Long) session.getAttribute("userId");
-//        if (userId == null) {
-//            return new RedirectView("/login", true, false);
-//        }
-//        User user = userRegistrationController.getUserDatabase().get(userId);
-//
-//        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-//        Token token = tokens.get(user.getToken().getTokenId());
-//        if (token == null || !token.isActivated()) {
-//            return new RedirectView("/token/register", true, false);
-//        }
-//
-//        user.setFirstName(userForm.getFirstName());
-//        user.setMiddleName(userForm.getMiddleName());
-//        user.setLastName(userForm.getLastName());
-//
-//        String birthDate = userForm.getBirthDate();
-//        LocalDate bdate;
-//        try {
-//            bdate = LocalDate.parse(birthDate, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-//            // check date less than today date
-//            user.setBirthDate(bdate);
-//
-//        } catch (DateTimeParseException e) {
-//            String msg = "Неправильный формат даты. "
-//                    + "Введите дату в следующем формате '30.03.1985'.";
-//            model.put("message", msg);
-//            model.put("uuidString", token.getUuidString());
-//            return new RedirectView("/token/view/error", true, true, true);
-//        }
-//
-//        return new RedirectView("/token/user/view", true, false);
-//    }
-
-//    @RequestMapping(value = {"user/edit"}, method = RequestMethod.GET)
-//    public ModelAndView edit(Map<String, Object> model, HttpSession session) {
-//
-//        Long userId = (Long) session.getAttribute("userId");
-//        if (userId == null) {
-//            return new ModelAndView(new RedirectView("/login", true, false));
-//        }
-//        User user = userRegistrationController.getUserDatabase().get(userId);
-//
-//        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-//        Token token = tokens.get(user.getToken().getTokenId());
-//        if (token == null || !token.isActivated()) {
-//            return new ModelAndView(new RedirectView("/token/register", true, false));
-//        }
-//
-//        UserForm form = new UserForm();
-//        form.setFirstName(user.getFirstName());
-//        form.setMiddleName(user.getMiddleName());
-//        form.setLastName(user.getLastName());
-//        form.setBirthDate(user.getBirthDate() == null
-//                ? "" : user.getBirthDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
-//        );
-//
-//        model.put("userForm", form);
-//        model.put("token", token);
-//        model.put("user", user);
-//        
-//        return new ModelAndView("user/edit/edit");
-//    }
-//
-//    @RequestMapping(value = {"user/edit"}, method = RequestMethod.POST)
-//    public View edit(Map<String, Object> model, HttpSession session, UserForm form) {
-//
-//        Long userId = (Long) session.getAttribute("userId");
-//        if (userId == null) {
-//            return new RedirectView("/login", true, false);
-//        }
-//        User user = userRegistrationController.getUserDatabase().get(userId);
-//
-//        Map<Long, Token> tokens = TokenRegistrationController.getTokenDatabase();
-//        Token token = tokens.get(user.getToken().getTokenId());
-//        if (token == null || !token.isActivated()) {
-//            return new RedirectView("/token/register", true, false);
-//        }
-//
-//        user.setFirstName(form.getFirstName());
-//        user.setMiddleName(form.getMiddleName());
-//        user.setLastName(form.getLastName());
-//        String birthDate = form.getBirthDate();
-//        LocalDate bdate;
-//        try {
-//            bdate = LocalDate.parse(birthDate, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-//        } catch (DateTimeParseException e) {
-//            String msg = "Неправильный формат даты. "
-//                    + "Введите дату в следующем формате '30.03.1985'.";
-//            model.put("message", msg);
-//            model.put("uuidString", token.getUuidString());
-//            return new RedirectView("/token/view/error", true, true, true);
-//        }
-//        // check date less than today date
-//        user.setBirthDate(bdate);
-//
-//        return new RedirectView("/token/user/view", true, false);
-//
-//    }
-
-//    public static class UserForm {
-//
-//        private String firstName;
-//        private String lastName;
-//        private String middleName;
-//        private String birthDate;
-//
-//        public String getFirstName() {
-//            return firstName;
-//        }
-//
-//        public void setFirstName(String firstName) {
-//            this.firstName = firstName;
-//        }
-//
-//        public String getLastName() {
-//            return lastName;
-//        }
-//
-//        public void setLastName(String lastName) {
-//            this.lastName = lastName;
-//        }
-//
-//        public String getMiddleName() {
-//            return middleName;
-//        }
-//
-//        public void setMiddleName(String middleName) {
-//            this.middleName = middleName;
-//        }
-//
-//        public String getBirthDate() {
-//            return birthDate;
-//        }
-//
-//        public void setBirthDate(String birthDate) {
-//            this.birthDate = birthDate;
-//        }
-//
-//    }
 }

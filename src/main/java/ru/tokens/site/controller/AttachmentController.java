@@ -1,8 +1,8 @@
 package ru.tokens.site.controller;
 
 import java.io.File;
+import java.security.Principal;
 import java.util.Map;
-import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,13 +42,10 @@ public class AttachmentController {
     @RequestMapping(value = "token/user/med/entry/{entryId}/{attachmentId}/delete",
             method = RequestMethod.GET)
     public ModelAndView delete(Map<String, Object> model,
-            HttpSession session, @PathVariable("entryId") long entryId,
+            Principal principal, @PathVariable("entryId") long entryId,
             @PathVariable("attachmentId") Long attachmentId) {
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new ModelAndView(new RedirectView("/login", true, false));
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
 
         MedicalHistory history = user.getMedicalHistory();
@@ -72,13 +69,10 @@ public class AttachmentController {
     @RequestMapping(value = "token/user/csdevent/{eventId}/{attachmentId}/delete",
             method = RequestMethod.GET)
     public ModelAndView deleteMessageEventAttachment(Map<String, Object> model,
-            HttpSession session, @PathVariable("eventId") Long eventId,
+            Principal principal, @PathVariable("eventId") Long eventId,
             @PathVariable("attachmentId") Long attachmentId) {
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new ModelAndView(new RedirectView("/login", true, false));
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
 
         MessageEvent event = eventService.findMessageEventById(eventId);

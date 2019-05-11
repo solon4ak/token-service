@@ -1,7 +1,7 @@
 package ru.tokens.site.controller;
 
+import java.security.Principal;
 import java.util.Map;
-import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +29,9 @@ public class PostAddressController {
     private static final Logger log = LogManager.getLogger("PostAddressController");
 
     @RequestMapping(value = "add", method = RequestMethod.GET)
-    public ModelAndView addAddress(Map<String, Object> model, HttpSession session) {
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new ModelAndView(new RedirectView("/login", true, false));
-        }
+    public ModelAndView addAddress(Map<String, Object> model, Principal principal) {
+        
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
         
         model.put("addressForm", new PostAddressForm());
@@ -42,7 +40,7 @@ public class PostAddressController {
     }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public View addAddress(HttpSession session, PostAddressForm form) {
+    public View addAddress(Principal principal, PostAddressForm form) {
         
         Address address = new Address();
         
@@ -54,10 +52,7 @@ public class PostAddressController {
         address.setRegion(form.getRegion());
         address.setZipCode(form.getZipCode());
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new RedirectView("/login", true, false);
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
 
         user.setPostAddress(address);
@@ -67,12 +62,9 @@ public class PostAddressController {
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.GET)
-    public ModelAndView editAddress(Map<String, Object> model, HttpSession session) {
+    public ModelAndView editAddress(Map<String, Object> model, Principal principal) {
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new ModelAndView(new RedirectView("/login", true, false));
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
         
         PostAddressForm form = new PostAddressForm();
@@ -92,12 +84,9 @@ public class PostAddressController {
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.POST)
-    public View editAddress(HttpSession session, PostAddressForm form) {
+    public View editAddress(Principal principal, PostAddressForm form) {
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new RedirectView("/login", true, false);
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
        
         Address address = user.getPostAddress();

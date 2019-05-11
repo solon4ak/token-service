@@ -2,11 +2,11 @@ package ru.tokens.site.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.Principal;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +60,7 @@ public class EntryController {
             value = {"{tokenId}/{uuidString}/med/entry/view/{entryId}"},
             method = RequestMethod.GET
     )
-    public ModelAndView view(Map<String, Object> model, HttpSession session,
+    public ModelAndView view(Map<String, Object> model,
             @PathVariable("tokenId") long tokenId,
             @PathVariable("uuidString") String uuidString,
             @PathVariable("entryId") long entryId) {
@@ -116,12 +116,10 @@ public class EntryController {
     }
 
     @RequestMapping(value = "user/med/entry/{entryId}/view", method = RequestMethod.GET)
-    public ModelAndView viewEntry(Map<String, Object> model, HttpSession session,
+    public ModelAndView viewEntry(Map<String, Object> model, Principal principal,
             @PathVariable("entryId") long entryId) {
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new ModelAndView(new RedirectView("/login", true, false));
-        }
+        
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
 
         Token token = tokenService.findTokenByUser(user);
@@ -139,12 +137,9 @@ public class EntryController {
     }
 
     @RequestMapping(value = "user/med/entry/create", method = RequestMethod.GET)
-    public ModelAndView create(Map<String, Object> model, HttpSession session) {
+    public ModelAndView create(Map<String, Object> model, Principal principal) {
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new ModelAndView(new RedirectView("/login", true, false));
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
 
         Token token = tokenService.findTokenByUser(user);
@@ -159,12 +154,9 @@ public class EntryController {
     }
 
     @RequestMapping(value = "user/med/entry/create", method = RequestMethod.POST)
-    public View create(HttpSession session, EntryForm form) throws IOException {
+    public View create(Principal principal, EntryForm form) throws IOException {
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new RedirectView("/login", true, false);
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
 
         DataEntry entry = new DataEntry();
@@ -184,12 +176,9 @@ public class EntryController {
     }
 
     @RequestMapping(value = "user/med/entry/{entryId}/delete", method = RequestMethod.GET)
-    public View delete(HttpSession session, @PathVariable("entryId") long entryId) {
+    public View delete(Principal principal, @PathVariable("entryId") long entryId) {
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new RedirectView("/login", true, false);
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
 
         Token token = tokenService.findTokenByUser(user);
@@ -219,13 +208,10 @@ public class EntryController {
     }
 
     @RequestMapping(value = "user/med/entry/{entryId}/edit", method = RequestMethod.GET)
-    public ModelAndView edit(Map<String, Object> model, HttpSession session,
+    public ModelAndView edit(Map<String, Object> model, Principal principal,
             @PathVariable("entryId") long entryId) {
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new ModelAndView(new RedirectView("/login", true, false));
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
 
         Token token = tokenService.findTokenByUser(user);
@@ -251,13 +237,10 @@ public class EntryController {
     }
 
     @RequestMapping(value = "user/med/entry/{entryId}/edit", method = RequestMethod.POST)
-    public View edit(HttpSession session, EntryForm form,
+    public View edit(Principal principal, EntryForm form,
             @PathVariable("entryId") long entryId) throws IOException {
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new RedirectView("/login", true, false);
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
 
         Token token = tokenService.findTokenByUser(user);

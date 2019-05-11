@@ -1,39 +1,22 @@
 package ru.tokens.site.controller.admin;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
+import java.util.function.Consumer;
 
-public final class SessionRegistry {
+public interface SessionRegistry {
 
-    private static final Map<String, HttpSession> SESSIONS = new Hashtable<>();
+    void addSession(HttpSession session);
 
-    public static void addSession(HttpSession session) {
-        SESSIONS.put(session.getId(), session);
-    }
+    void updateSessionId(HttpSession session, String oldSessionId);
 
-    public static void updateSessionId(HttpSession session, String oldSessionId) {
-        synchronized (SESSIONS) {
-            SESSIONS.remove(oldSessionId);
-            addSession(session);
-        }
-    }
+    void removeSession(HttpSession session);
 
-    public static void removeSession(HttpSession session) {
-        SESSIONS.remove(session.getId());
-    }
+    List<HttpSession> getAllSessions();
 
-    public static List<HttpSession> getAllSessions() {
-        return new ArrayList<>(SESSIONS.values());
-    }
+    int getNumberOfSessions();
 
-    public static int getNumberOfSessions() {
-        return SESSIONS.size();
-    }
+    void registerOnRemoveCallback(Consumer<HttpSession> callback);
 
-    private SessionRegistry() {
-
-    }
+    void deregisterOnRemoveCallback(Consumer<HttpSession> callback);
 }

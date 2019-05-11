@@ -1,5 +1,6 @@
 package ru.tokens.site.controller;
 
+import java.security.Principal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -21,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 import ru.tokens.site.entities.User;
+import ru.tokens.site.entities.UserPrincipal;
 import ru.tokens.site.registration.OnRegistrationCompleteEvent;
 import ru.tokens.site.services.UserService;
 import ru.tokens.site.services.EmailSender;
@@ -64,7 +66,7 @@ public class UserRegistrationController {
     }
 
     @RequestMapping(value = "register", method = RequestMethod.POST)
-    public ModelAndView register(Map<String, Object> model, HttpSession session,
+    public ModelAndView register(Map<String, Object> model,
             HttpServletRequest request, UserRegistrationForm form) {
 
         String lastName = form.getLastName();
@@ -123,12 +125,11 @@ public class UserRegistrationController {
             model.put("message", msg);
 //            model.put("user", user);
             return new ModelAndView("userreg/error");
-        }        
+        }
 
         this.userService.saveUser(user);
         log.warn("Registering user account with userId: {}", user.getUserId());
         log.info("User '{}' successfully registered.", user.getLastName() + ", " + user.getFirstName());
-        
         return new ModelAndView(new RedirectView("/user/success", true, false));
     }
 
@@ -150,6 +151,9 @@ public class UserRegistrationController {
         final User user = userService.getUser(confimationToken);
 
         if (result.equals("valid")) {
+            Principal principal = new UserPrincipal(user);
+            UserPrincipal.setPrincipal(session, principal);
+            request.changeSessionId();
 
             String subject = "Thank u for registration.";
             String email = user.getUserEmailAddress();
@@ -157,12 +161,11 @@ public class UserRegistrationController {
                     + "; password: " + user.getPassword();
             emailSender.sendSimpleEmail(email, subject, body);
 
-            session.setAttribute("userId", user.getUserId());
-            request.changeSessionId();
             return new ModelAndView(
                     new RedirectView("/user/view", true, true, true)
             );
         }
+
         /* Если пользователь не подтвердил почтовый адрес, пользователь удаляется из репозитория */
         this.userService.deleteUser(user);
         final String msg = "Почтовый ящик не подтвержден. Причина: " + result;
@@ -172,12 +175,9 @@ public class UserRegistrationController {
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.GET)
-    public ModelAndView editUserData(Map<String, Object> model, HttpSession session) {
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new ModelAndView(new RedirectView("/login", true, false));
-        }
+    public ModelAndView editUserData(Map<String, Object> model, Principal principal) {
 
+        Long userId = Long.valueOf(principal.getName());
         User user = this.userService.findUserById(userId);
         if (user == null) {
             log.error("User with id {} doesn't exist.", userId);
@@ -204,14 +204,10 @@ public class UserRegistrationController {
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.POST)
-    public View editUserData(Map<String, Object> model, HttpSession session,
+    public View editUserData(Map<String, Object> model, Principal principal,
             UserRegistrationForm form) {
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new RedirectView("/login", true, false);
-        }
-
+        Long userId = Long.valueOf(principal.getName());
         User user = this.userService.findUserById(userId);
         if (user == null) {
             log.error("User with id {} doesn't exist.", userId);
@@ -241,12 +237,10 @@ public class UserRegistrationController {
     }
 
     @RequestMapping(value = "view", method = RequestMethod.GET)
-    public ModelAndView viewUserPage(Map<String, Object> model, HttpSession session) {
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new ModelAndView(new RedirectView("/login", true, false));
-        }
-
+    public ModelAndView viewUserPage(Map<String, Object> model,
+            Principal principal) {
+        
+        Long userId = Long.valueOf(principal.getName());        
         User user = this.userService.findUserById(userId);
         if (user == null) {
             log.error("User with id {} doesn't exist.", userId);

@@ -6,10 +6,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.Principal;
 import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -58,9 +58,9 @@ public class ImageController {
     }
 
     @RequestMapping(value = "user/image/view", method = RequestMethod.GET)
-    public void picture(HttpSession session, HttpServletResponse response) {
+    public void picture(Principal principal, HttpServletResponse response) {
 
-        Long userId = (Long) session.getAttribute("userId");          
+        Long userId = Long.valueOf(principal.getName());         
         User user = userService.findUserById(userId);
         Image image = user.getImage();
         File imageFile = new File(image.getUrl());
@@ -92,9 +92,9 @@ public class ImageController {
     }
 
     @RequestMapping(value = "user/image/thumbnail", method = RequestMethod.GET)
-    public void thumbnail(HttpSession session, HttpServletResponse response) {
+    public void thumbnail(Principal principal, HttpServletResponse response) {
 
-        Long userId = (Long) session.getAttribute("userId");        
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
         Image image = user.getImage();
         File imageFile = new File(image.getThumbnailUrl());
@@ -126,12 +126,9 @@ public class ImageController {
     }
 
     @RequestMapping(value = "user/image/upload", method = RequestMethod.GET)
-    public ModelAndView getImgForm(Map<String, Object> model, HttpSession session) {
+    public ModelAndView getImgForm(Map<String, Object> model, Principal principal) {
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new ModelAndView(new RedirectView("/login", true, false));
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
 
         Token token = tokenService.findTokenByUser(user);
@@ -146,9 +143,9 @@ public class ImageController {
     }
 
     @RequestMapping(value = "user/image/upload", method = RequestMethod.POST)
-    public View upload(HttpSession session, ImageForm form) {
+    public View upload(Principal principal, ImageForm form) {
 
-        Long userId = (Long) session.getAttribute("userId");
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
 
         if (user.getImage() != null) {
@@ -194,9 +191,9 @@ public class ImageController {
     }
 
     @RequestMapping(value = "user/image/delete", method = RequestMethod.GET)
-    public View delete(HttpSession session) {
+    public View delete(Principal principal) {
 
-        Long userId = (Long) session.getAttribute("userId");
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
 
         this.deleteImage(user);

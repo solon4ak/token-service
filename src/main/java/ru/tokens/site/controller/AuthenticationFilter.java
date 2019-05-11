@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.security.Principal;
+import javax.servlet.http.HttpServletRequestWrapper;
+import ru.tokens.site.entities.UserPrincipal;
 
 public class AuthenticationFilter implements Filter {
 
@@ -17,12 +20,21 @@ public class AuthenticationFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain) throws IOException, ServletException {
         HttpSession session = ((HttpServletRequest) request).getSession(false);
-        if (session == null || session.getAttribute("userId") == null) {
+        final Principal principal = UserPrincipal.getPrincipal(session);
+        if (principal == null) {
             ((HttpServletResponse) response).sendRedirect(
                     ((HttpServletRequest) request).getContextPath() + "/login"
             );
         } else {
-            chain.doFilter(request, response);
+            chain.doFilter(
+                    new HttpServletRequestWrapper((HttpServletRequest) request) {
+                @Override
+                public Principal getUserPrincipal() {
+                    return principal;
+                }
+            },
+                    response
+            );
         }
     }
 

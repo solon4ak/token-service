@@ -1,10 +1,10 @@
 package ru.tokens.site.controller;
 
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,12 +38,9 @@ public class MedicalHistoryController {
     private static final Logger log = LogManager.getLogger("MedHistFormController");
 
     @RequestMapping(value = {"view"}, method = RequestMethod.GET)
-    public ModelAndView view(Map<String, Object> model, HttpSession session) {
+    public ModelAndView view(Map<String, Object> model, Principal principal) {
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new ModelAndView(new RedirectView("/login", true, false));
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
 
         Token token = tokenService.findTokenByUser(user);
@@ -58,12 +55,9 @@ public class MedicalHistoryController {
     }
 
     @RequestMapping(value = {"add"}, method = RequestMethod.GET)
-    public ModelAndView create(Map<String, Object> model, HttpSession session) {
+    public ModelAndView create(Map<String, Object> model, Principal principal) {
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new ModelAndView(new RedirectView("/login", true, false));
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
 
         Token token = tokenService.findTokenByUser(user);
@@ -80,7 +74,7 @@ public class MedicalHistoryController {
 
     @RequestMapping(value = {"add"}, method = RequestMethod.POST)
     public View create(Map<String, Object> model,
-            HttpSession session, MedicalForm form) {
+            Principal principal, MedicalForm form) {
 
         MedicalHistory medHistory = new MedicalHistory();
 
@@ -96,10 +90,7 @@ public class MedicalHistoryController {
         medHistory.setOrganDonor(form.isIsOrganDonor());
         medHistory.setMedicine(form.getMedicine());
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new RedirectView("/login", true, false);
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
 
         Token token = tokenService.findTokenByUser(user);
@@ -115,12 +106,9 @@ public class MedicalHistoryController {
     }
 
     @RequestMapping(value = {"edit"}, method = RequestMethod.GET)
-    public ModelAndView edit(Map<String, Object> model, HttpSession session) {
+    public ModelAndView edit(Map<String, Object> model, Principal principal) {
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new ModelAndView(new RedirectView("/login", true, false));
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
 
         Token token = tokenService.findTokenByUser(user);
@@ -152,12 +140,9 @@ public class MedicalHistoryController {
 
     @RequestMapping(value = {"edit"}, method = RequestMethod.POST)
     public View edit(Map<String, Object> model,
-            HttpSession session, MedicalForm form) {
+            Principal principal, MedicalForm form) {
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new RedirectView("/login", true, false);
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
 
         Token token = tokenService.findTokenByUser(user);
