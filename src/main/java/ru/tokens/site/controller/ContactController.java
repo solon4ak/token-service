@@ -1,7 +1,7 @@
 package ru.tokens.site.controller;
 
+import java.security.Principal;
 import java.util.Map;
-import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,12 +39,9 @@ public class ContactController {
     private static final Logger log = LogManager.getLogger("ContactController");
 
     @RequestMapping(value = {"add"}, method = RequestMethod.GET)
-    public ModelAndView addContact(Map<String, Object> model, HttpSession session) {
+    public ModelAndView addContact(Map<String, Object> model, Principal principal) {
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new ModelAndView(new RedirectView("/login", true, false));
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
         
         Token token = tokenService.findTokenByUser(user);        
@@ -60,7 +57,7 @@ public class ContactController {
     }
 
     @RequestMapping(value = {"add"}, method = RequestMethod.POST)
-    public View addContact(HttpSession session, ContactForm form) {
+    public View addContact(Principal principal, ContactForm form) {
 
         Contact contact = new Contact();
         contact.setFirstName(form.getFirstName());
@@ -68,10 +65,7 @@ public class ContactController {
         contact.setPhoneNumber(form.getPhoneNumber());
         contact.setEmail(form.getEmail());
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new RedirectView("/login", true, false);
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
 
         Token token = tokenService.findTokenByUser(user);
@@ -87,12 +81,9 @@ public class ContactController {
     }
 
     @RequestMapping(value = {"delete/{contactId}"}, method = RequestMethod.GET)
-    public View delete(HttpSession session, @PathVariable("contactId") Long contactId) {
+    public View delete(Principal principal, @PathVariable("contactId") Long contactId) {
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new RedirectView("/login", true, false);
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
 
         Token token = tokenService.findTokenByUser(user);
@@ -108,13 +99,10 @@ public class ContactController {
     }
 
     @RequestMapping(value = {"edit/{contactId}"}, method = RequestMethod.GET)
-    public ModelAndView editContact(Map<String, Object> model, HttpSession session,
+    public ModelAndView editContact(Map<String, Object> model, Principal principal,
             @PathVariable(value = "contactId") Long contactId) {
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new ModelAndView(new RedirectView("/login", true, false));
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
 
         Token token = tokenService.findTokenByUser(user);
@@ -144,13 +132,10 @@ public class ContactController {
     }
 
     @RequestMapping(value = {"edit/{contactId}"}, method = RequestMethod.POST)
-    public View editContact(HttpSession session, ContactForm form,
+    public View editContact(Principal principal, ContactForm form,
             @PathVariable(value = "contactId") Long contactId) {
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new RedirectView("/login", true, false);
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
 
         Token token = tokenService.findTokenByUser(user);

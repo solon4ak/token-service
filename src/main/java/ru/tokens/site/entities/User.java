@@ -3,11 +3,14 @@ package ru.tokens.site.entities;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import ru.tokens.site.entities.shop.UserOrder;
 
 /**
  *
@@ -51,6 +54,8 @@ public class User implements Serializable {
     // Список действий, наступление которых обусловлено каким-то событием 
     // со своим индикатором наступления
     private Map<Long, MessageEvent> messageEvents = new Hashtable<>();
+    
+    private Map<Long, UserOrder> orders = new Hashtable<>();
 
     public User() {
         super();
@@ -270,6 +275,28 @@ public class User implements Serializable {
 
     public void setRegistered(Instant registered) {
         this.registered = registered;
+    }
+
+    public Map<Long, UserOrder> getOrders() {
+        return orders;
+    }
+    
+    public List<UserOrder> getUserOrders() {
+        return new ArrayList<>(this.getOrders().values());
+    }
+    
+    public UserOrder addOrder(UserOrder order) {
+        this.getOrders().put(order.getOrderId(), order);
+        return order;
+    }
+    
+    public UserOrder removeOrder(UserOrder order) {
+        this.getOrders().remove(order.getOrderId());
+        return order;
+    }
+    
+    public int getNumberOfOrders() {
+        return this.getOrders().size();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package ru.tokens.site.controller;
 
+import java.security.Principal;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,8 @@ import javax.servlet.http.HttpSession;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.tokens.site.entities.User;
+import ru.tokens.site.entities.UserPrincipal;
+import ru.tokens.site.services.AuthenticationService;
 import ru.tokens.site.services.UserService;
 
 @Controller
@@ -20,13 +23,16 @@ public class AuthenticationController {
     
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private AuthenticationService authenticationService;
 
     private static final Logger log = LogManager.getLogger("AuthenticationController");
 
     @RequestMapping("logout")
-    public View logout(HttpSession session) {
-        if (log.isDebugEnabled()) {
-            log.info("Token {} logged out.", session.getAttribute("tokenId"));
+    public View logout(HttpServletRequest request, HttpSession session) {
+        if (log.isDebugEnabled() && request.getUserPrincipal() != null) {
+            log.debug("User {} logged out.", request.getUserPrincipal().getName());
         }
         session.invalidate();
         return new RedirectView("/login", true, false);
@@ -35,7 +41,7 @@ public class AuthenticationController {
     @RequestMapping(value = "login", method = RequestMethod.GET)
     public ModelAndView login(Map<String, Object> model, HttpSession session) {
 
-        if (session.getAttribute("userId") != null) {
+        if (UserPrincipal.getPrincipal(session) != null) {
             return this.getUserRedirect();
         }
 
@@ -49,37 +55,24 @@ public class AuthenticationController {
     public ModelAndView login(Map<String, Object> model, HttpSession session,
             HttpServletRequest request, Form form) {
 
-        if (session.getAttribute("userId") != null) {
+        if (UserPrincipal.getPrincipal(session) != null) {
             return this.getUserRedirect();
         }
+        
+        Principal principal = this.authenticationService
+                .authenticate(form.getEmail(), form.getPassword());
 
-        String email = form.getEmail();
-        String password = form.getPassword();
-
-        if (email == null || password == null) {
-            log.warn("Empty email or password field.");
+        if (principal == null) {
+            log.warn("Principal == null");
             form.setPassword(null);
             model.put("loginFailed", true);
             model.put("loginForm", form);
             return new ModelAndView("login");
         }
 
-        for (User user : userService.getAllUsers()) {            
-            if (email.equals(user.getUserEmailAddress())
-                    && password.equals(user.getPassword()) 
-                    && user.isEmailActivated()) {
-                log.info("User {} successfully logged in.", email);
-                session.setAttribute("userId", user.getUserId());
-                request.changeSessionId();
-                return this.getUserRedirect();
-            }
-        }
-
-        log.info("User credentials doesn't correspond or user e-mail doesn't confirmed.");
-        form.setPassword(null);
-        model.put("loginFailed", true);
-        model.put("loginForm", form);
-        return new ModelAndView("login");
+        UserPrincipal.setPrincipal(session, principal);
+        request.changeSessionId();
+        return this.getUserRedirect();
     }
 
     private ModelAndView getUserRedirect() {

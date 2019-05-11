@@ -35,4 +35,6 @@ public interface UserService {
     
     List<User> getAllUsersWithToken();
     
+    String getPasswordForUser(String email);
+    
 }

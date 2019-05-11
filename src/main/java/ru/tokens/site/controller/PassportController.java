@@ -1,11 +1,11 @@
 package ru.tokens.site.controller;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Map;
-import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,12 +39,9 @@ public class PassportController {
     private static final Logger log = LogManager.getLogger("Passport");
 
     @RequestMapping(value = "add", method = RequestMethod.GET)
-    public ModelAndView getPassportForm(Map<String, Object> model, HttpSession session) {
+    public ModelAndView getPassportForm(Map<String, Object> model, Principal principal) {
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new ModelAndView(new RedirectView("/login", true, false));
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
 
         Token token = tokenService.findTokenByUser(user);
@@ -59,12 +56,9 @@ public class PassportController {
     }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public View addPassport(HttpSession session, PassportForm form) {
+    public View addPassport(Principal principal, PassportForm form) {
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new RedirectView("/login", true, false);
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
 
         Token token = tokenService.findTokenByUser(user);
@@ -101,12 +95,9 @@ public class PassportController {
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.GET)
-    public ModelAndView editPassport(Map<String, Object> model, HttpSession session) {
+    public ModelAndView editPassport(Map<String, Object> model, Principal principal) {
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new ModelAndView(new RedirectView("/login", true, false));
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
 
         Token token = tokenService.findTokenByUser(user);
@@ -132,12 +123,9 @@ public class PassportController {
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.POST)
-    public View editPassport(HttpSession session, PassportForm form) {
+    public View editPassport(Principal principal, PassportForm form) {
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new RedirectView("/login", true, false);
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
 
         Token token = tokenService.findTokenByUser(user);
@@ -173,12 +161,9 @@ public class PassportController {
     }
 
     @RequestMapping(value = "delete", method = RequestMethod.GET)
-    public View deletePassport(HttpSession session) {
+    public View deletePassport(Principal principal) {
           
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new RedirectView("/login", true, false);
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
 
         Token token = tokenService.findTokenByUser(user);

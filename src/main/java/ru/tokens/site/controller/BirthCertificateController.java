@@ -1,10 +1,10 @@
 package ru.tokens.site.controller;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Map;
-import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,12 +37,9 @@ public class BirthCertificateController {
     private static final Logger log = LogManager.getLogger("Birth Certificate");
 
     @RequestMapping(value = "add", method = RequestMethod.GET)
-    public ModelAndView getCertificateForm(Map<String, Object> model, HttpSession session) {
+    public ModelAndView getCertificateForm(Map<String, Object> model, Principal principal) {
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new ModelAndView(new RedirectView("/login", true, false));
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
         Token token = tokenService.findTokenByUser(user);
 
@@ -57,12 +54,9 @@ public class BirthCertificateController {
     }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public View addCertificate(HttpSession session, BthCertForm form) {
+    public View addCertificate(Principal principal, BthCertForm form) {
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new RedirectView("/login", true, false);
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
         Token token = tokenService.findTokenByUser(user);
 
@@ -95,12 +89,9 @@ public class BirthCertificateController {
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.GET)
-    public ModelAndView editCertificate(Map<String, Object> model, HttpSession session) {
+    public ModelAndView editCertificate(Map<String, Object> model, Principal principal) {
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new ModelAndView(new RedirectView("/login", true, false));
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
         Token token = tokenService.findTokenByUser(user);
         
@@ -125,12 +116,9 @@ public class BirthCertificateController {
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.POST)
-    public View editCertificate(HttpSession session, BthCertForm form) {
+    public View editCertificate(Principal principal, BthCertForm form) {
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new RedirectView("/login", true, false);
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
         Token token = tokenService.findTokenByUser(user);
         
@@ -163,12 +151,9 @@ public class BirthCertificateController {
     }
 
     @RequestMapping(value = "delete", method = RequestMethod.GET)
-    public View deletePassport(HttpSession session) {
+    public View deletePassport(Principal principal) {
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return new RedirectView("/login", true, false);
-        }
+        Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
         Token token = tokenService.findTokenByUser(user);
         

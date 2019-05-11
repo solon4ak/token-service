@@ -133,5 +133,15 @@ public class UserServiceImpl implements UserService {
         }
         return usersWithToken;
     }    
+
+    @Override
+    public String getPasswordForUser(String email) {
+        for (User user : this.userRepository.getAll()) {
+            if (email.equals(user.getUserEmailAddress())) {
+                return user.getPassword();
+            }
+        }
+        return null;
+    }
  
 }
