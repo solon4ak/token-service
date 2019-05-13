@@ -146,11 +146,20 @@ public class UserRegistrationController {
             HttpServletRequest request, HttpSession session,
             @RequestParam("token") String confimationToken) {
 
-//        Locale locale = request.getLocale();
-        final String result = userService.validateVerificationToken(confimationToken);
         final User user = userService.getUser(confimationToken);
 
+        if (user.isEmailActivated()) {
+            final String msg = "Почтовый ящик уже был подтвержден.";
+            model.put("message", msg);
+//        model.put("user", user);
+            return new ModelAndView("userreg/error");
+        }
+        
+        //        Locale locale = request.getLocale();
+        final String result = userService.validateVerificationToken(confimationToken);
+
         if (result.equals("valid")) {
+            user.setEmailActivated(true);
             Principal principal = new UserPrincipal(user);
             UserPrincipal.setPrincipal(session, principal);
             request.changeSessionId();
@@ -239,8 +248,8 @@ public class UserRegistrationController {
     @RequestMapping(value = "view", method = RequestMethod.GET)
     public ModelAndView viewUserPage(Map<String, Object> model,
             Principal principal) {
-        
-        Long userId = Long.valueOf(principal.getName());        
+
+        Long userId = Long.valueOf(principal.getName());
         User user = this.userService.findUserById(userId);
         if (user == null) {
             log.error("User with id {} doesn't exist.", userId);

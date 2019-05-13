@@ -1,5 +1,6 @@
 package ru.tokens.site.services;
 
+import java.time.LocalDate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ public class TimerProlongationLinkServiceImpl implements TimerProlongationLinkSe
     @Autowired
     private MessageEventTimerService timerService;   
     
-    private static final Logger LOG = LogManager.getLogger(MessageEventTimerServiceImpl.class.getName());
+    private static final Logger LOG = LogManager.getLogger("TimerProlongationLinkService");
 
     @Override
     public void startTimerService(MessageEvent event) {
@@ -31,6 +32,7 @@ public class TimerProlongationLinkServiceImpl implements TimerProlongationLinkSe
             );
             
             event.setStatus(MessageEvent.MessageEventStatus.STARTED);
+            event.setStartDate(LocalDate.now());
             timerService.fireMessageEventPeriodicalTimer(event, delay);            
             LOG.warn("fireMessageEventPeriodicalTimer was started. "
                     + "MessageEventStatus was setted to started.");
@@ -46,12 +48,12 @@ public class TimerProlongationLinkServiceImpl implements TimerProlongationLinkSe
     }
 
     @Override
-    public void checkProlongationToken(MessageEvent event, String tokenString) {
-        
-        if (tokenString.equals(event.getProlongationToken())) {
+    public void checkProlongationToken(MessageEvent event, String tokenString) {   
+        if (event.getStatus().equals(MessageEvent.MessageEventStatus.STARTED)
+                && tokenString.equals(event.getProlongationToken())) {
             event.setProlonged(true);
-            LOG.warn("Prolongation token was confirmed.");
-        }
+            LOG.info("Prolongation token was confirmed.");
+        }       
     }
 
 }
