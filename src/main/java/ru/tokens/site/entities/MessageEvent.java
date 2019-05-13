@@ -17,15 +17,17 @@ public class MessageEvent implements Serializable {
     
     private List<Contact> contacts;
    
-    private final LocalDate startDate;
-    private LocalDate endDate;
+    private final LocalDate createDate;
+    private LocalDate startDate;
+    private LocalDate nextCheckDate;
+    private LocalDate firedDate;
     
     // checking email sending interval
     private String checkingInterval;
     
     // состояние события
     private MessageEventStatus status;
-    private boolean started;
+    private final boolean started;
     private boolean executed;
            
     // флаг пролонгации
@@ -34,7 +36,7 @@ public class MessageEvent implements Serializable {
     private boolean waitingProlongation;
 
     public MessageEvent() {
-        this.startDate = LocalDate.now();   
+        this.createDate = LocalDate.now();   
         this.status = MessageEventStatus.PENDING;
         this.started = false;
         this.executed = false;
@@ -74,16 +76,32 @@ public class MessageEvent implements Serializable {
         this.contacts = contacts;
     }
 
+    public LocalDate getCreateDate() {
+        return createDate;
+    }
+
     public LocalDate getStartDate() {
         return startDate;
     }
-    
-    public LocalDate getEndDate() {
-        return endDate;
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
     }
 
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
+    public LocalDate getNextCheckDate() {
+        return nextCheckDate;
+    }
+
+    public void setNextCheckDate(LocalDate nextCheckDate) {
+        this.nextCheckDate = nextCheckDate;
+    }
+        
+    public LocalDate getFiredDate() {
+        return firedDate;
+    }
+
+    public void setFiredDate(LocalDate firedDate) {
+        this.firedDate = firedDate;
     }
 
     public String getCheckingInterval() {

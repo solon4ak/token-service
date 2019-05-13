@@ -308,18 +308,33 @@ public class MessageEventController {
             @PathVariable("eventId") Long eventId) {
 
         MessageEvent event = eventService.findMessageEventById(eventId);
+        if (MessageEvent.MessageEventStatus.FIRED.equals(event.getStatus())) {
+
+            // TODO: fix prolongation link after message event was fired
+            return new RedirectView("/token/user/csdevent/list", true, false);
+        }
         // установили флаг prolonged в MessageEvent
         linkService.checkProlongationToken(event, prolongationTokenString);
 
         if (event.isProlonged()) {
             event.setWaitingProlongation(false);
-            log.warn("Prolongtion link was confirmed. "
+            log.info("Prolongtion link was confirmed. "
                     + "Event was prolonged for subject {}", event.getDataEntry().getSubject());
         }
 
         Principal principal = new UserPrincipal(event.getUser());
         UserPrincipal.setPrincipal(request.getSession(), principal);
-        request.changeSessionId();
+        request.changeSessionId();  
+
+        return new RedirectView("/token/user/csdevent/list", true, false);
+    }
+    
+    @RequestMapping(value = "user/csdevent/confirm/{eventId}", method = RequestMethod.GET)
+    public View confirmMessageEventUserStatus(@PathVariable("eventId") Long eventId) {
+        MessageEvent event = eventService.findMessageEventById(eventId);
+        event.setProlonged(true);
+        event.setWaitingProlongation(false);        
+        log.info("Event was prolonged for subject {}", event.getDataEntry().getSubject());
 
         return new RedirectView("/token/user/csdevent/list", true, false);
     }
@@ -343,16 +358,6 @@ public class MessageEventController {
         MessageEvent event = eventService.findMessageEventById(eventId);
         linkService.stopTimerService(event);
         log.warn("Event was stopped for subject {}", event.getDataEntry().getSubject());
-
-        return new RedirectView("/token/user/csdevent/list", true, false);
-    }
-
-    @RequestMapping(value = "user/csdevent/confirm/{eventId}", method = RequestMethod.GET)
-    public View confirmMessageEventUserStatus(@PathVariable("eventId") Long eventId) {
-        MessageEvent event = eventService.findMessageEventById(eventId);
-        event.setProlonged(true);
-        event.setWaitingProlongation(false);
-        log.warn("Event was prolonged for subject {}", event.getDataEntry().getSubject());
 
         return new RedirectView("/token/user/csdevent/list", true, false);
     }
