@@ -2,10 +2,12 @@ package ru.tokens.site.entities.shop;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import ru.tokens.site.entities.Image;
 
 /**
@@ -16,25 +18,43 @@ public class Product implements Serializable {
 
     private long productId;
     private String productName;
-    private Date createdDate;
+    private LocalDate createdDate;
     private BigDecimal initialPrice;
-    private Date lastUpdated;
+    private LocalDate lastUpdated;
     private String description;
-    private Set<Image> pictures;
-    private Set<Category> category;
-    private Collection<OrderedProduct> orderedProductCollection;
+    private List<Image> pictures;
+    private List<Category> category;
+    private Collection<OrderedProduct> orderedProductCollection = new ArrayList<>();
 
     public Product() {
     }
 
     public Product(long productId) {
+        super();
         this.productId = productId;
+        pictures = new LinkedList<>();
+        category = new LinkedList<>();
     }
 
-    public Product(String itemName, Date createdDate, BigDecimal initialPrice) {
+    public Product(String itemName, BigDecimal initialPrice, String description) {
+        super();
         this.productName = itemName;
-        this.createdDate = createdDate;
+        this.createdDate = LocalDate.now();
         this.initialPrice = initialPrice;
+        this.description = description;
+        pictures = new LinkedList<>();
+        category = new ArrayList<>();
+    }
+    
+    public Product(String itemName, BigDecimal initialPrice, 
+            String description, List<Category> categories) {
+        super();
+        this.productName = itemName;
+        this.createdDate = LocalDate.now();
+        this.initialPrice = initialPrice;
+        this.description = description;
+        this.category = categories;
+        pictures = new LinkedList<>();
     }
 
     public long getProductId() {
@@ -53,11 +73,11 @@ public class Product implements Serializable {
         this.productName = productName;
     }
 
-    public Date getCreatedDate() {
+    public LocalDate getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(Date createdDate) {
+    public void setCreatedDate(LocalDate createdDate) {
         this.createdDate = createdDate;
     }
 
@@ -77,11 +97,11 @@ public class Product implements Serializable {
         this.description = description;
     }
 
-    public Set<Image> getPictures() {
+    public List<Image> getPictures() {
         return pictures;
     }
 
-    public void setPictures(Set<Image> pictures) {
+    public void setPictures(List<Image> pictures) {
         this.pictures = pictures;
     }
 
@@ -99,11 +119,11 @@ public class Product implements Serializable {
         return image;
     }
 
-    public Set<Category> getCategory() {
+    public List<Category> getCategory() {
         return category;
     }
 
-    public void setCategory(Set<Category> category) {
+    public void setCategory(List<Category> category) {
         this.category = category;
     }
 
@@ -118,11 +138,11 @@ public class Product implements Serializable {
         return category;
     }
 
-    public Date getLastUpdated() {
+    public LocalDate getLastUpdated() {
         return lastUpdated;
     }
 
-    public void setLastUpdated(Date lastUpdated) {
+    public void setLastUpdated(LocalDate lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
 

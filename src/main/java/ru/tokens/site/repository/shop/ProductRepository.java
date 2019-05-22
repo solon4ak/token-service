@@ -1,14 +1,17 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ru.tokens.site.repository.shop;
+
+import java.util.List;
+import ru.tokens.site.entities.shop.Product;
 
 /**
  *
  * @author solon4ak
  */
-public class ProductRepository {
+public interface ProductRepository {
     
+    List<Product> list();
+    Product find(long id);
+    Product create(Product product);
+    Product update(Product product);
+    void delete(long id);
 }

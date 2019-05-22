@@ -8,7 +8,7 @@
     <hr />
     <form:form method="post" modelAttribute="contactForm">
         <fieldset>
-            <label>New Contact</label>
+            <legend>New Contact</legend>
             <form:label path="firstName">First name:</form:label>
             <form:input path="firstName"/>
             <form:label path="lastName">Last name:</form:label>

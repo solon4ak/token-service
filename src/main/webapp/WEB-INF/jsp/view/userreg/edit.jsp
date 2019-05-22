@@ -5,7 +5,7 @@
     <hr />
     <form:form method="post" modelAttribute="userRegistrationForm">
         <fieldset>
-            <label>User data</label>
+            <legend>User data</legend>
             <form:label path="firstName">First name:</form:label>
             <form:input path="firstName" />
             <form:label path="middleName">Middle name:</form:label>

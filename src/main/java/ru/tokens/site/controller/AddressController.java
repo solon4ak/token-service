@@ -31,7 +31,7 @@ public class AddressController {
     @Autowired
     private TokenService tokenService;
 
-    private static final Logger log = LogManager.getLogger("Address");
+    private static final Logger log = LogManager.getLogger("AddressController");
 
     @RequestMapping(value = "add", method = RequestMethod.GET)
     public ModelAndView addAddress(Map<String, Object> model,

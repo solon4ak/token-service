@@ -10,6 +10,7 @@
     <hr />
     <form:form method="post" modelAttribute="certForm">
         <fieldset>
+            <legend>Свидетельство о рождении</legend>
             <form:label path="series">Серия:</form:label>
             <form:input path="series"/><br />
             <form:label path="number">Номер свидетельства:</form:label>

@@ -24,6 +24,9 @@ public class FileUploadConfig {
     @Value("${file.upload.server.home}")
     private String serverHomeProp;
     
+    @Value("${file.upload.shop.images.directory}")
+    private String shopImagesDir;
+    
     @Autowired
     @Qualifier("fileService")
     private FileUtil fileUtil;
@@ -32,6 +35,7 @@ public class FileUploadConfig {
     protected FileUtil fileProperties() {
         fileUtil.setUserDir(userFilesDir);
         fileUtil.setServerHomeProperty(serverHomeProp);
+        fileUtil.setShopImagesDir(shopImagesDir);
         return fileUtil;
     }
 }

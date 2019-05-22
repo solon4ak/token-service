@@ -8,7 +8,7 @@
     </c:if>
     <form:form method="post" modelAttribute="userRegistrationForm">
         <fieldset>
-            <label>User data</label>
+            <legend>User data</legend>
             <form:label path="lastName">Last name:</form:label>
             <form:input path="lastName" />
             <form:label path="firstName">First name:</form:label>

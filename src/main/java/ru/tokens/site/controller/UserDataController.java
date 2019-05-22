@@ -3,7 +3,6 @@ package ru.tokens.site.controller;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.Map;
-import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +33,7 @@ public class UserDataController {
     @Autowired
     private TokenService tokenService;
 
-    private static final Logger log = LogManager.getLogger("TokenUserData");
+    private static final Logger log = LogManager.getLogger("UserDataController");
 
     @RequestMapping(value = "{tokenId}/{uuidString}", method = RequestMethod.GET)
     public ModelAndView view(Map<String, Object> model,

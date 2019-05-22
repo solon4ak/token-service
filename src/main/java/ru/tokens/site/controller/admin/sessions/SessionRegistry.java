@@ -1,4 +1,4 @@
-package ru.tokens.site.controller.admin;
+package ru.tokens.site.controller.admin.sessions;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;

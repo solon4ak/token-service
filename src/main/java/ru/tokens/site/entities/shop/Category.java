@@ -1,8 +1,8 @@
 package ru.tokens.site.entities.shop;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -12,10 +12,7 @@ public class Category implements Serializable {
 
     private long categoryId;
     private String categoryName;
-    private Set<Product> items;
-
-    private Category parentCategory;
-    private Set<Category> subCategories = new HashSet<>();
+    private List<Product> items = new ArrayList<>();
 
     public Category() {
     }
@@ -44,33 +41,16 @@ public class Category implements Serializable {
         this.categoryName = categoryName;
     }
 
-    public Set<Product> getItems() {
+    public List<Product> getItems() {
         return items;
     }
 
-    public void setItems(Set<Product> items) {
+    public void setItems(List<Product> items) {
         this.items = items;
-    }
-
-    public Category getParentCategory() {
-        return parentCategory;
-    }
-
-    public void setParentCategory(Category parentCategory) {
-        this.parentCategory = parentCategory;
-    }
-
-    public Set<Category> getSubCategories() {
-        return subCategories;
-    }
-
-    public void setSubCategories(Set<Category> subCategories) {
-        this.subCategories = subCategories;
-    }
+    }    
 
     public Product addItem(Product item) {
         this.getItems().add(item);
-        item.addCategory(this);
         return item;
     }
 
@@ -79,17 +59,9 @@ public class Category implements Serializable {
         item.setCategory(null);
         return item;
     }
-
-    public Category addCategory(Category category) {
-        subCategories.add(category);
-        category.setParentCategory(this);
-        return category;
-    }
-
-    public Category removeCategory(Category category) {
-        subCategories.remove(category);
-        category.setParentCategory(null);
-        return category;
+    
+    public int getItemsNumber() {
+        return this.getItems().size();
     }
 
     @Override

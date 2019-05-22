@@ -8,7 +8,7 @@
     </c:if>
     <form:form method="post" modelAttribute="passwordResetForm">
         <fieldset>
-            <label>Password reset</label>
+            <legend>Password reset</legend>
             <form:label path="email">User email:</form:label>
             <form:input path="email" />            
         </fieldset>        

@@ -6,7 +6,7 @@
     <hr />
     <form:form method="post" modelAttribute="addressForm">
         <fieldset>
-            <label>Post Address</label>
+            <legend>Post Address</legend>
             <form:label path="zipCode">Zip code:</form:label>
             <form:input path="zipCode"/><br />
             <form:label path="country">Country:</form:label>

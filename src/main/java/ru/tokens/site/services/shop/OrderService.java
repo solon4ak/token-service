@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.tokens.site.entities.User;
 import ru.tokens.site.entities.shop.OrderedProduct;
@@ -14,6 +15,9 @@ import ru.tokens.site.entities.shop.Product;
 import ru.tokens.site.entities.shop.ShoppingCart;
 import ru.tokens.site.entities.shop.ShoppingCartItem;
 import ru.tokens.site.entities.shop.UserOrder;
+import ru.tokens.site.repository.shop.OrderedProductRepository;
+import ru.tokens.site.repository.shop.ProductRepository;
+import ru.tokens.site.repository.shop.UserOrdersRepository;
 
 /**
  *
@@ -21,6 +25,15 @@ import ru.tokens.site.entities.shop.UserOrder;
  */
 @Service
 public class OrderService {
+    
+    @Autowired
+    private ProductRepository productRepository;
+    
+    @Autowired
+    private UserOrdersRepository ordersRepository;
+    
+    @Autowired
+    private OrderedProductRepository orderedProductRepository;
 
     public long placeOrder(User user, ShoppingCart cart) {
 
@@ -75,34 +88,34 @@ public class OrderService {
         }
     }
 
-//    public Map getOrderDetails(int orderId) {
-//
-//        Map orderMap = new HashMap();
-//
-//        // get order
-//        UserOrder order = customerOrderFacade.find(orderId);
-//
-//        // get customer
-//        User user = order.getUser();
-//
-//        // get all ordered products
-//        List<OrderedProduct> orderedProducts = orderedProductFacade.findByOrderId(orderId);
-//
-//        // get product details for ordered items
-//        List<Product> products = new ArrayList<>();
-//
-//        for (OrderedProduct op : orderedProducts) {
-//
-//            Product p = (Product) productFacade.find(op.getOrderedProductPK().getProductId());
-//            products.add(p);
-//        }
-//
-//        // add each item to orderMap
-//        orderMap.put("orderRecord", order);
-//        orderMap.put("customer", user);
-//        orderMap.put("orderedProducts", orderedProducts);
-//        orderMap.put("products", products);
-//
-//        return orderMap;
-//    }
+    public Map getOrderDetails(int orderId) {
+
+        Map orderMap = new HashMap();
+
+        // get order
+        UserOrder order = this.ordersRepository.find(orderId);
+
+        // get customer
+        User user = order.getUser();
+
+        // get all ordered products
+        List<OrderedProduct> orderedProducts = orderedProductRepository.findByOrderId(orderId);
+
+        // get product details for ordered items
+        List<Product> products = new ArrayList<>();
+
+        for (OrderedProduct op : orderedProducts) {
+
+            Product p = (Product) this.productRepository.find(op.getOrderedProductPK().getProductId());
+            products.add(p);
+        }
+
+        // add each item to orderMap
+        orderMap.put("orderRecord", order);
+        orderMap.put("customer", user);
+        orderMap.put("orderedProducts", orderedProducts);
+        orderMap.put("products", products);
+
+        return orderMap;
+    }
 }

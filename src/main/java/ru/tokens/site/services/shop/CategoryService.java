@@ -1,9 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ru.tokens.site.services.shop;
+
+import java.util.List;
+import ru.tokens.site.entities.shop.Category;
 
 /**
  *
@@ -11,4 +9,10 @@ package ru.tokens.site.services.shop;
  */
 public interface CategoryService {
     
+    List<Category> getAll();
+    Category find(long id);
+    Category create(Category category);
+    void delete(long id);
+    
+    boolean checkCatNameForDuplications(String name);
 }

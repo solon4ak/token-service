@@ -8,20 +8,30 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public interface FileUtil {
 
-    public String getTomcatHomePath();
+    String getTomcatHomePath();
 
-    public String getUserDir();
+    String getUserDir();
 
-    public void setUserDir(String userDir);
-
-    public String getServerHomeProperty();
+    void setUserDir(String userDir);
     
-    public void setServerHomeProperty(String tomcatDir);
+    String getShopImagesDir();
+    
+    void setShopImagesDir(String imgDir);
 
-    public String getNewFileNameBase();
+    String getServerHomeProperty();
+    
+    void setServerHomeProperty(String tomcatDir);
 
-    public String getNewFileName(MultipartFile file);
+    String getNewFileNameBase();
 
-    public String getStorageDirectory();
+    String getNewFileName(MultipartFile file);
+
+    String getStorageDirectory();
+    
+    String getShopImgStorageDir();
+    
+    String getFileDir();
+    
+    String getShopImgFileDir();
 
 }

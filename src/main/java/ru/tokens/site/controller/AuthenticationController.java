@@ -13,17 +13,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.tokens.site.entities.User;
 import ru.tokens.site.entities.UserPrincipal;
 import ru.tokens.site.services.AuthenticationService;
-import ru.tokens.site.services.UserService;
 
 @Controller
 public class AuthenticationController {
-    
-    @Autowired
-    private UserService userService;
-    
+       
     @Autowired
     private AuthenticationService authenticationService;
 
