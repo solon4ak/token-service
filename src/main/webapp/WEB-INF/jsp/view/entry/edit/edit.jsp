@@ -7,41 +7,45 @@
     <c:out value="User E-mail: ${user.userEmailAddress}"/>
     <hr />
     <form:form method="post" enctype="multipart/form-data" modelAttribute="entryForm">
-        <form:label path="subject">Subject</form:label>
-        <form:input path="subject"/><br />
-        <form:label path="body">Body</form:label>
-        <form:textarea path="body" rows="5" cols="30" />
-        <hr />
-        <b>Attachments:</b><br /><br />
-        <table class="data_table">
-            <thead>
-                <tr>
-                    <th>Filename</th>
-                    <th>Size</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <c:forEach items="${entry.attachments}" var="attachment">
+        <fieldset>
+            <legend>Edit entry</legend>
+            <form:label path="subject">Subject</form:label>
+            <form:input path="subject"/><br />
+            <form:label path="body">Body</form:label>
+            <form:textarea path="body" rows="5" cols="30" />
+        </fieldset>
+        <fieldset>
+            <legend>Edit attachments</legend>
+            <table class="data_table">
+                <thead>
                     <tr>
-                        <td>
-                            <c:out value="${attachment.name}" />
-                        </td>
-                        <td>
-                            <c:out value="${attachment.contentSize}" />
-                        </td>
-                        <td>
-                            <a href="<c:url value="/token/user/med/entry/${entry.id}/${attachment.id}/delete"/>">
-                                Delete
-                            </a>
-                        </td>
-                    </tr>                
-                </c:forEach>
-            </tbody>
-        </table>
-        <br /><br />
-        <label>Up to 5 Mb/file</label>
-        <input type="file" name="attachments" multiple="multiple"/><br /><br />
+                        <th>Filename</th>
+                        <th>Size</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <c:forEach items="${entry.attachments}" var="attachment">
+                        <tr>
+                            <td>
+                                <c:out value="${attachment.name}" />
+                            </td>
+                            <td>
+                                <c:out value="${attachment.contentSize}" />
+                            </td>
+                            <td>
+                                <a href="<c:url value="/token/user/med/entry/${entry.id}/${attachment.id}/delete"/>">
+                                    Delete
+                                </a>
+                            </td>
+                        </tr>                
+                    </c:forEach>
+                </tbody>
+            </table>
+            <br /><br />
+            <label>Up to 5 Mb/file</label>
+            <input type="file" name="attachments" multiple="multiple"/><br /><br />
+        </fieldset>
         <input type="submit" value="Submit"/>
     </form:form>
 </template:basic>

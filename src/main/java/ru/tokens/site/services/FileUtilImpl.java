@@ -16,6 +16,8 @@ public class FileUtilImpl implements FileUtil {
     private String userDir;
     private String serverHomeProperty;
 
+    private String shopImgDir;
+
     @Override
     public String getTomcatHomePath() {
         return System.getProperty(serverHomeProperty);
@@ -42,17 +44,26 @@ public class FileUtilImpl implements FileUtil {
     }
 
     @Override
-    public String getNewFileNameBase() {
+    public String getShopImagesDir() {
+        return shopImgDir;
+    }
+
+    @Override
+    public void setShopImagesDir(String imgDir) {
+        this.shopImgDir = imgDir;
+    }
+
+    @Override
+    public synchronized String getNewFileNameBase() {
         return UUID.randomUUID().toString();
     }
 
     @Override
-    public String getNewFileName(MultipartFile file) {
+    public synchronized String getNewFileName(MultipartFile file) {
         String originalFileExtension = file
                 .getOriginalFilename()
                 .substring(file.getOriginalFilename().lastIndexOf("."));
         String newFileName = getNewFileNameBase() + originalFileExtension;
-
         return newFileName;
     }
 
@@ -62,7 +73,7 @@ public class FileUtilImpl implements FileUtil {
         String userFilesPath
                 = this.getTomcatHomePath()
                 + File.separator
-                + userDir
+                + this.getUserDir()
                 + File.separator
                 + this.getFileDir();
 
@@ -80,14 +91,42 @@ public class FileUtilImpl implements FileUtil {
         return userImgAbsolutePath;
     }
 
-    public String getFileDir() {
+    @Override
+    public synchronized String getFileDir() {
         LocalDate date = LocalDate.now();
         String fileDir = date.getYear()
                 + File.separator
-                + date.getDayOfYear();        
+                + date.getDayOfYear();
 
         return fileDir;
     }
-    
-    
+
+    @Override
+    public String getShopImgStorageDir() {
+        String shopFilesPath
+                = this.getTomcatHomePath()
+                + File.separator
+                + this.getShopImagesDir()
+                + File.separator
+                + this.getShopImgFileDir();
+
+        File shopImagesDir = new File(shopFilesPath);
+
+        String shopImgAbsolutePath
+                = shopImagesDir.getAbsolutePath() + File.separator;
+
+        if (!shopImagesDir.exists()) {
+            System.out.println("---> Shop imgs dir does not exist!");
+            shopImagesDir.mkdirs();
+        }
+        System.out.println("ShopImagesAbsolutePath: " + shopImgAbsolutePath);
+
+        return shopImgAbsolutePath;
+    }
+
+    @Override
+    public String getShopImgFileDir() {        
+        return this.getNewFileNameBase();
+    }
+
 }

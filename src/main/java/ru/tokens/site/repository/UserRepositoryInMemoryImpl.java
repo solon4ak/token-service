@@ -22,6 +22,21 @@ public class UserRepositoryInMemoryImpl implements UserRepository {
     
     private final Map<Long, User> userDatabase = new Hashtable<>();
 
+    public UserRepositoryInMemoryImpl() {
+        super();
+        
+        User u1 = new User();
+        u1.setUserEmailAddress("kastor@bk.ru");
+        u1.setPassword("kastor");
+        
+        User u2 = new User();
+        u2.setUserEmailAddress("solon4ak@gmail.com");
+        u2.setPassword("solon4ak");
+        
+        this.add(u1);
+        this.add(u2);
+    }
+        
     @Override
     public List<User> getAll() {
         return new ArrayList<>(this.userDatabase.values());

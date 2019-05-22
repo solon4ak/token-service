@@ -8,7 +8,7 @@
     <hr />
     <form:form method="post" modelAttribute="addressForm">
         <fieldset>
-            <label>Reside Address</label>
+            <legend>Reside Address</legend>
             <form:label path="country">Country:</form:label>
             <form:input path="country"/><br />
             <form:label path="region">Region:</form:label>

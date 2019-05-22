@@ -7,5 +7,5 @@ import java.util.UUID;
  * @author solon4ak
  */
 public interface IdUtils {
-    public UUID generateUUID();
+    public String generateUUID();
 }

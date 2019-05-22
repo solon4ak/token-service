@@ -10,7 +10,7 @@
     <hr />
     <form:form method="post" modelAttribute="passportForm">
         <fieldset>
-            <label>Passport</label>
+            <legend>Passport</legend>
             <form:label path="ser">Серия:</form:label>
             <form:input path="ser"/><br />
             <form:label path="num">Номер паспорта:</form:label>

@@ -25,6 +25,7 @@ public class TokenServiceImpl implements TokenService {
     private TokenRepository tokenRepository;
     
     @Autowired
+    @Qualifier("PassayTokenUtil")
     private IdUtils idUtils;
     
     @Autowired

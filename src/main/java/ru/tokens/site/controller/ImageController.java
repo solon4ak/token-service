@@ -30,6 +30,7 @@ import ru.tokens.site.entities.User;
 import ru.tokens.site.services.TokenService;
 import ru.tokens.site.services.UserService;
 import ru.tokens.site.services.FileUtil;
+import ru.tokens.site.services.ImageService;
 
 /**
  *
@@ -39,7 +40,7 @@ import ru.tokens.site.services.FileUtil;
 @RequestMapping("token")
 public class ImageController {
 
-    private static final Logger log = LogManager.getLogger(ImageController.class);
+    private static final Logger log = LogManager.getLogger("ImageController");
 
     @Autowired
     @Qualifier("fileService")
@@ -50,12 +51,15 @@ public class ImageController {
     
     @Autowired
     private TokenService tokenService;
+    
+    @Autowired
+    private ImageService imageService;
 
-    private volatile long IMAGE_ID_SEQUENCE = 1;
-
-    private synchronized long getNextImageId() {
-        return this.IMAGE_ID_SEQUENCE++;
-    }
+//    private volatile long IMAGE_ID_SEQUENCE = 1;
+//
+//    private synchronized long getNextImageId() {
+//        return this.IMAGE_ID_SEQUENCE++;
+//    }
 
     @RequestMapping(value = "user/image/view", method = RequestMethod.GET)
     public void picture(Principal principal, HttpServletResponse response) {
@@ -169,7 +173,6 @@ public class ImageController {
                 ImageIO.write(thumbnail, "png", thumbnailFile);
 
                 Image image = new Image();
-                image.setId(this.getNextImageId());
 
                 image.setName(file.getOriginalFilename());
                 image.setThumbnailFilename(thumbnailFilename);
@@ -182,6 +185,7 @@ public class ImageController {
                 image.setThumbnailUrl(thumbnailFile.getCanonicalPath());
                 image.setDeleteUrl(null);
                 user.setImage(image);
+                imageService.saveImage(image);
             } catch (ImagingOpException | IOException
                     | IllegalArgumentException | IllegalStateException e) {
                 log.error("Could not upload file " + file.getOriginalFilename(), e);
@@ -210,6 +214,7 @@ public class ImageController {
         thumbnailFile.delete();
 
         user.setImage(null);
+        this.imageService.deleteImage(image.getId());
     }
 
     public static class ImageForm {

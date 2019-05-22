@@ -19,6 +19,10 @@ public class Image implements Serializable {
     private String thumbnailUrl;
     private String deleteUrl;
     private String deleteType;
+    
+    private String iconFileName;
+    private Long iconSize;
+    private String iconUrl;
 
     public Long getId() {
         return id;
@@ -107,6 +111,32 @@ public class Image implements Serializable {
     public void setThumbnailSize(Long thumbnailSize) {
         this.thumbnailSize = thumbnailSize;
     }
+
+    public String getIconFileName() {
+        return iconFileName;
+    }
+
+    public void setIconFileName(String iconFileName) {
+        this.iconFileName = iconFileName;
+    }
+
+    public Long getIconSize() {
+        return iconSize;
+    }
+
+    public void setIconSize(Long iconSize) {
+        this.iconSize = iconSize;
+    }
+
+    public String getIconUrl() {
+        return iconUrl;
+    }
+
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
+    }
+    
+    
 
     @Override
     public String toString() {

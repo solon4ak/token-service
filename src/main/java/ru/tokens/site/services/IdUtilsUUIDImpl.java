@@ -2,20 +2,19 @@ package ru.tokens.site.services;
 
 import com.fasterxml.uuid.Generators;
 import java.util.Random;
-import java.util.UUID;
 import org.springframework.stereotype.Component;
 
 /**
  *
  * @author solon4ak
  */
-@Component
-final class IdUtilsImpl implements IdUtils {
+@Component(value = "UUIDTokenUtil")
+final class IdUtilsUUIDImpl implements IdUtils {
     
     @Override
-    public UUID generateUUID() {
+    public String generateUUID() {
         return Generators
                 .randomBasedGenerator(new Random(System.currentTimeMillis()))
-                .generate();
+                .generate().toString();
     }
 }

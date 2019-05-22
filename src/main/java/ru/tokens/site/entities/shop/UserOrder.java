@@ -2,6 +2,7 @@ package ru.tokens.site.entities.shop;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Objects;
@@ -17,7 +18,7 @@ public class UserOrder implements Serializable {
     private BigDecimal amount;
     private Date created;
     private long confirmationNumber;
-    private Collection<OrderedProduct> orderedProductCollection;
+    private Collection<OrderedProduct> orderedProductCollection = new ArrayList<>();;
     private User user;
     private OrderStatus orderStatus;
 

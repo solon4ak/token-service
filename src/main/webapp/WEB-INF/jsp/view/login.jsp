@@ -6,10 +6,13 @@
         <b>User credentials doesn't correspond or user e-mail doesn't confirmed.</b><br /><br />
     </c:if>
     <form:form method="post" modelAttribute="loginForm">
-        <form:label path="email">E-mail:</form:label>
-        <form:input path="email" /><br />
-        <form:label path="password">Password</form:label>
-        <form:password path="password" /><br /><br />
+        <fieldset>
+            <label>User authentication form</label>
+            <form:label path="email">E-mail:</form:label>
+            <form:input path="email" /><br />
+            <form:label path="password">Password</form:label>
+            <form:password path="password" /><br /><br />
+        </fieldset>
         <input type="submit" value="Log In" />
     </form:form>
     <hr />
