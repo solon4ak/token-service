@@ -13,7 +13,7 @@
     <jsp:attribute name="navigationContent">           
         <a href="<c:url value="/session/list" />">List Sessions</a><br />
         <a href="<c:url value="/admin/shop/category/list" />">Categories</a><br /> 
-        <a href="<c:url value="/admin/shop/product/add" />">Products</a><br />        
+        <a href="<c:url value="/admin/shop/product/list" />">Products</a><br />        
         <a href="<c:url value="/logout" />">Log Out</a><br />
         <jsp:invoke fragment="extraNavigationContent" />
     </jsp:attribute>

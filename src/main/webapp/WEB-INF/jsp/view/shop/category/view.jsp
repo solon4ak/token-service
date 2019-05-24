@@ -1,8 +1,8 @@
 <%--@elvariable id="products" type="java.util.List"--%>
 <%--@elvariable id="category" type="ru.tokens.site.entities.shop.Category"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
-<template:admin htmlTitle="List products for category: ${category}" 
-                bodyTitle="Products list for category: ${category}">
+<template:admin htmlTitle="List products for category: ${category.categoryName}" 
+                bodyTitle="Products list for category: ${category.categoryName}">
     <hr />    
     <c:if test="${message != null}">
         <c:out value="${message}" />

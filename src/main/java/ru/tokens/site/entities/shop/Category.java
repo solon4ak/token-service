@@ -56,7 +56,6 @@ public class Category implements Serializable {
 
     public Product removeItem(Product item) {
         this.getItems().remove(item);
-        item.setCategory(null);
         return item;
     }
     

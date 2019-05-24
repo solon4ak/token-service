@@ -16,7 +16,7 @@
     <hr />
     <b>Categories:</b><br /><br />
     <ul>
-        <c:forEach items="${product.category}" var="cat">
+        <c:forEach items="${product.categories}" var="cat">
             <li>
                 <a href="<c:url value="/admin/shop/category/view/${cat.categoryId}" />">
                     <c:out value="${cat.categoryName}" />
@@ -28,10 +28,13 @@
         <hr />
         <b>Product images:</b><br /><br />
         <c:forEach items="${product.pictures}" var="img">
-            <a href="<c:url value="/admin/shop/product/image/${img.id}/view" />">
+            <a href="<c:url value="/admin/shop/product/image/${img.id}/view" />" target="_blank">
                 <img src="<c:url value="/admin/shop/product/image/${img.id}/icon" />" 
                      alt="${img.name}"/>
             </a>&nbsp;
         </c:forEach>
     </c:if>
+    <br /><br />
+    <a href="<c:url value="/admin/shop/product/${product.productId}/edit" />">Edit</a> / 
+    <a href="<c:url value="/admin/shop/product/${product.productId}/delete" />">Delete</a>
 </template:admin>

@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import ru.tokens.site.entities.Image;
@@ -23,7 +22,7 @@ public class Product implements Serializable {
     private LocalDate lastUpdated;
     private String description;
     private List<Image> pictures;
-    private List<Category> category;
+    private List<Category> categories;
     private Collection<OrderedProduct> orderedProductCollection = new ArrayList<>();
 
     public Product() {
@@ -32,8 +31,6 @@ public class Product implements Serializable {
     public Product(long productId) {
         super();
         this.productId = productId;
-        pictures = new LinkedList<>();
-        category = new LinkedList<>();
     }
 
     public Product(String itemName, BigDecimal initialPrice, String description) {
@@ -42,8 +39,6 @@ public class Product implements Serializable {
         this.createdDate = LocalDate.now();
         this.initialPrice = initialPrice;
         this.description = description;
-        pictures = new LinkedList<>();
-        category = new ArrayList<>();
     }
     
     public Product(String itemName, BigDecimal initialPrice, 
@@ -53,8 +48,28 @@ public class Product implements Serializable {
         this.createdDate = LocalDate.now();
         this.initialPrice = initialPrice;
         this.description = description;
-        this.category = categories;
-        pictures = new LinkedList<>();
+        this.categories = categories;
+    }
+
+    public Product(String productName, BigDecimal initialPrice, String description, 
+            List<Image> pictures, List<Category> categories) {
+        super();
+        this.productName = productName;
+        this.initialPrice = initialPrice;
+        this.description = description;
+        this.pictures = pictures;
+        this.categories = categories;
+    }    
+
+    public Product(long productId, String productName, BigDecimal initialPrice, 
+            String description, List<Image> pictures, List<Category> categories) {
+        super();
+        this.productId = productId;
+        this.productName = productName;
+        this.initialPrice = initialPrice;
+        this.description = description;
+        this.pictures = pictures;
+        this.categories = categories;
     }
 
     public long getProductId() {
@@ -119,22 +134,22 @@ public class Product implements Serializable {
         return image;
     }
 
-    public List<Category> getCategory() {
-        return category;
+    public List<Category> getCategories() {
+        return categories;
     }
 
-    public void setCategory(List<Category> category) {
-        this.category = category;
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
 
     public Category addCategory(Category category) {
-        this.getCategory().add(category);
+        this.getCategories().add(category);
         return category;
     }
 
     public Category removeCategory(Category category) {
-        this.getCategory().remove(category);
-        // category.setCategory(null);      // TODO FIX
+        this.getCategories().remove(category);
+        // categories.setCategory(null);      // TODO FIX
         return category;
     }
 

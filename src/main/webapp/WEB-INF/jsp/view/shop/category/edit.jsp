@@ -7,7 +7,7 @@
     </c:if>
     <form:form method="post" modelAttribute="categoryForm">
         <fieldset>
-            <label>Edit category</label>
+            <legend>Edit category</legend>
             <form:label path="name">Category name</form:label>
             <form:input path="name"/>           
             <hr />

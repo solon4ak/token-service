@@ -45,9 +45,9 @@ public class CategoryController {
         }
         Category category = new Category(categoryName);
         this.categoryService.create(category);
-        
+
         return new ModelAndView(new RedirectView("/admin/shop/category/list", true, false));
-    
+
     }
 
     @RequestMapping(value = "category/list", method = RequestMethod.GET)
@@ -75,6 +75,10 @@ public class CategoryController {
         String newCatName = form.getName();
         Category category = this.categoryService.find(categoryId);
 
+        if (newCatName.equals(category.getCategoryName())) {
+            return new ModelAndView(new RedirectView("/admin/shop/category/list", true, false));
+        }
+
         if (!this.categoryService.checkCatNameForDuplications(newCatName)) {
             message = "Please use another name for category.";
             form.setName(category.getCategoryName());
@@ -96,9 +100,12 @@ public class CategoryController {
         String message;
         Category category = this.categoryService.find(categoryId);
         if (!category.getItems().isEmpty()) {
-            message = "Category is not empty!";
+            message = "Category is not empty! Remove items from category than try again.";
+            List<Category> categories = this.categoryService.getAll();
+            model.put("categories", categories);
             model.put("message", message);
-            return new ModelAndView(new RedirectView("/admin/shop/category/list", true, false));
+            return new ModelAndView("shop/category/list");
+
         }
         this.categoryService.delete(categoryId);
         message = "Category successfully deleted.";
@@ -111,6 +118,7 @@ public class CategoryController {
             @PathVariable("categoryId") long categoryId) {
         Category category = this.categoryService.find(categoryId);
         List<Product> products = category.getItems();
+        model.put("category", category);
         model.put("products", products);
         return "shop/category/view";
     }
