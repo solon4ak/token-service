@@ -7,7 +7,7 @@
     </c:if>
     <form:form method="post" modelAttribute="loginForm">
         <fieldset>
-            <label>User authentication form</label>
+            <legend>User authentication form</legend>
             <form:label path="email">E-mail:</form:label>
             <form:input path="email" /><br />
             <form:label path="password">Password</form:label>
