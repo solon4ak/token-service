@@ -1,6 +1,6 @@
 <%--@elvariable id="adminLoginForm" type="ru.tokens.site.controller.admin.AdminController.AdminLoginForm"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
-<template:admin htmlTitle="Administrator authentication" 
+<template:loggedOut htmlTitle="Administrator authentication" 
                 bodyTitle="Administrator authentication">  
         
     You must log in to access admin panel.<br /><br />
@@ -17,4 +17,4 @@
         </fieldset>
         <input type="submit" value="Log In" />
     </form:form>    
-</template:admin>        
+</template:loggedOut>>        

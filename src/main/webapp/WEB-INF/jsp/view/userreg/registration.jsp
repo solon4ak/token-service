@@ -15,8 +15,8 @@
             <form:input path="firstName" />
             <form:label path="middleName">Middle name:</form:label>
             <form:input path="middleName" /> 
-            <form:label path="birthDate">Birth date:</form:label>
-            <form:input path="birthDate" />
+            <form:label path="birthDate">Birth date (23.11.1999):</form:label>
+            <form:input path="birthDate" alt="bd" />
             <form:label path="email">Email:</form:label>
             <form:input path="email" />     
             <form:label path="password">Password:</form:label>

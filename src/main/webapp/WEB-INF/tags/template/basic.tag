@@ -10,13 +10,13 @@
     <jsp:attribute name="headContent">
         <jsp:invoke fragment="extraHeadContent" />
     </jsp:attribute>
-    <jsp:attribute name="navigationContent">     
-        
-        <a href="<c:url value="/session/list" />">List Sessions</a><br />
-        <a href="<c:url value="/login" />">Log In</a><br />
-        <a href="<c:url value="/logout" />">Log Out</a><br />
-        <a href="<c:url value="/user/register" />">Register</a>
+    <jsp:attribute name="authContent">
+        <a href="<c:url value="/login" />">Log In</a> | <a href="<c:url value="/user/register" />">Register</a>
+    </jsp:attribute>
+    <jsp:attribute name="navigationContent">
         <jsp:invoke fragment="extraNavigationContent" />
+        <hr />
+        <a href="<c:url value="/logout" />">Log Out</a>
     </jsp:attribute>
     <jsp:body>
         <jsp:doBody />

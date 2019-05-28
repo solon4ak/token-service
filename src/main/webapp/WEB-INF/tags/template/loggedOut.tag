@@ -9,6 +9,9 @@
         <link rel="stylesheet"
               href="<c:url value="/resource/stylesheet/login.css" />" />
     </jsp:attribute>
+    <jsp:attribute name="authContent">
+        <a href="<c:url value="/user/register" />">Register</a>
+    </jsp:attribute>
     <jsp:attribute name="navigationContent" />
     <jsp:body>
         <jsp:doBody />

@@ -10,10 +10,18 @@
     <jsp:attribute name="headContent">
         <jsp:invoke fragment="extraHeadContent" />
     </jsp:attribute>
-    <jsp:attribute name="navigationContent">           
+    <jsp:attribute name="authContent">
+        <a href="<c:url value="/logout" />">Log Out</a>
+    </jsp:attribute>
+    <jsp:attribute name="navigationContent">    
+        <b>User</b><br /><br />
         <a href="<c:url value="/session/list" />">List Sessions</a><br />
+        <hr />
+        <b>Shop</b><br /><br />
         <a href="<c:url value="/admin/shop/category/list" />">Categories</a><br /> 
-        <a href="<c:url value="/admin/shop/product/list" />">Products</a><br />        
+        <a href="<c:url value="/admin/shop/product/list" />">Products</a><br />  
+        <hr />
+        <b>Log out</b><br /><br />
         <a href="<c:url value="/logout" />">Log Out</a><br />
         <jsp:invoke fragment="extraNavigationContent" />
     </jsp:attribute>

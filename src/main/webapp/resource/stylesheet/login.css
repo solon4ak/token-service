@@ -1,7 +1,174 @@
+html, body {
+    height: 90%;
+    font-family: Verdana, Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    margin: 5px;
+    line-height: 14px;
+    background-color: #fff;
+}
+
+a, a:active, a:hover, a:visited {
+    color: blue;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+h1, h2, h3 {
+    text-rendering: optimizelegibility;
+    line-height: 20px;
+}
+
+h1 {
+    -webkit-margin-before: 0;
+    -webkit-margin-after: 0;
+    -webkit-margin-start: 0;
+    -webkit-margin-end: 0;
+    margin-bottom: 0;
+    margin-top: 0;
+    font-size: 20px;
+}
+
+h2 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-size: 18px;
+}
+
+h3 {
+    font-size: 16px;
+}
+
+
+/* Main table */
+#mainTbl {
+    background-color: #ffffff;
+    border: 0;
+    width: 100%;
+}
+
+/* Header */
+#mainTbl .header_row {    
+    height: 25px;
+}
+
+.header_tbl {
+    width: 100%;
+}
+
+.header_left_col {
+    text-align: left;
+    padding-left: 10px;
+    width: 30%;
+}
+
+.header_cntr_col {
+    /*text-align: right;*/
+    text-align: center;
+    width: 30%;
+}
+
+.header_right_col {
+    text-align: right;
+    padding-right: 10px;
+    width: 30%;
+}
+
+/* Main menu */
+#mainTbl .menu_row {
+    background-color: #0033FF;
+    height: 60px;
+}
+
+#mainTbl .menu_row a {
+    color: #fff;
+}
+
+.logo_col {
+    padding: 0 15px;
+}
+
+.menu_tbl td {
+    text-align: center;
+}
+
+/* Body */
+#mainTbl .body_row td {
+    height: auto;
+}
+
+#mainTbl .body_row_col {
+    /*background-color: grey;*/
+}
+
+/* Footer */
+#mainTbl .footer_row td {
+    border-top: 1px solid #0033FF;
+    padding: 20px 0;
+    text-align: center;
+}
+
+#bodyTable {
+    border: 0;
+    padding: 0;
+    margin: 12px 0;
+    border-collapse: collapse;
+    border-spacing: 0;
+    height: auto;
+    width: 80%;
+}
+
 #bodyTable .sidebarCell {
     display: none;
 }
 
 #bodyTable .contentCell {
-    padding: 0;
+    vertical-align: top;
+    padding: 0 0 0 12px;
+    /*background-color: grey;*/
 }
+
+/* Page table */
+
+.data_table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data_table thead tr {
+    color: #ffffff; 
+    font-weight: bold; 
+    background: coral;
+}
+
+.data_table thead tr th {
+    border: 1px solid coral;
+    padding: 10px 15px;
+}
+
+.data_table tbody tr td {        
+    height: 1.5em;
+}
+
+.data_table tbody tr td {
+    border: 1px solid #e8e9eb; 
+    padding: 10px 15px;
+}
+
+.data_table tbody tr:nth-child(2n) {background: #f4f4f4;}
+
+.data_table tbody tr:hover {background: beige;}
+
+/* Fieldset */
+
+fieldset {
+    margin-top: 15px;
+}
+
+fieldset legend {      
+    font-size: 1.4em;
+    line-height: 1.5em;
+}
+

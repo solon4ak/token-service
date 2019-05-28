@@ -1,6 +1,6 @@
 <%--@elvariable id="loginFailed" type="java.lang.Boolean"--%>
 <%--@elvariable id="loginForm" type="ru.tokens.site.AuthenticationController.Form"--%>
-<template:basic htmlTitle="Log In" bodyTitle="Log In">
+<template:loggedOut htmlTitle="Log In" bodyTitle="Log In">
     You must log in to access to your personal page.<br /><br />
     <c:if test="${loginFailed}">
         <b>User credentials doesn't correspond or user e-mail doesn't confirmed.</b><br /><br />
@@ -17,4 +17,4 @@
     </form:form>
     <hr />
     <a href="<c:url value="/user/passwordreset" />">Reset password</a>
-</template:basic>
+</template:loggedOut>
