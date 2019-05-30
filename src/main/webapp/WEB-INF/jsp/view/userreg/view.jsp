@@ -1,39 +1,69 @@
 <%--@elvariable id="user" type="ru.tokens.site.entities.User"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
-<template:basic htmlTitle="User page for ${user.lastName}, ${user.firstName}"
-                bodyTitle="User: ${user.lastName}, ${user.firstName}">
-    <jsp:attribute name="extraNavigationContent">
-        <a href="<c:url value="/user/edit" />">Edit user</a><br /><br />
+<template:basic_bs_two_col htmlTitle="User page for ${user.lastName}, ${user.firstName}"
+                           bodyTitle="${user.lastName}, ${user.firstName}">
+
+    <jsp:attribute name="authContent">
         <c:choose>
-            <c:when test="${user.postAddress == null}">
-                <a href="<c:url value="/token/user/postaddress/add" />">Add post address</a><br /><br />
+            <c:when test="${sessionScope['ru.tkn.user.principal'] != null}">
+                <a class="btn btn-light text-dark" href="<c:url value="/logout" />">
+                    Logout
+                </a>
             </c:when>
             <c:otherwise>
-                <a href="<c:url value="/token/user/postaddress/edit" />">Edit post address</a><br /><br />
-            </c:otherwise>
-        </c:choose>
-        <c:choose>
-            <c:when test="${user.token == null}">
-                <a href="<c:url value="/token/register" />">Register your Token</a>
-            </c:when>
-            <c:otherwise>
-                <a href="<c:url value="/token/user/view" />">User Token Page</a>
+                <a class="btn btn-light text-dark" href="<c:url value="/login" />">
+                    Login
+                </a>
             </c:otherwise>
         </c:choose>
     </jsp:attribute>
 
+    <jsp:attribute name="extraNavigationContent">
+        <c:if test="${sessionScope['ru.tkn.user.principal'] != null}">
+            <a class="p-2 text-dark" href="<c:url value="/user/view" />">User</a>
+        </c:if>
+    </jsp:attribute>
+
+    <jsp:attribute name="leftColumnContent">
+        <nav class="nav flex-column">
+            <a class="nav-link" href="<c:url value="/user/edit" />">
+                Edit user
+            </a>
+            <c:choose>
+                <c:when test="${user.postAddress == null}">
+                    <a class="nav-link" href="<c:url value="/token/user/postaddress/add" />">
+                        Add post address
+                    </a>
+                </c:when>
+                <c:otherwise>
+                    <a class="nav-link" href="<c:url value="/token/user/postaddress/view" />">
+                        Post address
+                    </a>
+                </c:otherwise>
+            </c:choose>
+            <c:choose>
+                <c:when test="${user.token == null}">
+                    <a class="nav-link" href="<c:url value="/token/register" />">
+                        Register your Token
+                    </a>
+                </c:when>
+                <c:otherwise>
+                    <a class="nav-link" href="<c:url value="/token/user/view" />">
+                        User Token Page
+                    </a>
+                </c:otherwise>
+            </c:choose>
+        </nav>
+    </jsp:attribute>
+
     <jsp:body>
-        Registered: <wrox:formatDate value="${user.registered}" />
-        <hr />
-        <h4>User:</h4>
-        <table class="data_table">
-            <thead>
+        <h4>User</h4> 
+        <table class="table">
+            <tbody>  
                 <tr>
-                    <th>Property</th>
-                    <th>Data</th>
+                    <td>Registered</td>
+                    <td><wrox:formatDate value="${user.registered}" /></td>
                 </tr>
-            </thead>        
-            <tbody>            
                 <tr>
                     <td>First name</td>
                     <td><c:out value="${user.firstName}" /></td>
@@ -59,50 +89,7 @@
                     <td><c:out value="${user.phoneNumber}" /></td>
                 </tr>
             </tbody>
-        </table>        
-        
-        <c:if test="${user.postAddress != null}">
-            <hr />
-            <h4>Post Address:</h4>
-            <table class="data_table">
-                <thead>
-                    <tr>
-                        <th>Property</th>
-                        <th>Data</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Zip code:</td>
-                        <td><c:out value="${user.postAddress.zipCode}" /></td>
-                    </tr>
-                    <tr>
-                        <td>Country:</td>
-                        <td><c:out value="${user.postAddress.country}" /></td>
-                    </tr>
-                    <tr>
-                        <td>Region:</td>
-                        <td><c:out value="${user.postAddress.region}" /></td>
-                    </tr>
-                    <tr>
-                        <td>City:</td>
-                        <td><c:out value="${user.postAddress.city}" /></td>
-                    </tr>
-                    <tr>
-                        <td>Street:</td>
-                        <td><c:out value="${user.postAddress.street}" /></td>
-                    </tr>
-                    <tr>
-                        <td>Building:</td>
-                        <td><c:out value="${user.postAddress.building}" /></td>
-                    </tr>
-                    <tr>
-                        <td>Apartment:</td>
-                        <td><c:out value="${user.postAddress.apartment}" /></td>
-                    </tr>
-                </tbody>
-            </table>
-        </c:if>
+        </table>            
     </jsp:body>
 
-</template:basic>
+</template:basic_bs_two_col>

@@ -1,6 +1,36 @@
 <%--@elvariable id="message" type="java.lang.String"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
-<template:basic htmlTitle="E-mail confirmation"
+<template:basic_bs_one_col htmlTitle="E-mail confirmation"
                 bodyTitle="User e-mail confirmation.">
-    <b>Message:&nbsp;&nbsp;<c:out value="${message}"/></b>
-</template:basic>
+    
+    <jsp:attribute name="authContent">
+        <c:choose>
+            <c:when test="${sessionScope['ru.tkn.user.principal'] != null}">
+                <a class="btn btn-light text-dark" href="<c:url value="/logout" />">
+                    Logout
+                </a>
+            </c:when>
+            <c:otherwise>
+                <a class="btn btn-light text-dark" href="<c:url value="/login" />">
+                    Login
+                </a>
+            </c:otherwise>
+        </c:choose>
+    </jsp:attribute>
+
+    <jsp:attribute name="extraNavigationContent">
+        <c:if test="${sessionScope['ru.tkn.user.principal'] != null}">
+            <a class="p-2 text-dark" href="<c:url value="/user/view" />">User</a>
+        </c:if>
+    </jsp:attribute>
+
+    <jsp:body>
+        <div class="alert alert-success" role="alert">
+        <h4 class="alert-heading">Well done!</h4>
+        <p class="mb-0">
+            <c:out value="${message}"/>
+        </p>
+    </div>
+    </jsp:body>    
+            
+</template:basic_bs_one_col>

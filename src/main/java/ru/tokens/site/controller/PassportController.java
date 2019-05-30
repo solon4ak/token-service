@@ -36,7 +36,22 @@ public class PassportController {
     @Autowired
     private TokenService tokenService;
 
-    private static final Logger log = LogManager.getLogger("Passport");
+    private static final Logger log = LogManager.getLogger("PassportController");
+    
+    @RequestMapping(value = "view", method = RequestMethod.GET)
+    public String viewPassport(Map<String, Object> model, Principal principal) {
+        
+        Long userId = Long.valueOf(principal.getName());
+        User user = userService.findUserById(userId);
+
+        Token token = tokenService.findTokenByUser(user);
+        Passport passport = user.getPassport();
+        
+        model.put("token", token);
+        model.put("passport", passport);
+        model.put("user", user);
+        return "passport/edit/view";
+    }
 
     @RequestMapping(value = "add", method = RequestMethod.GET)
     public ModelAndView getPassportForm(Map<String, Object> model, Principal principal) {
@@ -91,7 +106,7 @@ public class PassportController {
         user.setPassport(passport);
 
         log.info("Passport for token '{}' was added", token.getTokenId());
-        return new RedirectView("/token/user/view", true, false);
+        return new RedirectView("/token/user/passport/view", true, false);
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.GET)
@@ -157,7 +172,7 @@ public class PassportController {
         passport.setIssueDate(iDate);
 
         log.info("Passport for token '{}' has been edited", token.getTokenId());
-        return new RedirectView("/token/user/view", true, false);
+        return new RedirectView("/token/user/passport/view", true, false);
     }
 
     @RequestMapping(value = "delete", method = RequestMethod.GET)
@@ -174,7 +189,7 @@ public class PassportController {
         user.setPassport(null);
 
         log.info("Passport for token '{}' has been deleted", token.getTokenId());
-        return new RedirectView("/token/user/view", true, false);
+        return new RedirectView("/token/user/passport/view", true, false);
     }
 
     private synchronized boolean checkPassportIssueDate(final User user, final LocalDate issueDate) {

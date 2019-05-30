@@ -34,7 +34,22 @@ public class BirthCertificateController {
     @Autowired
     private TokenService tokenService;
 
-    private static final Logger log = LogManager.getLogger("Birth Certificate");
+    private static final Logger log = LogManager.getLogger("BirthCertificateController");
+    
+    @RequestMapping(value = "view", method = RequestMethod.GET)
+    public String viewCertificate(Map<String, Object> model, Principal principal) {
+        
+        Long userId = Long.valueOf(principal.getName());
+        User user = userService.findUserById(userId);
+        Token token = tokenService.findTokenByUser(user);
+        
+        BirthCertificate certificate = user.getBirthCertificate();
+        
+        model.put("token", token);
+        model.put("certificate", certificate);
+        model.put("user", user);
+        return "birth_certificate/edit/view";
+    }
 
     @RequestMapping(value = "add", method = RequestMethod.GET)
     public ModelAndView getCertificateForm(Map<String, Object> model, Principal principal) {
@@ -81,11 +96,10 @@ public class BirthCertificateController {
         }
 
         certificate.setIssueDate(iDate);
-
         user.setBirthCertificate(certificate);
 
         log.info("Birth Certificate for token '{}' was added", token.getTokenId());
-        return new RedirectView("/token/user/view", true, false);
+        return new RedirectView("/token/user/birthcert/view", true, false);
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.GET)
@@ -147,7 +161,7 @@ public class BirthCertificateController {
         user.setBirthCertificate(certificate);
 
         log.info("Birth Certificate for token '{}' has been edited", token.getTokenId());
-        return new RedirectView("/token/user/view", true, false);
+        return new RedirectView("/token/user/birthcert/view", true, false);
     }
 
     @RequestMapping(value = "delete", method = RequestMethod.GET)
@@ -164,7 +178,7 @@ public class BirthCertificateController {
         user.setBirthCertificate(null);
 
         log.info("Birth Certificate for token '{}' has been deleted", token.getTokenId());
-        return new RedirectView("/token/user/view", true, false);
+        return new RedirectView("/token/user/birthcert/view", true, false);
     }
 
     public static class BthCertForm {

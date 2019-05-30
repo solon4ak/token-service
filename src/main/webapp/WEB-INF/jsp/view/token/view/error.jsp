@@ -1,13 +1,23 @@
 <%--@elvariable id="uuidString" type="java.lang.String"--%>
 <%--@elvariable id="message" type="java.lang.String"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
-<template:basic htmlTitle="Error for token: ${uuidString}"
+<template:basic_bs_one_col htmlTitle="Error for token: ${uuidString}"
                 bodyTitle="Error for token: '${uuidString}'">
-    <hr />
-    <c:if test="${message != null}">
-        <b>Message:&nbsp;&nbsp;<c:out value="${message}"/></b>
-    </c:if>
-        <hr />
-        <a href="<c:url value="/token/register"/>">Регистрация жетона</a><br /><br />
-        <a href="<c:url value="/"/>">На главную</a>
-</template:basic>
+    <jsp:attribute name="authContent">
+        <a class="btn btn-light text-dark" href="<c:url value="/logout" />">
+            Logout
+        </a>
+    </jsp:attribute>
+    <jsp:body>
+        <c:if test="${message != null}">
+            <div class="alert alert-warning" role="alert">
+                <h4 class="alert-heading">Error</h4>
+                <p class="mb-0">
+                    <c:out value="${message}"/>
+                </p>
+            </div>
+        </c:if>
+
+    </jsp:body>
+    
+</template:basic_bs_one_col>

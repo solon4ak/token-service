@@ -60,6 +60,18 @@ public class PostAddressController {
         log.info("Address for user '{}' was added", user.toString());
         return new RedirectView("/user/view", true, false);
     }
+    
+    @RequestMapping(value = "view", method = RequestMethod.GET)
+    public String viewAddress(Map<String, Object> model, Principal principal) {
+        
+        Long userId = Long.valueOf(principal.getName());
+        User user = userService.findUserById(userId);
+        
+        Address address = user.getPostAddress();
+        model.put("address", address);
+        model.put("user", user);
+        return "userreg/postaddr/view";
+    }
 
     @RequestMapping(value = "edit", method = RequestMethod.GET)
     public ModelAndView editAddress(Map<String, Object> model, Principal principal) {
@@ -100,7 +112,7 @@ public class PostAddressController {
         address.setZipCode(form.getZipCode());
 
         log.info("Address for user '{}' has been edited", user.toString());
-        return new RedirectView("/user/view", true, false);
+        return new RedirectView("/token/user/postaddress/view", true, false);
     }
 
     public static class PostAddressForm {
