@@ -4,25 +4,8 @@
 <template:basic_bs_one_col htmlTitle="Add Post Address" bodyTitle="User Post Address">
 
     <jsp:attribute name="authContent">
-        <c:choose>
-            <c:when test="${sessionScope['ru.tkn.user.principal'] != null}">
-                <a class="btn btn-light text-dark" href="<c:url value="/logout" />">
-                    Logout
-                </a>
-            </c:when>
-            <c:otherwise>
-                <a class="btn btn-light text-dark" href="<c:url value="/login" />">
-                    Login
-                </a>
-            </c:otherwise>
-        </c:choose>
-    </jsp:attribute>
-
-    <jsp:attribute name="extraNavigationContent">
-        <c:if test="${sessionScope['ru.tkn.user.principal'] != null}">
-            <a class="p-2 text-dark" href="<c:url value="/user/view" />">User</a>
-        </c:if>
-    </jsp:attribute>
+        <jsp:include page="/WEB-INF/jsp/user.jspf" />
+    </jsp:attribute> 
     
     <jsp:body>
         <h5><c:out value="User E-mail: ${user.userEmailAddress}"/></h5>

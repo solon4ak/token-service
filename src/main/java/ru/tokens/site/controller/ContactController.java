@@ -37,6 +37,20 @@ public class ContactController {
     private ContactService contactService;
 
     private static final Logger log = LogManager.getLogger("ContactController");
+    
+    @RequestMapping(value = {"list"}, method = RequestMethod.GET)
+    public String listContact(Map<String, Object> model, Principal principal) {        
+        
+        Long userId = Long.valueOf(principal.getName());
+        User user = userService.findUserById(userId);
+        
+        Token token = tokenService.findTokenByUser(user);
+        
+        model.put("contacts", user.getContacts());
+        model.put("token", token);
+        model.put("user", user);
+        return "contact/edit/list";
+    }
 
     @RequestMapping(value = {"add"}, method = RequestMethod.GET)
     public ModelAndView addContact(Map<String, Object> model, Principal principal) {
@@ -77,7 +91,7 @@ public class ContactController {
         user.addContact(contact);
 
         log.info("Contact for token '{}' was added", token.getTokenId());
-        return new RedirectView("/token/user/view", true, false);
+        return new RedirectView("/token/user/contact/list", true, false);
     }
 
     @RequestMapping(value = {"delete/{contactId}"}, method = RequestMethod.GET)
@@ -95,7 +109,7 @@ public class ContactController {
         contactService.deleteContact(contactId);
 
         log.info("Contact '{}' for token '{}' was deleted.", contactId, token.getTokenId());
-        return new RedirectView("/token/user/view", true, false);
+        return new RedirectView("/token/user/contact/list", true, false);
     }
 
     @RequestMapping(value = {"edit/{contactId}"}, method = RequestMethod.GET)
@@ -156,7 +170,7 @@ public class ContactController {
         }
 
         log.info("Contact for token '{}' hasn't been edited", token.getTokenId());
-        return new RedirectView("/token/user/view", true, false);
+        return new RedirectView("/token/user/contact/list", true, false);
     }
 
     public static class ContactForm {

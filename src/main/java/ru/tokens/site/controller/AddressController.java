@@ -33,10 +33,27 @@ public class AddressController {
 
     private static final Logger log = LogManager.getLogger("AddressController");
 
-    @RequestMapping(value = "add", method = RequestMethod.GET)
-    public ModelAndView addAddress(Map<String, Object> model,
+    @RequestMapping(value = "view", method = RequestMethod.GET)
+    public String viewAddress(Map<String, Object> model,
             Principal principal) {
         
+        Long userId = Long.valueOf(principal.getName());
+        User user = userService.findUserById(userId);
+        Token token = tokenService.findTokenByUser(user);
+
+        Address address = user.getTokenAddress();
+        
+        model.put("token", token);
+        model.put("user", user);
+        model.put("address", address);
+        return "address/edit/view";
+    }
+
+    @RequestMapping(value = "add", method = RequestMethod.GET)
+
+    public ModelAndView addAddress(Map<String, Object> model,
+            Principal principal) {
+
         Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
         Token token = tokenService.findTokenByUser(user);
@@ -71,7 +88,7 @@ public class AddressController {
         user.setTokenAddress(address);
 
         log.info("Address for token '{}' was added", token.getTokenId());
-        return new RedirectView("/token/user/view", true, false);
+        return new RedirectView("/token/user/address/view", true, false);
     }
 
     @RequestMapping(value = "addpostaddr", method = RequestMethod.GET)
@@ -90,7 +107,7 @@ public class AddressController {
 
         user.setTokenAddress(address);
 
-        return new RedirectView("/token/user/view", true, false);
+        return new RedirectView("/token/user/address/view", true, false);
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.GET)
@@ -139,7 +156,7 @@ public class AddressController {
         address.setRegion(form.getRegion());
 
         log.info("Address for token '{}' has been edited", token.getTokenId());
-        return new RedirectView("/token/user/view", true, false);
+        return new RedirectView("/token/user/address/view", true, false);
     }
 
     public static class AddressForm {

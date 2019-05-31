@@ -4,24 +4,7 @@
                            bodyTitle="${user.lastName}, ${user.firstName}">
 
     <jsp:attribute name="authContent">
-        <c:choose>
-            <c:when test="${sessionScope['ru.tkn.user.principal'] != null}">
-                <a class="btn btn-light text-dark" href="<c:url value="/logout" />">
-                    Logout
-                </a>
-            </c:when>
-            <c:otherwise>
-                <a class="btn btn-light text-dark" href="<c:url value="/login" />">
-                    Login
-                </a>
-            </c:otherwise>
-        </c:choose>
-    </jsp:attribute>
-
-    <jsp:attribute name="extraNavigationContent">
-        <c:if test="${sessionScope['ru.tkn.user.principal'] != null}">
-            <a class="p-2 text-dark" href="<c:url value="/user/view" />">User</a>
-        </c:if>
+        <jsp:include page="/WEB-INF/jsp/user.jspf" />
     </jsp:attribute>
 
     <jsp:attribute name="leftColumnContent">
@@ -40,19 +23,7 @@
                         Post address
                     </a>
                 </c:otherwise>
-            </c:choose>
-            <c:choose>
-                <c:when test="${user.token == null}">
-                    <a class="nav-link" href="<c:url value="/token/register" />">
-                        Register your Token
-                    </a>
-                </c:when>
-                <c:otherwise>
-                    <a class="nav-link" href="<c:url value="/token/user/view" />">
-                        User Token Page
-                    </a>
-                </c:otherwise>
-            </c:choose>
+            </c:choose>            
         </nav>
     </jsp:attribute>
 

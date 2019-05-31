@@ -4,10 +4,9 @@
 <template:basic_bs_one_col htmlTitle="Error for token: ${uuidString}"
                 bodyTitle="Error for token: '${uuidString}'">
     <jsp:attribute name="authContent">
-        <a class="btn btn-light text-dark" href="<c:url value="/logout" />">
-            Logout
-        </a>
-    </jsp:attribute>
+        <jsp:include page="/WEB-INF/jsp/user.jspf" />
+    </jsp:attribute> 
+    
     <jsp:body>
         <c:if test="${message != null}">
             <div class="alert alert-warning" role="alert">

@@ -1,27 +1,9 @@
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:basic_bs_one_col htmlTitle="Token Application" bodyTitle="Token Application">
-    
     <jsp:attribute name="authContent">
-        <c:choose>
-            <c:when test="${sessionScope['ru.tkn.user.principal'] != null}">
-                <a class="btn btn-light text-dark" href="<c:url value="/logout" />">
-                    Logout
-                </a>
-            </c:when>
-            <c:otherwise>
-                <a class="btn btn-light text-dark" href="<c:url value="/login" />">
-                    Login
-                </a>
-            </c:otherwise>
-        </c:choose>
-    </jsp:attribute>
+        <jsp:include page="/WEB-INF/jsp/user.jspf" />
+    </jsp:attribute>    
 
-    <jsp:attribute name="extraNavigationContent">
-        <c:if test="${sessionScope['ru.tkn.user.principal'] != null}">
-            <a class="p-2 text-dark" href="<c:url value="/user/view" />">User</a>
-        </c:if>
-    </jsp:attribute>
-            
     <jsp:body>
         <p class="text-justify">
             Равным образом, сплоченность команды профессионалов представляет собой интересный эксперимент проверки поставленных обществом задач. Следует отметить, что граница обучения кадров требует определения и уточнения дальнейших направлений развития. Значимость этих проблем настолько очевидна, что укрепление и развитие внутренней структуры однозначно определяет каждого участника как способного принимать собственные решения касаемо распределения внутренних резервов и ресурсов. В рамках спецификации современных стандартов, явные признаки победы институциализации набирают популярность среди определенных слоев населения, а значит, должны быть описаны максимально подробно.
