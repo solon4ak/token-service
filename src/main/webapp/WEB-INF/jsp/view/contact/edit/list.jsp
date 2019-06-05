@@ -20,63 +20,63 @@
     </jsp:attribute>
 
     <jsp:body>
-        Token ID: <c:out value="${token.uuidString}"/><br />
-        User E-mail: <c:out value="${user.userEmailAddress}"/>
-        <hr />
-        <h4>Contacts</h4>
-        <c:choose>
-            <c:when test="${contacts == null || fn:length(contacts) == 0}">
-                <p>There is no contacts binded to the token!</p>                
-            </c:when>
-            <c:otherwise>
-                <table class="table">   
-                    <thead>
-                        <!-- here should go some titles... -->
-                        <tr>                
-                            <th>Name</th>
-                            <th>Phone</th>
-                            <th>E-mail</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <c:forEach items="${user.contacts}" var="contact">
+        <div class="container">
+            <jsp:include page="/WEB-INF/jsp/token_id.jspf" />
+            <h4>Contacts</h4>
+            <c:choose>
+                <c:when test="${contacts == null || fn:length(contacts) == 0}">
+                    <p>There is no contacts binded to the token!</p>                
+                </c:when>
+                <c:otherwise>
+                    <table class="table">   
+                        <thead>
+                            <!-- here should go some titles... -->
                             <tr>                
-                                <td>
-                                    <c:out value="${contact.firstName}" />&nbsp;
-                                    <c:out value="${contact.lastName}" />
-                                </td>
-                                <td>
-                                    <c:out value="${contact.phoneNumber}" />
-                                </td>
-                                <td>
-                                    <c:out value="${contact.email}" />
-                                </td>
-                                <td>
-                                    <div class="btn-group">
-                                        <button class="btn btn-secondary btn-sm" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            Action
-                                        </button>
-                                        <button type="button" class="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <span class="sr-only">Toggle Dropdown</span>
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item" 
-                                               href="<c:url value="/token/user/contact/edit/${contact.contactId}" />">
-                                                Edit
-                                            </a>
-                                            <a class="dropdown-item" 
-                                               href="<c:url value="/token/user/contact/delete/${contact.contactId}" />">
-                                                Delete
-                                            </a>
-                                        </div>
-                                    </div>
-                                </td>
+                                <th>Name</th>
+                                <th>Phone</th>
+                                <th>E-mail</th>
+                                <th>Action</th>
                             </tr>
-                        </c:forEach>
-                    </tbody>
-                </table>
-            </c:otherwise>            
-        </c:choose> 
+                        </thead>
+                        <tbody>
+                            <c:forEach items="${user.contacts}" var="contact">
+                                <tr>                
+                                    <td>
+                                        <c:out value="${contact.firstName}" />&nbsp;
+                                        <c:out value="${contact.lastName}" />
+                                    </td>
+                                    <td>
+                                        <c:out value="${contact.phoneNumber}" />
+                                    </td>
+                                    <td>
+                                        <c:out value="${contact.email}" />
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button class="btn btn-secondary btn-sm" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Action
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <span class="sr-only">Toggle Dropdown</span>
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" 
+                                                   href="<c:url value="/token/user/contact/edit/${contact.contactId}" />">
+                                                    Edit
+                                                </a>
+                                                <a class="dropdown-item" 
+                                                   href="<c:url value="/token/user/contact/delete/${contact.contactId}" />">
+                                                    Delete
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                </c:otherwise>            
+            </c:choose> 
+        </div>
     </jsp:body>
 </template:basic_bs_three_col_tkn>

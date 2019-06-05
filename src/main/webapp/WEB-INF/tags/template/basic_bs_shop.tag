@@ -5,7 +5,7 @@
               required="true" %>
 <%@ attribute name="extraHeadContent" fragment="true" required="false" %>
 <%@ attribute name="extraNavigationContent" fragment="true" required="false" %>
-<%@ attribute name="leftColumnContent" fragment="true" required="false" %>
+<%@ attribute name="leftColumnContent" fragment="true" required="true" %>
 <%@ attribute name="authContent" fragment="true" required="true" %>
 <%@ include file="/WEB-INF/jsp/base.jspf" %>
 <template:main_bs htmlTitle="${htmlTitle}" bodyTitle="${bodyTitle}">
@@ -25,10 +25,10 @@
     </jsp:attribute>
     <jsp:body>
         <div class="row justify-content-lg-center">
-            <div class="col-2 border-right">
+            <div class="col-3 border-right">
                 <jsp:invoke fragment="leftColumnContent" />
             </div>
-            <div class="col-10">
+            <div class="col-9">
                 <jsp:doBody />
             </div>
         </div>

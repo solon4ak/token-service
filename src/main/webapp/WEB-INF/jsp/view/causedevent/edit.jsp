@@ -24,6 +24,10 @@
 
     <jsp:attribute name="rightColumnContent">
         <nav class="nav flex-column">
+            <a class="nav-link" href="<c:url value="/token/user/csdevent/list" />">
+                List
+            </a>
+            <div class="dropdown-divider"></div>
             <a class="nav-link" href="<c:url value="/user/view" />">
                 User
             </a>
@@ -32,16 +36,9 @@
 
     <jsp:body>
         <div class="container">
+            <jsp:include page="/WEB-INF/jsp/token_id.jspf" />
             <div class="form-group">
                 <form:form method="post" enctype="multipart/form-data" modelAttribute="eventForm">
-                    <div class="form-group row">
-                        <label class="h5">
-                            <small>
-                                Token ID: <c:out value="${user.token.uuidString}"/>
-                            </small>
-                        </label>                                           
-                    </div>
-                    <hr />
                     <div class="form-group row">
                         <form:label class="h5" path="subject">
                             Тема сообщения
@@ -143,7 +140,6 @@
                 </form:form>
             </div>
         </div>
-
     </jsp:body>
 
 

@@ -22,17 +22,21 @@
     </jsp:attribute>
 
     <jsp:body>
-        <div class="container">              
+        <div class="container">
+            <jsp:include page="/WEB-INF/jsp/token_id.jspf" />              
             <c:choose>
                 <c:when test="${(user.medicalHistory.numberOfMedicalFormEntries) > 0}">
                     <h4>Entries: ${user.medicalHistory.numberOfMedicalFormEntries}</h5>
                         <ul class="list-group list-group-flush">
                             <c:forEach items="${user.medicalHistory.medicalFormEntries}" var="entry">
-                                <li class="list-group-item">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <a href="<c:url context="/tkn" 
                                            value="/token/user/med/entry/${entry.id}/view" />">
                                        <c:out value="${entry.subject}" />                               
-                                    </a>                            
+                                    </a>  
+                                    <span class="badge badge-primary badge-pill">
+                                        Atch:&nbsp;<c:out value="${entry.numberOfAttachments}" />
+                                    </span>
                                 </li>
                             </c:forEach>
                         </ul>

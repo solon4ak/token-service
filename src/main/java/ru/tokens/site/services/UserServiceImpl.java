@@ -143,5 +143,19 @@ public class UserServiceImpl implements UserService {
         }
         return null;
     }
+    
+    @Override
+    public Token getToken(User user) {
+        return user.getToken();
+    }
+    
+    @Override
+    public String getTokenId(User user) {
+        if (this.getToken(user) != null) {
+            return this.getToken(user).getUuidString();
+        } else {
+            return "Not registered";
+        }
+    }
  
 }

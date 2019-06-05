@@ -31,16 +31,11 @@
 
     <jsp:body>
         <div class="container">
+            <jsp:include page="/WEB-INF/jsp/token_id.jspf" />
 
             <div class="form-group">
                 <form:form method="post" enctype="multipart/form-data" modelAttribute="entryForm">
-                    <div class="form-group row">
-                        <label>
-                            <small>
-                                Token ID: <c:out value="${token.uuidString}"/>
-                            </small>
-                        </label>                                           
-                    </div>
+                    
                     <div class="form-group row">
                         <form:label path="subject">
                             Название записи

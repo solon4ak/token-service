@@ -34,12 +34,8 @@
 
     <jsp:body>
         <div class="container"> 
-            <div class="card my-2">                
-                <div class="card-body">
-                    <p class="card-text"><c:out value="Token ID: ${token.uuidString}"/><br />
-                        <c:out value="User E-mail: ${user.userEmailAddress}"/></p>
-                </div>
-            </div>
+            <jsp:include page="/WEB-INF/jsp/token_id.jspf" />
+
             <c:choose>
                 <c:when test="${user.medicalHistory == null}">
                     Empty! Please add your med data!
@@ -81,90 +77,107 @@
                                 </tr>
                             </tbody>
                         </table>
-                    </div>            
-                    <div class="card my-2">
-                        <div class="card-header">
-                            Перенесенные заболевания в детстве (в том числе детские инфекции)
+                    </div> 
+
+                    <c:if test="${fn:length(fn:trim(user.medicalHistory.childhoodIllness)) > 0}">
+                        <div class="card my-2">
+                            <div class="card-header">
+                                Перенесенные заболевания в детстве (в том числе детские инфекции)
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">
+                                    <c:out value="${user.medicalHistory.childhoodIllness}"/>
+                                </p>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <p class="card-text">
-                                <c:out value="${user.medicalHistory.childhoodIllness}"/>
-                            </p>
+                    </c:if>
+                    <c:if test="${fn:length(fn:trim(user.medicalHistory.diseases)) > 0}">
+                        <div class="card my-2">
+                            <div class="card-header">
+                                Перенесенные заболевания в течении жизни (в том числе туберкулёз 
+                                и контакт с ним, сахарный диабет, болезнь Боткина, венерические 
+                                заболевания – гонорея, сифилис, СПИД)
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">
+                                    <c:out value="${user.medicalHistory.diseases}"/>
+                                </p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="card my-2">
-                        <div class="card-header">
-                            Перенесенные заболевания в течении жизни (в том числе туберкулёз 
-                            и контакт с ним, сахарный диабет, болезнь Боткина, венерические 
-                            заболевания – гонорея, сифилис, СПИД)
+                    </c:if>
+                    <c:if test="${fn:length(fn:trim(user.medicalHistory.chronicDiseases)) > 0}">
+                        <div class="card my-2">
+                            <div class="card-header">
+                                Хронические заболевания
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">
+                                    <c:out value="${user.medicalHistory.chronicDiseases}"/>
+                                </p>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <p class="card-text">
-                                <c:out value="${user.medicalHistory.diseases}"/>
-                            </p>
+                    </c:if>
+                    <c:if test="${fn:length(fn:trim(user.medicalHistory.surgicalOperations)) > 0}">
+                        <div class="card my-2">
+                            <div class="card-header">
+                                Операции
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">
+                                    <c:out value="${user.medicalHistory.surgicalOperations}"/>
+                                </p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="card my-2">
-                        <div class="card-header">
-                            Хронические заболевания
+                    </c:if>
+                    <c:if test="${fn:length(fn:trim(user.medicalHistory.injuries)) > 0}">
+                        <div class="card my-2">
+                            <div class="card-header">
+                                Травмы, ранения, контузии
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">
+                                    <c:out value="${user.medicalHistory.injuries}"/>
+                                </p>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <p class="card-text">
-                                <c:out value="${user.medicalHistory.chronicDiseases}"/>
-                            </p>
+                    </c:if>
+                    <c:if test="${fn:length(fn:trim(user.medicalHistory.allergy)) > 0}">
+                        <div class="card my-2">
+                            <div class="card-header">
+                                Аллергические реакции (лекарственные средства, 
+                                пищевая аллергия, сезонная аллергия)
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">
+                                    <c:out value="${user.medicalHistory.allergy}"/>
+                                </p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="card my-2">
-                        <div class="card-header">
-                            Операции
+                    </c:if>
+                    <c:if test="${fn:length(fn:trim(user.medicalHistory.medicine)) > 0}">
+                        <div class="card my-2">
+                            <div class="card-header">
+                                Принимаемые лекарства
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">
+                                    <c:out value="${user.medicalHistory.medicine}"/>
+                                </p>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <p class="card-text">
-                                <c:out value="${user.medicalHistory.surgicalOperations}"/>
-                            </p>
+                    </c:if>
+                    <c:if test="${fn:length(fn:trim(user.medicalHistory.inheritedDiseases)) > 0}">
+                        <div class="card my-2">
+                            <div class="card-header">
+                                Наследственные заболевания
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">
+                                    <c:out value="${user.medicalHistory.inheritedDiseases}"/>
+                                </p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="card my-2">
-                        <div class="card-header">
-                            Травмы, ранения, контузии
-                        </div>
-                        <div class="card-body">
-                            <p class="card-text">
-                                <c:out value="${user.medicalHistory.injuries}"/>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="card my-2">
-                        <div class="card-header">
-                            Аллергические реакции (лекарственные средства, 
-                            пищевая аллергия, сезонная аллергия)
-                        </div>
-                        <div class="card-body">
-                            <p class="card-text">
-                                <c:out value="${user.medicalHistory.allergy}"/>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="card my-2">
-                        <div class="card-header">
-                            Принимаемые лекарства
-                        </div>
-                        <div class="card-body">
-                            <p class="card-text">
-                                <c:out value="${user.medicalHistory.medicine}"/>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="card my-2">
-                        <div class="card-header">
-                            Наследственные заболевания
-                        </div>
-                        <div class="card-body">
-                            <p class="card-text">
-                                <c:out value="${user.medicalHistory.inheritedDiseases}"/>
-                            </p>
-                        </div>
-                    </div>
+                    </c:if>                    
 
                     <c:if test="${(user.medicalHistory.numberOfMedicalFormEntries) > 0}">
                         <div class="card my-2">
@@ -174,11 +187,14 @@
                             <div class="card-body">
                                 <ul class="card-text list-group list-group-flush">
                                     <c:forEach items="${user.medicalHistory.medicalFormEntries}" var="entry">
-                                        <li class="list-group-item">
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
                                             <a href="<c:url context="/tkn" 
                                                    value="/token/user/med/entry/${entry.id}/view" />">
                                                <c:out value="${entry.subject}" />                               
-                                            </a>                            
+                                            </a>    
+                                            <span class="badge badge-primary badge-pill">
+                                                Atch:&nbsp;<c:out value="${entry.numberOfAttachments}" />
+                                            </span>
                                         </li>
                                     </c:forEach>
                                 </ul>

@@ -5,6 +5,7 @@
               required="true" %>
 <%@ attribute name="extraHeadContent" fragment="true" required="false" %>
 <%@ attribute name="extraNavigationContent" fragment="true" required="false" %>
+<%@ attribute name="extraBodyContent" fragment="true" required="false" %>
 <%@ attribute name="rightColumnContent" fragment="true" required="true" %>
 <%@ attribute name="authContent" fragment="true" required="true" %>
 <%@ include file="/WEB-INF/jsp/base.jspf" %>
@@ -55,7 +56,7 @@
                     </a>            
                 </nav>
             </div>
-            <div class="col-8 border-right">
+            <div class="col-8 border-right">                
                 <jsp:doBody />
             </div>
             <div class="col-2">

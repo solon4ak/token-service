@@ -22,6 +22,7 @@
 
     <jsp:body>        
         <div class="container">
+            <jsp:include page="/WEB-INF/jsp/token_id.jspf" />
             <c:if test="${message != null}">
                 <div class="alert alert-warning alert-dismissible fade show" role="alert">
                     <c:out value="${message}" />
@@ -30,15 +31,7 @@
                     </button>
                 </div>                
             </c:if>
-            <div class="card my-2">                
-                <div class="card-body">
-                    <p class="card-text">
-                        <small>
-                            <c:out value="Token ID: ${token.uuidString}"/>
-                        </small>                        
-                    </p>
-                </div>
-            </div>            
+                        
             <c:choose>
                 <c:when test="${fn:length(messageEvents) > 0}">
                     <c:forEach items="${messageEvents}" var="event">

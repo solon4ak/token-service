@@ -34,40 +34,42 @@
     </jsp:attribute>
 
     <jsp:body>
-        Token ID: <c:out value="${token.uuidString}"/><br />
-        User E-mail: <c:out value="${user.userEmailAddress}"/>
-        <hr />
-        <h4>Passport</h4>
-        <c:choose>
-            <c:when test="${user.passport == null}">
-                There is no passport binded to the token.                 
-            </c:when>
-            <c:otherwise>
-                <table class="table">                    
-                    <tbody>
-                        <tr>
-                            <td>Серия</td>
-                            <td><c:out value="${passport.series}" /></td>
-                        </tr>
-                        <tr>
-                            <td>Номер</td>
-                            <td><c:out value="${passport.number}" /></td>
-                        </tr>
-                        <tr>
-                            <td>Кем выдан</td>
-                            <td><c:out value="${passport.issueDepartment}" /></td>
-                        </tr>
-                        <tr>
-                            <td>Код подразделения</td>
-                            <td><c:out value="${passport.issueDepartmentCode}" /></td>
-                        </tr>
-                        <tr>
-                            <td>Дата выдачи</td>
-                            <td><wrox:formatDate value="${passport.issueDate}" /></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </c:otherwise>
-        </c:choose>        
+        <div class="container">
+            <jsp:include page="/WEB-INF/jsp/token_id.jspf" />
+
+            <h4>Passport</h4>
+            <c:choose>
+                <c:when test="${user.passport == null}">
+                    There is no passport binded to the token.                 
+                </c:when>
+                <c:otherwise>
+                    <table class="table">                    
+                        <tbody>
+                            <tr>
+                                <td>Серия</td>
+                                <td><c:out value="${passport.series}" /></td>
+                            </tr>
+                            <tr>
+                                <td>Номер</td>
+                                <td><c:out value="${passport.number}" /></td>
+                            </tr>
+                            <tr>
+                                <td>Кем выдан</td>
+                                <td><c:out value="${passport.issueDepartment}" /></td>
+                            </tr>
+                            <tr>
+                                <td>Код подразделения</td>
+                                <td><c:out value="${passport.issueDepartmentCode}" /></td>
+                            </tr>
+                            <tr>
+                                <td>Дата выдачи</td>
+                                <td><wrox:formatDate value="${passport.issueDate}" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </c:otherwise>
+            </c:choose>  
+        </div>
+
     </jsp:body>
 </template:basic_bs_three_col_tkn>

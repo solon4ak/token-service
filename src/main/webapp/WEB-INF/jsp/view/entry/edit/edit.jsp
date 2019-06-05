@@ -32,14 +32,10 @@
 
     <jsp:body>
         <div class="container">
+            <jsp:include page="/WEB-INF/jsp/token_id.jspf" />
             <div class="form-group">
                 <form:form method="post" enctype="multipart/form-data" modelAttribute="entryForm">
-                    <div class="form-group row">
-                        <label>
-                            <c:out value="Token ID: ${token.uuidString}"/><br />
-                            <c:out value="User E-mail: ${user.userEmailAddress}"/>
-                        </label>                                           
-                    </div>
+                    
                     <div class="form-group row">
                         <form:label path="subject">
                             Название записи
@@ -79,7 +75,7 @@
                                             <td>
                                                 <a href="<c:url 
                                                        value="/token/user/med/entry/${entry.id}/${attachment.id}/delete" />">
-                                                   Delete
+                                                    Delete
                                                 </a>
                                             </td>
                                         </tr>                

@@ -33,45 +33,44 @@
     </jsp:attribute>
 
     <jsp:body>
-        <small>
-            Token ID: <c:out value="${token.uuidString}"/>
-        </small>        
-        <hr />
-        <h4>Reside Address</h4>
-        <c:choose>
-            <c:when test="${user.tokenAddress == null}">
-                There is no address binded to the token!<br /><br />                 
-            </c:when>            
-            <c:otherwise>
-                <table class="table">                    
-                    <tbody>
-                        <tr>
-                            <td>Country</td>
-                            <td><c:out value="${address.country}" /></td>
-                        </tr>
-                        <tr>
-                            <td>Region</td>
-                            <td><c:out value="${address.region}" /></td>
-                        </tr>
-                        <tr>
-                            <td>City</td>
-                            <td><c:out value="${address.city}" /></td>
-                        </tr>
-                        <tr>
-                            <td>Street</td>
-                            <td><c:out value="${address.street}" /></td>
-                        </tr>
-                        <tr>
-                            <td>Building</td>
-                            <td><c:out value="${address.building}" /></td>
-                        </tr>
-                        <tr>
-                            <td>Apartment</td>
-                            <td><c:out value="${address.apartment}" /></td>
-                        </tr>
-                    </tbody>
-                </table>                
-            </c:otherwise>
-        </c:choose>
+        <div class="container">
+            <jsp:include page="/WEB-INF/jsp/token_id.jspf" />
+            <h4>Reside Address</h4>
+            <c:choose>
+                <c:when test="${user.tokenAddress == null}">
+                    There is no address binded to the token!<br /><br />                 
+                </c:when>            
+                <c:otherwise>
+                    <table class="table">                    
+                        <tbody>
+                            <tr>
+                                <td>Country</td>
+                                <td><c:out value="${address.country}" /></td>
+                            </tr>
+                            <tr>
+                                <td>Region</td>
+                                <td><c:out value="${address.region}" /></td>
+                            </tr>
+                            <tr>
+                                <td>City</td>
+                                <td><c:out value="${address.city}" /></td>
+                            </tr>
+                            <tr>
+                                <td>Street</td>
+                                <td><c:out value="${address.street}" /></td>
+                            </tr>
+                            <tr>
+                                <td>Building</td>
+                                <td><c:out value="${address.building}" /></td>
+                            </tr>
+                            <tr>
+                                <td>Apartment</td>
+                                <td><c:out value="${address.apartment}" /></td>
+                            </tr>
+                        </tbody>
+                    </table>                
+                </c:otherwise>
+            </c:choose>
+        </div>
     </jsp:body>
 </template:basic_bs_three_col_tkn>

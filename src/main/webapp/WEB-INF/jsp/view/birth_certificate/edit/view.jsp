@@ -34,37 +34,37 @@
     </jsp:attribute>
 
     <jsp:body>
-        <small>
-            Token ID: <c:out value="${token.uuidString}"/>
-        </small>
-        <hr />
-        <h4>Birth Certificate</h4>
-        <c:choose>
-            <c:when test="${user.birthCertificate == null}">
-                There is no birth certificate binded to the token.                 
-            </c:when>
-            <c:otherwise>
-                <table class="table">                    
-                    <tbody>
-                        <tr>
-                            <td>Серия:</td>
-                            <td><c:out value="${certificate.series}" /></td>
-                        </tr>
-                        <tr>
-                            <td>Номер:</td>
-                            <td><c:out value="${certificate.number}" /></td>
-                        </tr>
-                        <tr>
-                            <td>Кем выдано:</td>
-                            <td><c:out value="${certificate.issueDepartment}" /></td>
-                        </tr>
-                        <tr>
-                            <td>Дата выдачи:</td>
-                            <td><wrox:formatDate value="${certificate.issueDate}" /></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </c:otherwise>
-        </c:choose>        
+        <div class="container">
+            <jsp:include page="/WEB-INF/jsp/token_id.jspf" />
+
+            <h4>Birth Certificate</h4>
+            <c:choose>
+                <c:when test="${user.birthCertificate == null}">
+                    There is no birth certificate binded to the token.                 
+                </c:when>
+                <c:otherwise>
+                    <table class="table">                    
+                        <tbody>
+                            <tr>
+                                <td>Серия:</td>
+                                <td><c:out value="${certificate.series}" /></td>
+                            </tr>
+                            <tr>
+                                <td>Номер:</td>
+                                <td><c:out value="${certificate.number}" /></td>
+                            </tr>
+                            <tr>
+                                <td>Кем выдано:</td>
+                                <td><c:out value="${certificate.issueDepartment}" /></td>
+                            </tr>
+                            <tr>
+                                <td>Дата выдачи:</td>
+                                <td><wrox:formatDate value="${certificate.issueDate}" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </c:otherwise>
+            </c:choose>  
+        </div>
     </jsp:body>
 </template:basic_bs_three_col_tkn>

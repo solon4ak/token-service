@@ -37,4 +37,8 @@ public interface UserService {
     
     String getPasswordForUser(String email);
     
+    String getTokenId(User user);
+    
+    Token getToken(User user);
+    
 }

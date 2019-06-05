@@ -11,6 +11,9 @@
 
     <jsp:attribute name="rightColumnContent">
         <nav class="nav flex-column">
+            <a class="nav-link" href="<c:url value="/token/user/csdevent/list" />">
+                List
+            </a>
             <a class="nav-link" href="<c:url value="/token/user/csdevent/edit/${event.id}" />">
                 Edit
             </a>
@@ -29,22 +32,19 @@
 
     <jsp:body>
         <div class="container">
-            <div class="card my-2">                
-                <div class="card-body">
-                    <p class="card-text">
-                        <small>
-                            Token ID: <c:out value="${user.token.uuidString}"/>
-                        </small>
-                    </p> 
-                    <p class="card-text">
-                        <c:if test="${event.startDate != null}">
+            <jsp:include page="/WEB-INF/jsp/token_id.jspf" />
+            <c:if test="${event.startDate != null}">
+                <div class="card my-2">                
+                    <div class="card-body">
+                        <p class="card-text">
                             <small>            
                                 Created: <tags:localDate date="${event.createDate}" />
                             </small>
-                        </c:if>
-                    </p>
+                        </p>
+                    </div>
                 </div>
-            </div>
+            </c:if>
+
             <div class="card my-2">
                 <div class="card-header">
                     Status

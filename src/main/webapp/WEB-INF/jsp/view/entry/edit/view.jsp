@@ -14,6 +14,9 @@
             <a class="nav-link" href="<c:url value="/token/user/med/entry/list" />">
                 Entries
             </a>
+            <a class="nav-link" href="<c:url value="/token/user/med/entry/create" />">
+                Add entry
+            </a>
             <a class="nav-link" href="<c:url context="/tkn" 
                    value="/token/user/med/entry/${entry.id}/edit" />">
                 Edit
@@ -31,13 +34,9 @@
 
     <jsp:body>
         <div class="container">
+            <jsp:include page="/WEB-INF/jsp/token_id.jspf" />
             <div class="card my-2">                
-                <div class="card-body">
-                    <p class="card-text">
-                        <small>
-                            <c:out value="Token ID: ${token.uuidString}"/>
-                        </small>                        
-                    </p>
+                <div class="card-body">                    
                     <p class="card-text">
                         <small>
                             Created: <wrox:formatDate value="${entry.dateCreated}" type="both"
