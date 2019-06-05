@@ -2,14 +2,14 @@
 <%--@elvariable id="user" type="ru.tokens.site.entities.User"--%>
 <%--@elvariable id="passport" type="ru.tokens.site.entities.Passport"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
-<template:basic_bs_two_col htmlTitle="${token.uuidString} :: Passport"
-                           bodyTitle="Passport">
+<template:basic_bs_three_col_tkn htmlTitle="${token.uuidString} :: Passport"
+                                 bodyTitle="Passport">
 
     <jsp:attribute name="authContent">
         <jsp:include page="/WEB-INF/jsp/user.jspf" />
     </jsp:attribute> 
 
-    <jsp:attribute name="leftColumnContent">
+    <jsp:attribute name="rightColumnContent">
         <nav class="nav flex-column">
             <c:choose>
                 <c:when test="${user.passport == null}">
@@ -25,7 +25,11 @@
                         Delete
                     </a>
                 </c:otherwise>
-            </c:choose>            
+            </c:choose>  
+            <div class="dropdown-divider"></div>
+            <a class="nav-link" href="<c:url value="/user/view" />">
+                User
+            </a>
         </nav>
     </jsp:attribute>
 
@@ -66,4 +70,4 @@
             </c:otherwise>
         </c:choose>        
     </jsp:body>
-</template:basic_bs_two_col>
+</template:basic_bs_three_col_tkn>

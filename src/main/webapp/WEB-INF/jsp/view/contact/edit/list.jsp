@@ -2,12 +2,22 @@
 <%--@elvariable id="user" type="ru.tokens.site.entities.User"--%>
 <%--@elvariable id="contacts" type="java.util.Collection"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
-<template:basic_bs_one_col htmlTitle="${token.uuidString} :: Contacts"
-                           bodyTitle="Contacts">
+<template:basic_bs_three_col_tkn htmlTitle="${token.uuidString} :: Contacts"
+                                 bodyTitle="Contacts">
 
     <jsp:attribute name="authContent">
         <jsp:include page="/WEB-INF/jsp/user.jspf" />
     </jsp:attribute> 
+
+    <jsp:attribute name="rightColumnContent">
+        <nav class="nav flex-column">   
+            <a class="nav-link" href="<c:url value="/token/user/contact/add" />">Add</a>
+            <div class="dropdown-divider"></div>
+            <a class="nav-link" href="<c:url value="/user/view" />">
+                User
+            </a>
+        </nav>
+    </jsp:attribute>
 
     <jsp:body>
         Token ID: <c:out value="${token.uuidString}"/><br />
@@ -23,8 +33,7 @@
                     <thead>
                         <!-- here should go some titles... -->
                         <tr>                
-                            <th>First name</th>
-                            <th>Last Name</th>
+                            <th>Name</th>
                             <th>Phone</th>
                             <th>E-mail</th>
                             <th>Action</th>
@@ -34,9 +43,7 @@
                         <c:forEach items="${user.contacts}" var="contact">
                             <tr>                
                                 <td>
-                                    <c:out value="${contact.firstName}" />
-                                </td>
-                                <td>
+                                    <c:out value="${contact.firstName}" />&nbsp;
                                     <c:out value="${contact.lastName}" />
                                 </td>
                                 <td>
@@ -46,24 +53,30 @@
                                     <c:out value="${contact.email}" />
                                 </td>
                                 <td>
-                                    <a class="btn btn-primary btn-sm" 
-                                       href="<c:url value="/token/user/contact/edit/${contact.contactId}" />">
-                                        Edit
-                                    </a>
-                                    <a class="btn btn-primary btn-sm" 
-                                       href="<c:url value="/token/user/contact/delete/${contact.contactId}" />">
-                                        Delete
-                                    </a>
+                                    <div class="btn-group">
+                                        <button class="btn btn-secondary btn-sm" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Action
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span class="sr-only">Toggle Dropdown</span>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item" 
+                                               href="<c:url value="/token/user/contact/edit/${contact.contactId}" />">
+                                                Edit
+                                            </a>
+                                            <a class="dropdown-item" 
+                                               href="<c:url value="/token/user/contact/delete/${contact.contactId}" />">
+                                                Delete
+                                            </a>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                         </c:forEach>
                     </tbody>
                 </table>
             </c:otherwise>            
-        </c:choose>    
-        <hr />
-        <p>
-            <a class="btn btn-primary" href="<c:url value="/token/user/contact/add" />">Add contact</a>
-        </p>
+        </c:choose> 
     </jsp:body>
-</template:basic_bs_one_col>
+</template:basic_bs_three_col_tkn>

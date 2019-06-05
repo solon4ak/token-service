@@ -67,15 +67,15 @@ public class EmailSender {
 
         log.warn("Insight sendEventHappenedEmail method");
         try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
             helper.setTo(new InternetAddress(email.getTo()));
 //            helper.setFrom(new InternetAddress("tag4life@yandex.ru"));
             helper.setFrom(environment.getProperty("mail.smtp.user"));
             helper.setSubject(email.getSubject());
-            helper.setText(email.getContent());
-            helper.setSentDate(new Date());
+//            helper.setText(email.getContent());
+            helper.setSentDate(new Date());             
 
             for (Attachment attachment : email.getAttachments()) {
                 String path = fileUtil.getStorageDirectory();
@@ -85,7 +85,8 @@ public class EmailSender {
                 helper.addAttachment(attachment.getName(), file);
             }
 
-            mailSender.send(message);
+            mimeMessage.setContent(email.getContent(), "text/html;charset=UTF-8");
+            mailSender.send(mimeMessage);
             email.setSent(Instant.now());
             System.out.println("Email sending complete.");
         } catch (MessagingException | MailException e) {

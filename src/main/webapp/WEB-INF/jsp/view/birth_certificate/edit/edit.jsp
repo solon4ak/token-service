@@ -2,11 +2,23 @@
 <%--@elvariable id="token" type="ru.tokens.site.entities.Token"--%>
 <%--@elvariable id="user" type="ru.tokens.site.entities.User"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
-<template:basic_bs_one_col htmlTitle="Edit Birth Certificate" bodyTitle="Birth certificate edit">
+<template:basic_bs_three_col_tkn htmlTitle="Edit Birth Certificate" bodyTitle="Birth certificate edit">
 
     <jsp:attribute name="authContent">
         <jsp:include page="/WEB-INF/jsp/user.jspf" />
     </jsp:attribute> 
+
+    <jsp:attribute name="rightColumnContent">
+        <nav class="nav flex-column">
+            <a class="nav-link" href="<c:url value="/token/user/birthcert/delete" />">
+                Delete
+            </a>  
+            <div class="dropdown-divider"></div>
+            <a class="nav-link" href="<c:url value="/user/view" />">
+                User
+            </a>
+        </nav>
+    </jsp:attribute>
 
     <jsp:body>
         <c:out value="Token ID: ${token.uuidString}"/><br />
@@ -69,4 +81,4 @@
             </div>                           
         </form:form>    
     </jsp:body>
-</template:basic_bs_one_col>
+</template:basic_bs_three_col_tkn>

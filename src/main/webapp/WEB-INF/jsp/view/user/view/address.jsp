@@ -13,9 +13,9 @@
                 <div class="row justify-content-lg-center py-2">
                     <div class="col-md-6">
                         <c:if test="${user.image != null}">
-                            <a href="<c:url value="/token/image">
-                                   <c:param name="userId" value="${user.userId}" />
-                               </c:url>" data-toggle="lightbox">
+                            <a href="<c:url value='/token/image'>
+                                   <c:param name='userId' value='${user.userId}' />
+                               </c:url>" data-fancybox="images">
                                 <img src="<c:url value="/token/thumb">
                                          <c:param name="userId" value="${user.userId}" />
                                      </c:url>" 

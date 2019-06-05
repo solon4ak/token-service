@@ -29,7 +29,7 @@ public class UserDataController {
 
     @Autowired
     private UserService userService;
-    
+
     @Autowired
     private TokenService tokenService;
 
@@ -40,7 +40,7 @@ public class UserDataController {
             @PathVariable("tokenId") Long tokenId,
             @PathVariable("uuidString") String uuidString,
             @RequestParam("showMH") boolean showMH) {
-        
+
         String msg;
 
         if (tokenId == null || uuidString == null) {
@@ -92,4 +92,19 @@ public class UserDataController {
         return new ModelAndView("user/edit/view");
     }
 
+    @RequestMapping(value = "user/picture/view", method = RequestMethod.GET)
+    public ModelAndView getPicture(Map<String, Object> model, Principal principal) {
+
+        Long userId = Long.valueOf(principal.getName());
+        User user = userService.findUserById(userId);
+
+        Token token = tokenService.findTokenByUser(user);
+        if (token == null || !token.isActivated()) {
+            return new ModelAndView(new RedirectView("/token/register", true, false));
+        }
+
+        model.put("token", token);
+        model.put("user", user);
+        return new ModelAndView("image/edit/view");
+    }
 }

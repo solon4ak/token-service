@@ -1,5 +1,6 @@
 package ru.tokens.site.services;
 
+import java.time.ZoneId;
 import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,6 +45,13 @@ public class MessageEventServiceImpl implements MessageEventService {
     @Override
     public Collection<MessageEvent> getMessageEventsForUser(User user) {
         return this.eventRepository.list(user);
+    }    
+    
+    @Override
+    public Long getDateFromNextCheckDate(MessageEvent event) {
+        return java.util.Date.from(event.getNextCheckDate().atStartOfDay()
+                .atZone(ZoneId.systemDefault())
+                .toInstant()).getTime();
     }
     
 }

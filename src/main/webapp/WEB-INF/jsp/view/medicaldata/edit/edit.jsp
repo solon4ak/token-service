@@ -3,126 +3,125 @@
 <%--@elvariable id="user" type="ru.tokens.site.entities.User"--%>
 <%--@elvariable id="bloodVariants" type="java.util.List"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
-<template:basic htmlTitle="Editing medical data" bodyTitle="Edit medical data">
-    <c:out value="Token ID: ${token.uuidString}"/><br />
-    <c:out value="User E-mail: ${user.userEmailAddress}"/>
-    <hr />
-    <form:form method="post" modelAttribute="medicalForm">
-        <fieldset>
-            <legend>Edit medical data</legend>
-            <table border="1" cellpadding="10">
-                <thead>
-                    <tr>
-                        <th>Описание</th>
-                        <th>Данные</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><form:label path="omsNumber">Номер полиса ОМС</form:label></td>
-                        <td><form:input path="omsNumber"/></td>
-                    </tr>
-                    <tr>
-                        <td><form:label path="bloodType">Группа крови</form:label></td>
-                            <td>
-                            <form:select path="bloodType">
-                                <form:option value="Нет данных" label="--- Select ---" />
-                                <form:options items="${bloodVariants}" />
-                            </form:select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><form:label path="isOrganDonor">Разрешение на извлечение органов (донор органов)</form:label></td>
-                        <td>Разрешаю &nbsp;<form:checkbox path="isOrganDonor"/></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <form:label path="childhoodIllness">
-                                Перенесенные заболевания в детстве <br />(в том числе детские инфекции)
-                            </form:label>
-                        </td>
-                        <td>
-                            <form:textarea path="childhoodIllness" rows="5" cols="30" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <form:label path="diseases">
-                                Перенесенные заболевания в течении жизни <br />(в том числе туберкулёз 
-                                и контакт с ним, <br />сахарный диабет, болезнь Боткина, <br />венерические 
-                                заболевания – гонорея, сифилис, СПИД)
-                            </form:label>
-                        </td>
-                        <td>
-                            <form:textarea path="diseases" rows="5" cols="70" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <form:label path="chronicDiseases">
-                                Хронические заболевания
-                            </form:label>
-                        </td>
-                        <td>
-                            <form:textarea path="chronicDiseases" rows="5" cols="70" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <form:label path="surgicalOperations">
-                                Операции
-                            </form:label>
-                        </td>
-                        <td>
-                            <form:textarea path="surgicalOperations" rows="5" cols="70" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <form:label path="injuries">
-                                Травмы, ранения, контузии
-                            </form:label>
-                        </td>
-                        <td>
-                            <form:textarea path="injuries" rows="5" cols="70" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <form:label path="allergy">
-                                Аллергические реакции <br />(лекарственные средства, 
-                                пищевая аллергия, <br />сезонная аллергия)
-                            </form:label>
-                        </td>
-                        <td>
-                            <form:textarea path="allergy" rows="5" cols="70" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <form:label path="medicine">
-                                Принимаемые лекарства
-                            </form:label>
-                        </td>
-                        <td>
-                            <form:textarea path="medicine" rows="5" cols="70" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <form:label path="inheritedDiseases">
-                                Наследственные заболевания
-                            </form:label>
-                        </td>
-                        <td>
-                            <form:textarea path="inheritedDiseases" rows="5" cols="70" />
-                        </td>
-                    </tr>
-                </tbody>
-            </table> 
-        </fieldset>
+<template:basic_bs_three_col_tkn htmlTitle="Editing medical data" bodyTitle="Edit medical data">
+    <jsp:attribute name="authContent">
+        <jsp:include page="/WEB-INF/jsp/user.jspf" />
+    </jsp:attribute> 
 
-        <hr />
-        <input type="submit" value="Submit"/>
-    </form:form>
-</template:basic>
+    <jsp:attribute name="rightColumnContent">
+        <nav class="nav flex-column">      
+            <a class="nav-link" href="<c:url value="/token/user/med/edit" />">
+                Edit
+            </a>  
+            <a class="nav-link" href="<c:url value="/token/user/med/entry/list" />">
+                Entries
+            </a> 
+            <div class="dropdown-divider"></div>
+            <a class="nav-link" href="<c:url value="/user/view" />">
+                User
+            </a>
+        </nav>
+    </jsp:attribute>
+
+    <jsp:body>
+        <c:out value="Token ID: ${token.uuidString}"/><br />
+        <c:out value="User E-mail: ${user.userEmailAddress}"/>
+
+        <form:form method="post" modelAttribute="medicalForm">
+            <div class="form-group mx-3">
+                <div class="form-group row border-top mt-1 p-2">
+                    <form:label path="omsNumber">
+                        Last name
+                    </form:label> 
+                    <form:input path="omsNumber" type="text" class="form-control bg-light text-dark" 
+                                placeholder="1234 5678 9012 3456" 
+                                aria-describedby="omsHelp" id="omsNumber" />
+                    <small id="omsHelp" class="form-text text-muted">
+                        16 digits!
+                    </small>
+
+                </div>
+                <div class="form-group row border-top mt-1 p-2">
+                    <form:label path="bloodType">Группа крови</form:label>
+                    <form:select path="bloodType" class="form-control bg-light text-dark" id="bloodType">
+                        <form:option value="Нет данных" label="--- Select ---" />
+                        <form:options items="${bloodVariants}" />
+                    </form:select>
+                </div>
+                <div class="form-group row border-top mt-1 p-2">
+                    <div class="col-sm-4">Донор органов</div>
+                    <div class="col-sm-8">
+                        <div class="form-check">
+                            <form:checkbox path="isOrganDonor" class="form-check-input bg-light text-dark" id="isOrganDonor"/>
+                            <label class="form-check-label" for="isOrganDonor">
+                                Да
+                            </label>
+                        </div>
+                    </div>
+                </div>                
+                <div class="form-group row border-top mt-1 p-2">
+                    <form:label path="childhoodIllness">
+                        Перенесенные заболевания в детстве (в том числе детские инфекции)
+                    </form:label>
+                    <form:textarea path="childhoodIllness" class="form-control bg-light text-dark" 
+                                   id="childhoodIllness" rows="3" />
+                </div>
+                <div class="form-group row border-top mt-1 p-2">
+                    <form:label path="diseases">
+                        Перенесенные заболевания в течении жизни (в том числе туберкулёз 
+                        и контакт с ним, сахарный диабет, болезнь Боткина, венерические 
+                        заболевания – гонорея, сифилис, СПИД)
+                    </form:label>
+                    <form:textarea path="diseases" class="form-control bg-light text-dark" 
+                                   id="diseases" rows="3" />
+                </div>
+                <div class="form-group row border-top mt-1 p-2">
+                    <form:label path="chronicDiseases">
+                        Хронические заболевания
+                    </form:label>
+                    <form:textarea path="chronicDiseases" class="form-control bg-light text-dark" 
+                                   id="chronicDiseases" rows="3" />
+                </div>
+                <div class="form-group row border-top mt-1 p-2">
+                    <form:label path="surgicalOperations">
+                        Операции
+                    </form:label>
+                    <form:textarea path="surgicalOperations" class="form-control bg-light text-dark" 
+                                   id="surgicalOperations" rows="3" />
+                </div>
+                <div class="form-group row border-top mt-1 p-2">
+                    <form:label path="injuries">
+                        Травмы, ранения, контузии
+                    </form:label>
+                    <form:textarea path="injuries" class="form-control bg-light text-dark" 
+                                   id="injuries" rows="3" />
+                </div>
+                <div class="form-group row border-top mt-1 p-2">
+                    <form:label path="allergy">
+                        Аллергические реакции (лекарственные средства, 
+                        пищевая аллергия, сезонная аллергия)
+                    </form:label>
+                    <form:textarea path="allergy" class="form-control bg-light text-dark" 
+                                   id="allergy" rows="3" />
+                </div>
+                <div class="form-group row border-top mt-1 p-2">
+                    <form:label path="medicine">
+                        Принимаемые лекарства
+                    </form:label>
+                    <form:textarea path="medicine" class="form-control bg-light text-dark" 
+                                   id="medicine" rows="3" />
+                </div>
+                <div class="form-group row border-top mt-1 p-2">
+                    <form:label path="inheritedDiseases">
+                        Наследственные заболевания
+                    </form:label>
+                    <form:textarea path="inheritedDiseases" class="form-control bg-light text-dark" 
+                                   id="inheritedDiseases" rows="3" />
+                </div>
+                <div class="form-group row border-top p-4">
+                    <button class="btn btn-primary" type="submit">Submit</button>                
+                </div>
+            </div>            
+        </form:form>
+    </jsp:body>
+</template:basic_bs_three_col_tkn>

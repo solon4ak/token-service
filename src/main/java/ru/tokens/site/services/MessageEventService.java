@@ -20,4 +20,6 @@ public interface MessageEventService {
     
     Collection<MessageEvent> getMessageEventsForUser(User user);
     
+    Long getDateFromNextCheckDate(MessageEvent event);
+    
 }

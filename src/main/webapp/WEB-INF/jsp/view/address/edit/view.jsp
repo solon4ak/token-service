@@ -2,14 +2,14 @@
 <%--@elvariable id="user" type="ru.tokens.site.entities.User"--%>
 <%--@elvariable id="address" type="ru.tokens.site.entities.Address"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
-<template:basic_bs_two_col htmlTitle="${token.uuidString} :: Address"
-                           bodyTitle="User reside address">
+<template:basic_bs_three_col_tkn htmlTitle="${token.uuidString} :: User reside address"
+                                 bodyTitle="User reside address">
 
     <jsp:attribute name="authContent">
         <jsp:include page="/WEB-INF/jsp/user.jspf" />
     </jsp:attribute> 
 
-    <jsp:attribute name="leftColumnContent">
+    <jsp:attribute name="rightColumnContent">
         <nav class="nav flex-column">
             <c:choose>
                 <c:when test="${user.tokenAddress == null && user.postAddress == null}">
@@ -24,13 +24,18 @@
                         Edit
                     </a>                    
                 </c:otherwise>
-            </c:choose>            
+            </c:choose>   
+            <div class="dropdown-divider"></div>
+            <a class="nav-link" href="<c:url value="/user/view" />">
+                User
+            </a>
         </nav>
     </jsp:attribute>
 
     <jsp:body>
-        Token ID: <c:out value="${token.uuidString}"/><br />
-        User E-mail: <c:out value="${user.userEmailAddress}"/>
+        <small>
+            Token ID: <c:out value="${token.uuidString}"/>
+        </small>        
         <hr />
         <h4>Reside Address</h4>
         <c:choose>
@@ -69,4 +74,4 @@
             </c:otherwise>
         </c:choose>
     </jsp:body>
-</template:basic_bs_two_col>
+</template:basic_bs_three_col_tkn>

@@ -1,14 +1,30 @@
 <%--@elvariable id="addressForm" type="ru.tokens.site.controller.PostAddressController.PostAddressForm"--%>
 <%--@elvariable id="user" type="ru.tokens.site.entities.User"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
-<template:basic_bs_one_col htmlTitle="Edit Post Address" bodyTitle="Post Address Edit">    
+<template:basic_bs_two_col htmlTitle="Edit Post Address" bodyTitle="Post Address Edit">    
     
     <jsp:attribute name="authContent">
         <jsp:include page="/WEB-INF/jsp/user.jspf" />
     </jsp:attribute> 
     
+    <jsp:attribute name="leftColumnContent">
+        <nav class="nav flex-column">
+            <a class="nav-link" href="<c:url value="/user/view" />">
+                User
+            </a>
+            <a class="nav-link" href="<c:url value="/token/user/postaddress/view" />">
+                Post address
+            </a>
+            <a class="nav-link" href="<c:url value="/token/user/view" />">
+                Token
+            </a> 
+        </nav>
+    </jsp:attribute>
+    
     <jsp:body>
-        <h5><c:out value="User E-mail: ${user.userEmailAddress}"/></h5>
+        <h5>
+            <c:out value="User E-mail: ${user.userEmailAddress}"/>
+        </h5>
         <hr />
         <form:form method="post" modelAttribute="addressForm">
             <div class="form-group">
@@ -90,4 +106,4 @@
         </form:form>  
     </jsp:body>
     
-</template:basic_bs_one_col>
+</template:basic_bs_two_col>

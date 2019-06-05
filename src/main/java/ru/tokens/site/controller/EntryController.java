@@ -46,7 +46,7 @@ public class EntryController {
 
     @Autowired
     private UserService userService;
-    
+
     @Autowired
     private TokenService tokenService;
 
@@ -118,7 +118,7 @@ public class EntryController {
     @RequestMapping(value = "user/med/entry/{entryId}/view", method = RequestMethod.GET)
     public ModelAndView viewEntry(Map<String, Object> model, Principal principal,
             @PathVariable("entryId") long entryId) {
-        
+
         Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
 
@@ -172,7 +172,7 @@ public class EntryController {
 
         dataEntryService.save(entry);
         user.getMedicalHistory().addMedicalFormEntry(entry);
-        return new RedirectView("/token/user/med/view", true, false);
+        return new RedirectView("/token/user/med/entry/list", true, false);
     }
 
     @RequestMapping(value = "user/med/entry/{entryId}/delete", method = RequestMethod.GET)
@@ -188,7 +188,7 @@ public class EntryController {
 
         MedicalHistory medicalHistory = user.getMedicalHistory();
         DataEntry entry = medicalHistory.getMedicalFormEntry(entryId);
-        if (null != entry) {            
+        if (null != entry) {
             Collection<Attachment> attachments = entry.getAttachments();
             if (!attachments.isEmpty()) {
                 for (Attachment a : attachments) {
@@ -204,7 +204,7 @@ public class EntryController {
             log.info("Entry '{}' for token '{}' was deleted.", entryId, token.getTokenId());
         }
 
-        return new RedirectView("/token/user/med/view", true, false);
+        return new RedirectView("/token/user/med/entry/list", true, false);
     }
 
     @RequestMapping(value = "user/med/entry/{entryId}/edit", method = RequestMethod.GET)
@@ -255,13 +255,29 @@ public class EntryController {
             entry.setBody(form.getBody());
 
             this.processAttachment(entry, form);
-            
+
             dataEntryService.save(entry);
-            log.info("Editing entry for token '{}'.", token.getTokenId());            
+            log.info("Editing entry for token '{}'.", token.getTokenId());
             return new RedirectView("/token/user/med/entry/" + entry.getId() + "/view", true, false);
         }
 
-        return new RedirectView("/token/user/med/view", true, false);
+        return new RedirectView("/token/user/med/entry/list", true, false);
+    }
+
+    @RequestMapping(value = "user/med/entry/list", method = RequestMethod.GET)
+    public String listEntries(Map<String, Object> model, Principal principal) {
+
+        Long userId = Long.valueOf(principal.getName());
+        User user = userService.findUserById(userId);
+
+        Token token = tokenService.findTokenByUser(user);
+        MedicalHistory medHist = user.getMedicalHistory();
+        Collection<DataEntry> entries = medHist.getMedicalFormEntries();
+
+        model.put("entries", entries);
+        model.put("user", user);
+        model.put("token", token);
+        return "entry/edit/list";
     }
 
     private ModelAndView getListRedirectModelAndView(Token token) {

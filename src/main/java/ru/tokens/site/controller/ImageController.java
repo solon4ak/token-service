@@ -55,12 +55,6 @@ public class ImageController {
     @Autowired
     private ImageService imageService;
 
-//    private volatile long IMAGE_ID_SEQUENCE = 1;
-//
-//    private synchronized long getNextImageId() {
-//        return this.IMAGE_ID_SEQUENCE++;
-//    }
-
     @RequestMapping(value = "user/image/view", method = RequestMethod.GET)
     public void picture(Principal principal, HttpServletResponse response) {
 

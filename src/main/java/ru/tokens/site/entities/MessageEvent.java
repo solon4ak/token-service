@@ -2,6 +2,8 @@ package ru.tokens.site.entities;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -9,34 +11,34 @@ import java.util.List;
  * @author solon4ak
  */
 public class MessageEvent implements Serializable {
-    
+
     private long id;
     private User user;
-    
+
     private DataEntry dataEntry;
-    
+
     private List<Contact> contacts;
-   
+
     private final LocalDate createDate;
     private LocalDate startDate;
     private LocalDate nextCheckDate;
     private LocalDate firedDate;
-    
+
     // checking email sending interval
     private String checkingInterval;
-    
+
     // состояние события
     private MessageEventStatus status;
     private final boolean started;
     private boolean executed;
-           
+
     // флаг пролонгации
     private String prolongationToken;
     private boolean prolonged;
     private boolean waitingProlongation;
 
     public MessageEvent() {
-        this.createDate = LocalDate.now();   
+        this.createDate = LocalDate.now();
         this.status = MessageEventStatus.PENDING;
         this.started = false;
         this.executed = false;
@@ -95,7 +97,7 @@ public class MessageEvent implements Serializable {
     public void setNextCheckDate(LocalDate nextCheckDate) {
         this.nextCheckDate = nextCheckDate;
     }
-        
+
     public LocalDate getFiredDate() {
         return firedDate;
     }
@@ -118,7 +120,7 @@ public class MessageEvent implements Serializable {
 
     public void setStatus(MessageEventStatus status) {
         this.status = status;
-    }    
+    }
 
     public String getProlongationToken() {
         return prolongationToken;
@@ -154,9 +156,10 @@ public class MessageEvent implements Serializable {
 
     public void setExecuted(boolean executed) {
         this.executed = executed;
-    }    
-                
+    }
+
+
     public enum MessageEventStatus {
         PENDING, STARTED, CANCELED, FIRED
-    }    
+    }
 }

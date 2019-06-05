@@ -1,30 +1,32 @@
 <%--@elvariable id="user" type="ru.tokens.site.entities.User"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
-<template:basic_bs_two_col htmlTitle="User page for ${user.lastName}, ${user.firstName}"
-                           bodyTitle="${user.lastName}, ${user.firstName}">
+<template:basic_bs_three_col htmlTitle="User page for ${user.lastName}, ${user.firstName}"
+                             bodyTitle="${user.lastName}, ${user.firstName}">
 
     <jsp:attribute name="authContent">
         <jsp:include page="/WEB-INF/jsp/user.jspf" />
     </jsp:attribute>
 
     <jsp:attribute name="leftColumnContent">
+        <nav class="nav flex-column">  
+            <a class="nav-link disabled" href="<c:url value="/user/view" />">
+                User
+            </a>
+            <a class="nav-link" href="<c:url value="/token/user/postaddress/view" />">
+                Post address
+            </a>
+            <a class="nav-link" href="<c:url value="/token/user/view" />">
+                Token
+            </a>            
+        </nav>
+    </jsp:attribute>
+
+    <jsp:attribute name="rightColumnContent">
         <nav class="nav flex-column">
             <a class="nav-link" href="<c:url value="/user/edit" />">
-                Edit user
+                Edit
             </a>
-            <c:choose>
-                <c:when test="${user.postAddress == null}">
-                    <a class="nav-link" href="<c:url value="/token/user/postaddress/add" />">
-                        Add post address
-                    </a>
-                </c:when>
-                <c:otherwise>
-                    <a class="nav-link" href="<c:url value="/token/user/postaddress/view" />">
-                        Post address
-                    </a>
-                </c:otherwise>
-            </c:choose>            
-        </nav>
+        </nav>        
     </jsp:attribute>
 
     <jsp:body>
@@ -63,4 +65,4 @@
         </table>            
     </jsp:body>
 
-</template:basic_bs_two_col>
+</template:basic_bs_three_col>

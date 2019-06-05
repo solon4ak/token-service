@@ -6,6 +6,7 @@
 <%@ attribute name="extraHeadContent" fragment="true" required="false" %>
 <%@ attribute name="extraNavigationContent" fragment="true" required="false" %>
 <%@ attribute name="leftColumnContent" fragment="true" required="false" %>
+<%@ attribute name="rightColumnContent" fragment="true" required="false" %>
 <%@ attribute name="authContent" fragment="true" required="true" %>
 <%@ include file="/WEB-INF/jsp/base.jspf" %>
 <template:main_bs htmlTitle="${htmlTitle}" bodyTitle="${bodyTitle}">
@@ -28,8 +29,11 @@
             <div class="col-2 border-right">
                 <jsp:invoke fragment="leftColumnContent" />
             </div>
-            <div class="col-10">
+            <div class="col-8 border-right">
                 <jsp:doBody />
+            </div>
+            <div class="col-2">
+                <jsp:invoke fragment="rightColumnContent" />
             </div>
         </div>
     </jsp:body>

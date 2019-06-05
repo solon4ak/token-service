@@ -2,11 +2,29 @@
 <%--@elvariable id="token" type="ru.tokens.site.entities.Token"--%>
 <%--@elvariable id="user" type="ru.tokens.site.entities.User"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
-<template:basic_bs_one_col htmlTitle="Add Reside Address" bodyTitle="Reside Address"> 
+<template:basic_bs_three_col_tkn htmlTitle="Add Reside Address" bodyTitle="Reside Address"> 
 
     <jsp:attribute name="authContent">
         <jsp:include page="/WEB-INF/jsp/user.jspf" />
     </jsp:attribute> 
+
+    <jsp:attribute name="rightColumnContent">
+        <nav class="nav flex-column">
+            <c:choose>
+                <c:when test="${user.postAddress == null}">
+                    <a class="nav-link" href="<c:url value="/token/user/address/add" />">Add address</a>                 
+                </c:when>
+                <c:otherwise>
+                    <a class="nav-link" href="<c:url value="/token/user/address/add" />">Add address</a>
+                    <a class="nav-link" href="<c:url value="/token/user/address/addpostaddr" />">Use Post Address</a>                   
+                </c:otherwise>
+            </c:choose>    
+            <div class="dropdown-divider"></div>
+            <a class="nav-link" href="<c:url value="/user/view" />">
+                User
+            </a>
+        </nav>
+    </jsp:attribute>
 
     <jsp:body>
         <c:out value="Token ID: ${token.uuidString}"/><br />
@@ -82,4 +100,4 @@
         </form:form>    
     </jsp:body>
 
-</template:basic_bs_one_col>
+</template:basic_bs_three_col_tkn>

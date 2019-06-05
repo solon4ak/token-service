@@ -52,7 +52,8 @@ public class MedicalHistoryController {
         model.put("user", user);
 
         return new ModelAndView("medicaldata/edit/view");
-    }
+    }   
+ 
 
     @RequestMapping(value = {"add"}, method = RequestMethod.GET)
     public ModelAndView create(Map<String, Object> model, Principal principal) {

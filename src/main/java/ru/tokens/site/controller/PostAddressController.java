@@ -58,7 +58,7 @@ public class PostAddressController {
         user.setPostAddress(address);
 
         log.info("Address for user '{}' was added", user.toString());
-        return new RedirectView("/user/view", true, false);
+        return new RedirectView("/token/user/postaddress/view", true, false);
     }
     
     @RequestMapping(value = "view", method = RequestMethod.GET)
