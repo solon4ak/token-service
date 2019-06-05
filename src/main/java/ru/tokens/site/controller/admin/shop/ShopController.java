@@ -24,7 +24,7 @@ public class ShopController {
     
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String mainShop(Map<String, Object> model) {
-        
+        model.put("categories", categoryService.getAll());
         return "shop/frontend/main";
     }
 }
