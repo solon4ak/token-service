@@ -2,7 +2,7 @@
     <div class="card my-2">                
         <div class="card-body">
             <p class="card-text lead">
-                Token ID:&nbsp;<c:out value="${user.token.uuidString}"/>
+                ID жетона:&nbsp;<c:out value="${user.token.uuidString}"/>
             </p>
         </div>
     </div>

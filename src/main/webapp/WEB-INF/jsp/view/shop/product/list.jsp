@@ -14,6 +14,7 @@
             <table class="data_table">
                 <thead>
                     <tr>
+                        <th>ID</th>
                         <th>Product</th>
                         <th>Price</th>
                         <th>Pictures</th>
@@ -25,6 +26,7 @@
                 <tbody>
                     <c:forEach items="${products}" var="product">
                         <tr>
+                            <td><c:out value="${product.productId}" /></td>
                             <td>
                                 <a href="<c:url value="/admin/shop/product/${product.productId}/view" />">
                                     ${product.productName}

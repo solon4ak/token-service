@@ -4,10 +4,6 @@
 <template:basic_bs_three_col_tkn htmlTitle="Token-${token.uuidString} :: Medical History"
                                  bodyTitle="Medical History">    
 
-    <jsp:attribute name="authContent">
-        <jsp:include page="/WEB-INF/jsp/user.jspf" />
-    </jsp:attribute>
-
     <jsp:attribute name="rightColumnContent">
         <nav class="nav flex-column">      
             <c:choose>

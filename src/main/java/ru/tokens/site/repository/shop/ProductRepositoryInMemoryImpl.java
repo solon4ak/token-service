@@ -16,10 +16,11 @@ public class ProductRepositoryInMemoryImpl implements ProductRepository {
 
     private final Map<Long, Product> products = new Hashtable<>();
     private volatile long PRODUCT_ID_SEQUENCE = 1L;
+
     private synchronized long getNextId() {
-        return this.PRODUCT_ID_SEQUENCE ++;
+        return this.PRODUCT_ID_SEQUENCE++;
     }
-    
+
     @Override
     public List<Product> list() {
         return new ArrayList<>(this.products.values());
@@ -47,5 +48,5 @@ public class ProductRepositoryInMemoryImpl implements ProductRepository {
     public void delete(long id) {
         this.products.remove(id);
     }
-    
+
 }

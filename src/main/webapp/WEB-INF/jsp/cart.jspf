@@ -1,0 +1,12 @@
+<%-- any content can be specified here e.g.: --%>
+<%@ page pageEncoding="UTF-8" %>
+<c:if test="${cart != null and fn:length(cart.items) > 0}">
+    <a class="btn btn-light text-dark" href="<c:url value="/shop/cart/view" />">
+        <span class="align-text-bottom">
+            <img src="<c:url value="/resource/img/basket.png" />" alt="Busket" width="20" />
+        </span>
+        <span class="badge badge-dark">
+            ${cart.numberOfItems}
+        </span>
+    </a>
+</c:if> 

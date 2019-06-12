@@ -1,6 +1,5 @@
 <%@tag description="main_bootstrap_template" pageEncoding="UTF-8"%>
-<%@tag body-content="scriptless" trimDirectiveWhitespaces="true" %>
-
+<%@ tag body-content="scriptless" trimDirectiveWhitespaces="true" %>
 <%@ attribute name="htmlTitle" type="java.lang.String" rtexprvalue="true"
               required="true" %>
 <%@ attribute name="bodyTitle" type="java.lang.String" rtexprvalue="true"
@@ -42,12 +41,14 @@
             <nav class="my-2 my-md-0 mr-md-3">
                 <a class="p-2 text-dark" href="/tkn">Инфо</a>
                 <a class="p-2 text-dark" href="/tkn/shop/main">Магазин</a>
-                <a class="p-2 text-dark" href="#">Поддержка</a>
-                <a class="p-2 text-dark" href="#">Тарифы</a>                
+                <a class="p-2 text-dark" href="#">А</a>
+                <a class="p-2 text-dark" href="#">Б</a>
                 <jsp:invoke fragment="extraNavigationContent" />
             </nav>
             <jsp:include page="/WEB-INF/jsp/user.jspf" />
-        </div>
+            <%--<jsp:invoke fragment="authContent" />--%>
+        </div>       
+
         <div class="container">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">

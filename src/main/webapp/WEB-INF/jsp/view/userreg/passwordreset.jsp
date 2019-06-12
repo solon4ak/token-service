@@ -3,10 +3,6 @@
 <%--@elvariable id="passwordResetForm" type="ru.tokens.site.controller.PasswordResetController.PasswordResetForm"--%>
 <template:basic_bs_two_col htmlTitle="Password reset" bodyTitle="Password reset">
 
-    <jsp:attribute name="authContent">
-        <jsp:include page="/WEB-INF/jsp/user.jspf" />
-    </jsp:attribute> 
-    
     <jsp:body>
         <c:if test="${wrongEmail}">
             <div class="alert alert-warning alert-dismissible fade show" role="alert">

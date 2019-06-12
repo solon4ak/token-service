@@ -1,10 +1,12 @@
 package ru.tokens.site.entities.shop;
 
+import java.io.Serializable;
+
 /**
  *
  * @author solon4ak
  */
-public class ShoppingCartItem {
+public class ShoppingCartItem implements Serializable {
  
     private Product product;
     private short quantity;

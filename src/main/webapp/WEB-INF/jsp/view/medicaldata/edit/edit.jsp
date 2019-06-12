@@ -4,10 +4,7 @@
 <%--@elvariable id="bloodVariants" type="java.util.List"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:basic_bs_three_col_tkn htmlTitle="Editing medical data" bodyTitle="Edit medical data">
-    <jsp:attribute name="authContent">
-        <jsp:include page="/WEB-INF/jsp/user.jspf" />
-    </jsp:attribute> 
-
+    
     <jsp:attribute name="rightColumnContent">
         <nav class="nav flex-column">      
             <a class="nav-link" href="<c:url value="/token/user/med/edit" />">
@@ -30,7 +27,7 @@
                 <div class="form-group mx-3">
                     <div class="form-group row mt-1 p-2">
                         <form:label path="omsNumber">
-                            Last name
+                            Номер полиса ОМС
                         </form:label> 
                         <form:input path="omsNumber" type="text" class="form-control bg-light text-dark" 
                                     placeholder="1234 5678 9012 3456" 

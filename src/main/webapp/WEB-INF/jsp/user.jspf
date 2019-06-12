@@ -7,21 +7,21 @@
             </a>
             <div class="dropdown-menu">
                 <a class="dropdown-item text-dark" href="<c:url value="/user/view" />">
-                    User
+                    Пользователь
                 </a>
                 <a class="dropdown-item text-dark" href="<c:url value="/token/user/view" />">
-                    Token
+                    Жетон
                 </a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item text-dark" href="<c:url value="/logout" />">
-                    Logout
+                    Выйти
                 </a>
             </div>
         </div>                
     </c:when>
     <c:otherwise>
         <a class="btn btn-light text-dark" href="<c:url value="/login" />">
-            Login
+            Войти
         </a>
     </c:otherwise>
 </c:choose>

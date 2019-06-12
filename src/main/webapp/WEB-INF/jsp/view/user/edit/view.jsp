@@ -4,10 +4,6 @@
 <template:basic_bs_three_col_tkn htmlTitle="${token.uuidString}"
                                  bodyTitle="Token: ${token.uuidString}">
 
-    <jsp:attribute name="authContent">
-        <jsp:include page="/WEB-INF/jsp/user.jspf" />
-    </jsp:attribute>
-
     <jsp:attribute name="rightColumnContent">
         <nav class="nav flex-column">
             <a class="nav-link" href="<c:url value="/user/view" />">

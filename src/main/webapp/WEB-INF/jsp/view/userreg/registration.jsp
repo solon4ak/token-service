@@ -3,10 +3,6 @@
 <%--@elvariable id="userRegistrationForm" type="ru.tokens.site.controller.UserRegistrationController.UserRegistrationForm"--%>
 <template:basic_bs_one_col htmlTitle="User registration" bodyTitle="User registration">
 
-    <jsp:attribute name="authContent">
-        <jsp:include page="/WEB-INF/jsp/user.jspf" />
-    </jsp:attribute> 
-
     <jsp:body>
         <c:if test="${userRegistrationFailed}">
             <div class="alert alert-warning alert-dismissible fade show" role="alert">

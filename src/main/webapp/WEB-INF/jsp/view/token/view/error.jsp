@@ -3,9 +3,6 @@
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:basic_bs_one_col htmlTitle="Error for token: ${uuidString}"
                 bodyTitle="Error for token: '${uuidString}'">
-    <jsp:attribute name="authContent">
-        <jsp:include page="/WEB-INF/jsp/user.jspf" />
-    </jsp:attribute> 
     
     <jsp:body>
         <c:if test="${message != null}">

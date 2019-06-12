@@ -20,12 +20,14 @@ public class CategoryRepositoryInMemoryImpl implements CategoryRepository {
     private synchronized long getNextId() {
         return this.CATEGORY_ID_SEQUENCE ++;
     }
+    
+    
 
     public CategoryRepositoryInMemoryImpl() {
-        this.create(new Category("Pendants"));
-        this.create(new Category("Plastic cards"));
-        this.create(new Category("Bracelets"));
-        this.create(new Category("Medalions"));
+        this.create(new Category("Подвески"));
+        this.create(new Category("Пластиковые карточки"));
+        this.create(new Category("Браслеты"));
+        this.create(new Category("Медальоны"));
     }
     
     @Override

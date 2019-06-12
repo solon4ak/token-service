@@ -4,10 +4,6 @@
 <template:basic_bs_three_col htmlTitle="User: ${user.lastName}, ${user.firstName} post address"
                              bodyTitle="Post address">
 
-    <jsp:attribute name="authContent">
-        <jsp:include page="/WEB-INF/jsp/user.jspf" />
-    </jsp:attribute>
-
     <jsp:attribute name="rightColumnContent">
         <nav class="nav flex-column">
             <c:choose>

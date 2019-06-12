@@ -11,6 +11,7 @@
             <table class="data_table">
                 <thead>
                     <tr>
+                        <th>ID</th>
                         <th>Category</th>
                         <th>Products</th>
                         <th>Action</th>
@@ -19,6 +20,7 @@
                 <tbody>
                     <c:forEach items="${categories}" var="category">
                         <tr>
+                            <td><c:url value="${category.categoryId}" /></td>
                             <td><c:url value="${category.categoryName}" /></td>
                             <td><c:url value="${category.itemsNumber}" /></td>
                             <td>

@@ -1,10 +1,6 @@
 <%--@elvariable id="userRegistrationForm" type="ru.tokens.site.controller.UserRegistrationController.UserRegistrationForm"--%>
 <template:basic_bs_two_col htmlTitle="Edit user" bodyTitle="Edit user">
 
-    <jsp:attribute name="authContent">
-        <jsp:include page="/WEB-INF/jsp/user.jspf" />
-    </jsp:attribute> 
-    
     <jsp:attribute name="leftColumnContent">
         <nav class="nav flex-column">
             <a class="nav-link disabled" href="<c:url value="/user/view" />">

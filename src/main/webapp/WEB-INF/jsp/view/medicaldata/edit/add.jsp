@@ -5,10 +5,6 @@
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:basic_bs_three_col_tkn htmlTitle="Adding medical data" bodyTitle="Add medical data">
 
-    <jsp:attribute name="authContent">
-        <jsp:include page="/WEB-INF/jsp/user.jspf" />
-    </jsp:attribute>  
-
     <jsp:attribute name="rightColumnContent">
         <nav class="nav flex-column">     
             <a class="nav-link" href="<c:url value="/user/view" />">
@@ -23,7 +19,7 @@
 
             <form:form method="post" modelAttribute="medicalForm">
                 <div class="form-group mx-3">
-                    <div class="form-group row border-top mt-1 p-2">
+                    <div class="form-group row mt-1 p-2">
                         <form:label path="omsNumber">
                             Номер полиса ОМС
                         </form:label> 

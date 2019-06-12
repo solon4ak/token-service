@@ -2,10 +2,6 @@
 <%--@elvariable id="tokenRegistrationForm" type="ru.tokens.site.controller.TokenRegistrationController.TokenRegistrationForm"--%>
 <template:basic_bs_two_col htmlTitle="Token registration" bodyTitle="Token registration">
 
-    <jsp:attribute name="authContent">
-        <jsp:include page="/WEB-INF/jsp/user.jspf" />
-    </jsp:attribute> 
-    
     <jsp:attribute name="leftColumnContent">
         <nav class="nav flex-column">
             <a class="nav-link" href="<c:url value="/user/view" />">

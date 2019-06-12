@@ -5,10 +5,6 @@
 <template:basic_bs_three_col_tkn htmlTitle="Token-${token.uuidString} :: View Medical Entry" 
                                  bodyTitle="Entry #${entry.id} : ${entry.subject}">
 
-    <jsp:attribute name="authContent">
-        <jsp:include page="/WEB-INF/jsp/user.jspf" />
-    </jsp:attribute>
-
     <jsp:attribute name="rightColumnContent">
         <nav class="nav flex-column">
             <a class="nav-link" href="<c:url value="/token/user/med/entry/list" />">

@@ -160,6 +160,11 @@ public class Product implements Serializable {
     public void setLastUpdated(LocalDate lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
+    
+    public Long getMainPicture() {        
+        return this.getPictures() == null || this.getPictures().isEmpty() 
+                ? null : this.getPictures().get(0).getId();
+    }
 
     public Collection<OrderedProduct> getOrderedProductCollection() {
         return orderedProductCollection;

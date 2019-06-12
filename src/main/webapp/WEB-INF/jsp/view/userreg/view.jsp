@@ -3,10 +3,6 @@
 <template:basic_bs_three_col htmlTitle="User page for ${user.lastName}, ${user.firstName}"
                              bodyTitle="${user.lastName}, ${user.firstName}">
 
-    <jsp:attribute name="authContent">
-        <jsp:include page="/WEB-INF/jsp/user.jspf" />
-    </jsp:attribute>
-
     <jsp:attribute name="leftColumnContent">
         <nav class="nav flex-column">  
             <a class="nav-link disabled" href="<c:url value="/user/view" />">

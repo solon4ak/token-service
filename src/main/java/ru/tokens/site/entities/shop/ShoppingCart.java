@@ -1,5 +1,6 @@
 package ru.tokens.site.entities.shop;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +8,7 @@ import java.util.List;
  *
  * @author solon4ak
  */
-public class ShoppingCart {
+public class ShoppingCart implements Serializable {
 
     private List<ShoppingCartItem> items;
     private int numberOfItems;

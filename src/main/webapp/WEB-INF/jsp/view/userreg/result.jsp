@@ -3,10 +3,6 @@
 <template:basic_bs_one_col htmlTitle="E-mail confirmation"
                 bodyTitle="User e-mail confirmation.">
     
-    <jsp:attribute name="authContent">
-        <jsp:include page="/WEB-INF/jsp/user.jspf" />
-    </jsp:attribute> 
-
     <jsp:body>
         <div class="alert alert-success" role="alert">
         <h4 class="alert-heading">Well done!</h4>
