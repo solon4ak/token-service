@@ -27,10 +27,12 @@ import org.springframework.web.servlet.view.RedirectView;
 import ru.tokens.config.PropertyPlaceholderConfig;
 import ru.tokens.site.entities.Image;
 import ru.tokens.site.entities.User;
+import ru.tokens.site.entities.UserPrincipal;
 import ru.tokens.site.entities.shop.Category;
 import ru.tokens.site.entities.shop.Product;
 import ru.tokens.site.entities.shop.ShoppingCart;
 import ru.tokens.site.entities.shop.ShoppingCartItem;
+import ru.tokens.site.services.AuthenticationService;
 import ru.tokens.site.services.ImageService;
 import ru.tokens.site.services.UserService;
 import ru.tokens.site.services.shop.CategoryService;
@@ -67,6 +69,9 @@ public class ShopController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private AuthenticationService authenticationService;
+
     @Value("${shop.delivery.surcharge}")
     private String surcharge;
 
@@ -92,7 +97,7 @@ public class ShopController {
 
     @RequestMapping(value = "category/{catId}/product/{productId}", method = RequestMethod.GET)
     public String getProduct(final Map<String, Object> model,
-            @PathVariable("catId") final Long catId, 
+            @PathVariable("catId") final Long catId,
             @PathVariable("productId") final Long productId) {
 
         Category category = categoryService.find(catId);
@@ -239,9 +244,54 @@ public class ShopController {
         if (cart != null) {
             cart.calculateTotal(surcharge);
         }
+
+        if (UserPrincipal.getPrincipal(session) != null) {
+            model.put("authorised", true);
+        } else {
+            model.put("loginFailed", false);
+            model.put("loginForm", new LoginForm());
+        }
+
         model.put("cart", cart);
         model.put("surcharge", surcharge);
+
         return "shop/frontend/checkout";
+    }
+
+    @RequestMapping(value = "shop_login", method = RequestMethod.POST)
+    public ModelAndView getCheckoutPage(final Map<String, Object> model, HttpSession session,
+            HttpServletRequest request, LoginForm lForm) {
+
+        if (UserPrincipal.getPrincipal(session) != null) {
+            model.put("authorised", true);
+        } else {
+            Principal principal = this.authenticationService
+                    .authenticate(lForm.getEmail(), lForm.getPassword());
+
+            if (principal == null) {
+                log.warn("Principal == null");
+                lForm.setPassword(null);
+                model.put("loginFailed", true);
+                model.put("loginForm", lForm);
+                model.put("message", "Логин или пароль не совпадают.");
+                return new ModelAndView(new RedirectView("/shop/checkout", true, true));
+            }
+
+            UserPrincipal.setPrincipal(session, principal);
+            request.changeSessionId();
+            model.put("authorised", true);
+
+        }
+
+        final ShoppingCart cart = (ShoppingCart) session.getAttribute("cart");
+        if (cart != null) {
+            cart.calculateTotal(surcharge);
+        }
+
+        model.put("cart", cart);
+        model.put("surcharge", surcharge);
+
+        return new ModelAndView("shop/frontend/checkout");
     }
 
     @RequestMapping(value = "purchase", method = RequestMethod.GET)
@@ -256,24 +306,47 @@ public class ShopController {
         final User user = this.userService.findUserById(userId);
 
         ShoppingCart cart = (ShoppingCart) session.getAttribute("cart");
-        
+
         if (cart == null) {
             return new ModelAndView(new RedirectView("/shop/main", true, false));
         }
 
         final long orderId = this.orderService.placeOrder(user, cart);
+        cart.clear();
         cart = null;
 //        session.invalidate();
-        
+
         final Map orderMap = this.orderService.getOrderDetails(orderId);
-        
+
         model.put("customer", orderMap.get("customer"));
         model.put("products", orderMap.get("products"));
         model.put("orderRecord", orderMap.get("orderRecord"));
         model.put("orderedProducts", orderMap.get("orderedProducts"));
         model.put("surcharge", surcharge);
-        
+
         return new ModelAndView("shop/frontend/confirmation");
+    }
+
+    public static class LoginForm {
+
+        private String email;
+        private String password;
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
     }
 
 }
