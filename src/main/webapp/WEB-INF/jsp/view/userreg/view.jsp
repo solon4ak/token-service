@@ -11,6 +11,9 @@
             <a class="nav-link" href="<c:url value="/token/user/postaddress/view" />">
                 Post address
             </a>
+            <a class="nav-link" href="<c:url value="/user/order/list" />">
+                Orders
+            </a>
             <a class="nav-link" href="<c:url value="/token/user/view" />">
                 Token
             </a>            

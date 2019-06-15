@@ -1,9 +1,10 @@
-package ru.tokens.site.controller.admin.shop;
+package ru.tokens.site.controller;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -20,16 +21,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 import ru.tokens.config.PropertyPlaceholderConfig;
 import ru.tokens.site.entities.Image;
+import ru.tokens.site.entities.User;
 import ru.tokens.site.entities.shop.Category;
 import ru.tokens.site.entities.shop.Product;
 import ru.tokens.site.entities.shop.ShoppingCart;
 import ru.tokens.site.entities.shop.ShoppingCartItem;
 import ru.tokens.site.services.ImageService;
+import ru.tokens.site.services.UserService;
 import ru.tokens.site.services.shop.CategoryService;
+import ru.tokens.site.services.shop.OrderService;
 import ru.tokens.site.services.shop.ProductService;
 import ru.tokens.site.services.shop.ShopValidator;
 
@@ -52,21 +57,27 @@ public class ShopController {
 
     @Autowired
     private ImageService imageService;
-    
+
     @Autowired
     private ShopValidator shopValidator;
-    
+
+    @Autowired
+    private OrderService orderService;
+
+    @Autowired
+    private UserService userService;
+
     @Value("${shop.delivery.surcharge}")
     private String surcharge;
 
     @RequestMapping(value = "main", method = RequestMethod.GET)
-    public String mainShop(Map<String, Object> model) {
+    public String mainShop(final Map<String, Object> model) {
         return "shop/frontend/main";
     }
 
     @RequestMapping(value = "category/{catId}", method = RequestMethod.GET)
-    public String getProductsForCategory(Map<String, Object> model,
-            @PathVariable("catId") Long catId) {
+    public String getProductsForCategory(final Map<String, Object> model,
+            @PathVariable("catId") final Long catId) {
 
         Category category = categoryService.find(catId);
         if (category == null) {
@@ -80,8 +91,9 @@ public class ShopController {
     }
 
     @RequestMapping(value = "category/{catId}/product/{productId}", method = RequestMethod.GET)
-    public String getProduct(Map<String, Object> model,
-            @PathVariable("catId") Long catId, @PathVariable("productId") Long productId) {
+    public String getProduct(final Map<String, Object> model,
+            @PathVariable("catId") final Long catId, 
+            @PathVariable("productId") final Long productId) {
 
         Category category = categoryService.find(catId);
         Product product = productService.find(productId);
@@ -145,8 +157,8 @@ public class ShopController {
     }
 
     @RequestMapping(value = "cart/add/category/{catId}/product/{productId}", method = RequestMethod.GET)
-    public View addToCartFromCategory(HttpSession session, @PathVariable("catId") Long catId,
-            @PathVariable("productId") Long productId, @RequestParam("src") String src) {
+    public View addToCartFromCategory(HttpSession session, @PathVariable("catId") final Long catId,
+            @PathVariable("productId") final Long productId, @RequestParam("src") final String src) {
 
         ShoppingCart cart = (ShoppingCart) session.getAttribute("cart");
 
@@ -171,59 +183,59 @@ public class ShopController {
     }
 
     @RequestMapping(value = "cart/view", method = RequestMethod.GET)
-    public String viewShoppingCart(Map<String, Object> model, HttpSession session) {
+    public String viewShoppingCart(final Map<String, Object> model, HttpSession session) {
 
-        ShoppingCart cart = (ShoppingCart) session.getAttribute("cart");
+        final ShoppingCart cart = (ShoppingCart) session.getAttribute("cart");
         if (cart == null) {
             return "shop/frontend/main";
         }
 
-        List<ShoppingCartItem> cartItems = cart.getItems();
+        final List<ShoppingCartItem> cartItems = cart.getItems();
 
         model.put("cartItems", cartItems);
         return "shop/frontend/shp_cart";
     }
 
     @RequestMapping(value = "cart/update", method = RequestMethod.POST)
-    public String updateCart(Map<String, Object> model, HttpServletRequest request) {
+    public String updateCart(final Map<String, Object> model, HttpServletRequest request) {
 
-        ShoppingCart cart = (ShoppingCart) request.getSession(false).getAttribute("cart");
+        final ShoppingCart cart = (ShoppingCart) request.getSession(false).getAttribute("cart");
         if (cart == null) {
             return "shop/frontend/main";
         }
-        
-        String productId = request.getParameter("productId");
-        String quantity = request.getParameter("quantity");
 
-        Product product = this.productService.find(Long.valueOf(productId));
+        final String productId = request.getParameter("productId");
+        final String quantity = request.getParameter("quantity");
 
-        boolean invalidEntry = this.shopValidator.validateQuantity(productId, quantity);
-        
+        final Product product = this.productService.find(Long.valueOf(productId));
+
+        final boolean invalidEntry = this.shopValidator.validateQuantity(productId, quantity);
+
         if (!invalidEntry) {
             cart.update(product, quantity);
         }
-        
-        List<ShoppingCartItem> cartItems = cart.getItems();
+
+        final List<ShoppingCartItem> cartItems = cart.getItems();
 
         model.put("cartItems", cartItems);
         return "shop/frontend/shp_cart";
     }
-    
+
     @RequestMapping(value = "cart/clear", method = RequestMethod.GET)
     public View clearCart(HttpSession session) {
-        
-        ShoppingCart cart = (ShoppingCart) session.getAttribute("cart");
+
+        final ShoppingCart cart = (ShoppingCart) session.getAttribute("cart");
         if (cart != null) {
             cart.clear();
         }
-        
+
         return new RedirectView("/shop/cart/view", true, false);
     }
-    
+
     @RequestMapping(value = "checkout", method = RequestMethod.GET)
-    public String getCheckoutPage(Map<String, Object> model, HttpSession session) {
-        
-        ShoppingCart cart = (ShoppingCart) session.getAttribute("cart");
+    public String getCheckoutPage(final Map<String, Object> model, HttpSession session) {
+
+        final ShoppingCart cart = (ShoppingCart) session.getAttribute("cart");
         if (cart != null) {
             cart.calculateTotal(surcharge);
         }
@@ -231,5 +243,37 @@ public class ShopController {
         model.put("surcharge", surcharge);
         return "shop/frontend/checkout";
     }
-    
+
+    @RequestMapping(value = "purchase", method = RequestMethod.GET)
+    public ModelAndView getPurchase(final Map<String, Object> model, HttpSession session) {
+
+        final Principal principal = (Principal) session.getAttribute("ru.tkn.user.principal");
+        if (principal == null) {
+            return new ModelAndView(new RedirectView("/shop/checkout", true, false));
+        }
+
+        final Long userId = Long.valueOf(principal.getName());
+        final User user = this.userService.findUserById(userId);
+
+        ShoppingCart cart = (ShoppingCart) session.getAttribute("cart");
+        
+        if (cart == null) {
+            return new ModelAndView(new RedirectView("/shop/main", true, false));
+        }
+
+        final long orderId = this.orderService.placeOrder(user, cart);
+        cart = null;
+//        session.invalidate();
+        
+        final Map orderMap = this.orderService.getOrderDetails(orderId);
+        
+        model.put("customer", orderMap.get("customer"));
+        model.put("products", orderMap.get("products"));
+        model.put("orderRecord", orderMap.get("orderRecord"));
+        model.put("orderedProducts", orderMap.get("orderedProducts"));
+        model.put("surcharge", surcharge);
+        
+        return new ModelAndView("shop/frontend/confirmation");
+    }
+
 }

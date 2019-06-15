@@ -18,8 +18,9 @@
         <a href="<c:url value="/session/list" />">List Sessions</a><br />
         <hr />
         <b>Shop</b><br /><br />
-        <a href="<c:url value="/admin/shop/category/list" />">Categories</a><br /> 
-        <a href="<c:url value="/admin/shop/product/list" />">Products</a><br />  
+        <a href="<c:url value="/admin/shop/category/list" />">Categories</a><br /><br />  
+        <a href="<c:url value="/admin/shop/product/list" />">Products</a><br /><br />            
+        <a href="<c:url value="/admin/shop/order/list" />">Orders</a><br /><br />   
         <hr />
         <b>Log out</b><br /><br />
         <a href="<c:url value="/logout" />">Log Out</a><br />

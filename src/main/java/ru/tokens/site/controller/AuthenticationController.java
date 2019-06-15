@@ -13,16 +13,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.tokens.site.entities.UserPrincipal;
 import ru.tokens.site.services.AuthenticationService;
 
 @Controller
 public class AuthenticationController {
-       
+
     @Autowired
     private AuthenticationService authenticationService;
 
     private static final Logger log = LogManager.getLogger("AuthenticationController");
+
+    private String referer;
 
     @RequestMapping("logout")
     public View logout(HttpServletRequest request, HttpSession session) {
@@ -30,15 +33,22 @@ public class AuthenticationController {
             log.debug("User {} logged out.", request.getUserPrincipal().getName());
         }
         session.invalidate();
-        return new RedirectView("/login", true, false);
+        return new RedirectView("/login?ref=logout", true, false);
     }
 
     @RequestMapping(value = "login", method = RequestMethod.GET)
-    public ModelAndView login(Map<String, Object> model, HttpSession session) {
+    public ModelAndView login(Map<String, Object> model, HttpSession session,
+            @RequestParam("ref") String from) {
 
         if (UserPrincipal.getPrincipal(session) != null) {
             return this.getUserRedirect();
         }
+
+        if (from != null && from.length() > 0) {
+            referer = from;
+        }
+
+        log.info("Referer: {}", referer);
 
         model.put("loginFailed", false);
         model.put("loginForm", new Form());
@@ -53,7 +63,7 @@ public class AuthenticationController {
         if (UserPrincipal.getPrincipal(session) != null) {
             return this.getUserRedirect();
         }
-        
+
         Principal principal = this.authenticationService
                 .authenticate(form.getEmail(), form.getPassword());
 
@@ -71,9 +81,15 @@ public class AuthenticationController {
     }
 
     private ModelAndView getUserRedirect() {
-        return new ModelAndView(
-                new RedirectView("/user/view", true, false)
-        );
+        if ("checkout".equals(referer)) {
+            return new ModelAndView(
+                    new RedirectView("/shop/purchase", true, false)
+            );
+        } else {
+            return new ModelAndView(
+                    new RedirectView("/user/view", true, false)
+            );
+        }
     }
 
     public static class Form {

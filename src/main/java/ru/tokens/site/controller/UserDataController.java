@@ -107,4 +107,5 @@ public class UserDataController {
         model.put("user", user);
         return new ModelAndView("image/edit/view");
     }
+    
 }

@@ -20,7 +20,7 @@
         </div>                
     </c:when>
     <c:otherwise>
-        <a class="btn btn-light text-dark" href="<c:url value="/login" />">
+        <a class="btn btn-light text-dark" href="<c:url value="/login?ref=home" />">
             Войти
         </a>
     </c:otherwise>

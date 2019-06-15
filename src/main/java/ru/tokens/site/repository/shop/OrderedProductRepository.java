@@ -2,6 +2,7 @@ package ru.tokens.site.repository.shop;
 
 import java.util.List;
 import ru.tokens.site.entities.shop.OrderedProduct;
+import ru.tokens.site.entities.shop.OrderedProductPK;
 
 /**
  *

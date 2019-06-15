@@ -23,7 +23,7 @@ public class AuthenticationFilter implements Filter {
         final Principal principal = UserPrincipal.getPrincipal(session);
         if (principal == null) {
             ((HttpServletResponse) response).sendRedirect(
-                    ((HttpServletRequest) request).getContextPath() + "/login"
+                    ((HttpServletRequest) request).getContextPath() + "/login?ref=other"
             );
         } else {
             chain.doFilter(

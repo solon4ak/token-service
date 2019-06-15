@@ -147,6 +147,12 @@ public class UserRegistrationController {
             @RequestParam("token") String confimationToken) {
 
         final User user = userService.getUser(confimationToken);
+        
+        if (user == null) {
+            final String msg = "Пользователя нет в системе.";
+            model.put("message", msg);
+            return new ModelAndView("userreg/error");
+        }
 
         if (user.isEmailActivated()) {
             final String msg = "Почтовый ящик уже был подтвержден.";

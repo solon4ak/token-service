@@ -64,7 +64,9 @@ public class Bootstrap implements WebApplicationInitializer {
                 "/session", "/session/*",
                 "/user/view", "/user/view/*",
                 "/user/edit", "/user/edit/*",
-                "/admin", "/admin/*"
+                "/user/order", "/user/order/*",
+                "/admin", "/admin/*",
+                "/shop/purchase", "/shop/purchase/*"
         );
         
         

@@ -3,10 +3,10 @@ package ru.tokens.site.entities;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -282,7 +282,7 @@ public class User implements Serializable {
     }
     
     public List<UserOrder> getUserOrders() {
-        return new ArrayList<>(this.getOrders().values());
+        return new LinkedList<>(this.getOrders().values());
     }
     
     public UserOrder addOrder(UserOrder order) {

@@ -8,7 +8,13 @@
             <div class="row justify-content-lg-center">
                 <p>Для совершения покупки войдите в систему или зарегистрируйтесь</p>
                 <div class="col-6 border-right">
-                    Login / Register
+                    <a href="
+                       <c:url value="/login">
+                           <c:param name="ref" value="checkout" />
+                       </c:url>
+                       ">
+                        Login / Register
+                    </a>                    
                 </div>
                 <div class="col-6">
                     <table class="table table-borderless bg-light">
