@@ -42,7 +42,7 @@ public class OrderService {
         try {
             UserOrder order = addOrder(user, cart);
             addOrderedItems(order, cart);
-            return order.getOrderId();            
+            return order.getOrderId();
 // TODO: send confirmation email to user and information to admin
         } catch (Exception e) {
 //            context.setRollbackOnly();
@@ -65,7 +65,7 @@ public class OrderService {
         order.setConfirmationNumber(i);
 
 //        em.persist(order);
-        this.ordersRepository.create(order);        
+        this.ordersRepository.create(order);
         return order;
     }
 
@@ -98,9 +98,9 @@ public class OrderService {
             orderedItem.setUserOrder(order);
             orderedProducts.add(orderedItem);
         }
-        
+
         order.setOrderedProductCollection(orderedProducts);
-        
+
     }
 
     public synchronized Map getOrderDetails(long orderId) {
@@ -134,25 +134,74 @@ public class OrderService {
 
         return orderMap;
     }
-    
+
     public synchronized List<UserOrder> getAllOrdersForUser(long userId) {
-        List<UserOrder> userOrders = new LinkedList<>();        
+        List<UserOrder> userOrders = new LinkedList<>();
         List<UserOrder> allOrders = this.ordersRepository.list();
-        
+
         for (UserOrder order : allOrders) {
             if (userId == order.getUser().getUserId()) {
                 userOrders.add(order);
             }
         }
-        
+
         return userOrders;
     }
-    
-    public synchronized List<UserOrder> getAllOrders() {                
+
+    public synchronized List<UserOrder> getAllOrders() {
         return this.ordersRepository.list();
     }
-    
-    public synchronized UserOrder getUserOrder(long orderId) {                
+
+    public synchronized UserOrder getUserOrder(long orderId) {
         return this.ordersRepository.find(orderId);
+    }
+
+    public synchronized int getAllOrdersCount() {
+        return this.getAllOrders().size();
+    }
+
+    public synchronized BigDecimal getAllOrdersTotal() {
+        BigDecimal total = BigDecimal.ZERO;
+        final List<UserOrder> orders = this.getAllOrders();
+
+        if (orders != null && !orders.isEmpty()) {
+            for (UserOrder order : orders) {
+                total.add(order.getAmount());
+            }
+        }
+        return total;
+    }
+
+    public synchronized BigDecimal getAllPayedOrdersTotal() {
+        BigDecimal total = BigDecimal.ZERO;
+
+        final List<UserOrder> orders = this.getAllOrders();
+
+        if (orders != null && !orders.isEmpty()) {
+            for (UserOrder order : orders) {
+                if (order.getOrderStatus() == OrderStatus.SHIPPED) {
+                    total.add(order.getAmount());
+                }
+            }
+        }
+        return total;
+    }
+
+    public synchronized int getLastWeekOrdersCount() {
+        int count = 0;
+        final Date now = new Date();
+        final long week = 1000 * 60 * 60 * 24 * 7;
+
+        final List<UserOrder> orders = this.getAllOrders();
+
+        if (orders != null && !orders.isEmpty()) {
+            for (UserOrder order : orders) {
+                if ((now.getTime() - order.getCreated().getTime()) <= week) {
+                    count += 1;
+                }
+            }
+        }
+
+        return count;
     }
 }

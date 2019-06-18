@@ -1,6 +1,7 @@
 package ru.tokens.site.entities;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Collection;
@@ -56,14 +57,22 @@ public class User implements Serializable {
     private Map<Long, MessageEvent> messageEvents = new Hashtable<>();
     
     private Map<Long, UserOrder> orders = new Hashtable<>();
+    
+    // user balance
+    private UserBalance userBalance;
 
     public User() {
         super();
         this.emailActivated = false;
+        this.userBalance = new UserBalance(BigDecimal.ZERO, Instant.now());
     }
 
     public User(String firstName, String lastName, String email,
             String password, LocalDate birthDate) {
+        super();
+        
+        this.emailActivated = false;
+        this.userBalance = new UserBalance(BigDecimal.ZERO, Instant.now());
         this.firstName = firstName;
         this.lastName = lastName;
         this.userEmailAddress = email;
@@ -298,6 +307,14 @@ public class User implements Serializable {
     public int getNumberOfOrders() {
         return this.getOrders().size();
     }
+
+    public UserBalance getUserBalance() {
+        return userBalance;
+    }
+
+    public void setUserBalance(UserBalance userBalance) {
+        this.userBalance = userBalance;
+    }    
 
     @Override
     public String toString() {

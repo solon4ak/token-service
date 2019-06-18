@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
+import ru.tokens.site.entities.Address;
 import ru.tokens.site.entities.User;
 import ru.tokens.site.entities.UserPrincipal;
 import ru.tokens.site.registration.OnRegistrationCompleteEvent;
@@ -74,6 +75,16 @@ public class UserRegistrationController {
         String midName = form.getMiddleName();
         String password = form.getPassword();
         String phoneNumber = form.getPhoneNumber();
+        
+        Address address = new Address();
+        
+        address.setCountry(form.getCountry());
+        address.setCity(form.getCity());
+        address.setStreet(form.getStreet());
+        address.setBuilding(form.getBuilding());
+        address.setApartment(form.getApartment());
+        address.setRegion(form.getRegion());
+        address.setZipCode(form.getZipCode());
 
         // Проверка на наличие этого почтового адреса в базе
         String email = form.getEmail();
@@ -109,6 +120,7 @@ public class UserRegistrationController {
         user.setPhoneNumber(phoneNumber);
         // check date less than today date
         user.setBirthDate(bdate);
+        user.setPostAddress(address);
 
         try {
             String appUrl = environment.getProperty("host.name") + request.getContextPath();
@@ -135,7 +147,8 @@ public class UserRegistrationController {
 
     @RequestMapping(value = "success")
     public String successRegistration(Map<String, Object> model, HttpServletRequest request) {
-        String msg = "Завершите регистрацию перейдя по ссылке в полученном письме.";
+        String msg = "<p>Завершите регистрацию перейдя по ссылке в полученном письме.</p>"
+                + "<p><strong>Ссылка активна в течение суток.</strong></p>";
         request.changeSessionId();
         model.put("message", msg);
         return "userreg/result";
@@ -147,7 +160,7 @@ public class UserRegistrationController {
             @RequestParam("token") String confimationToken) {
 
         final User user = userService.getUser(confimationToken);
-        
+
         if (user == null) {
             final String msg = "Пользователя нет в системе.";
             model.put("message", msg);
@@ -160,7 +173,7 @@ public class UserRegistrationController {
 //        model.put("user", user);
             return new ModelAndView("userreg/error");
         }
-        
+
         //        Locale locale = request.getLocale();
         final String result = userService.validateVerificationToken(confimationToken);
 
@@ -270,6 +283,7 @@ public class UserRegistrationController {
 
     public static class UserRegistrationForm {
 
+        // User
         private String firstName;
         private String lastName;
         private String middleName;
@@ -277,6 +291,15 @@ public class UserRegistrationController {
         private String email;
         private String phoneNumber;
         private String birthDate;
+
+        // Address
+        private String country;
+        private String region;
+        private String city;
+        private String street;
+        private String building;
+        private String apartment;
+        private String zipCode;
 
         public String getFirstName() {
             return firstName;
@@ -332,6 +355,62 @@ public class UserRegistrationController {
 
         public void setBirthDate(String birthDate) {
             this.birthDate = birthDate;
+        }
+
+        public String getCountry() {
+            return country;
+        }
+
+        public void setCountry(String country) {
+            this.country = country;
+        }
+
+        public String getCity() {
+            return city;
+        }
+
+        public void setCity(String city) {
+            this.city = city;
+        }
+
+        public String getStreet() {
+            return street;
+        }
+
+        public void setStreet(String street) {
+            this.street = street;
+        }
+
+        public String getBuilding() {
+            return building;
+        }
+
+        public void setBuilding(String building) {
+            this.building = building;
+        }
+
+        public String getApartment() {
+            return apartment;
+        }
+
+        public void setApartment(String apartment) {
+            this.apartment = apartment;
+        }
+
+        public String getRegion() {
+            return region;
+        }
+
+        public void setRegion(String region) {
+            this.region = region;
+        }
+
+        public String getZipCode() {
+            return zipCode;
+        }
+
+        public void setZipCode(String zipCode) {
+            this.zipCode = zipCode;
         }
     }
 

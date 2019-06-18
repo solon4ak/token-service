@@ -19,7 +19,8 @@ import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 
 /**
  *
@@ -31,7 +32,7 @@ import org.springframework.stereotype.Service;
 @EnableScheduling
 @ComponentScan(
         basePackages = "ru.tokens.site",
-        includeFilters = @ComponentScan.Filter(Service.class),
+//        includeFilters = @ComponentScan.Filter(Service.class),
         excludeFilters = @ComponentScan.Filter(Controller.class)
 )
 public class RootContextConfiguration implements AsyncConfigurer, SchedulingConfigurer {
@@ -60,7 +61,7 @@ public class RootContextConfiguration implements AsyncConfigurer, SchedulingConf
     public ThreadPoolTaskScheduler taskScheduler() {
         log.info("Setting up thread pool task scheduler with {] threads", 120);
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-        scheduler.setPoolSize(120);
+        scheduler.setPoolSize(1200);
         scheduler.setThreadNamePrefix("task-");
         scheduler.setAwaitTerminationSeconds(60);
         scheduler.setWaitForTasksToCompleteOnShutdown(true);
@@ -91,5 +92,16 @@ public class RootContextConfiguration implements AsyncConfigurer, SchedulingConf
         log.info("Configuring scheduled method executor {}.", scheduler);
         taskRegistrar.setTaskScheduler(scheduler);
     }
-
+    
+    @Bean
+    public LocalValidatorFactoryBean localValidatorFactoryBean() {
+        return new LocalValidatorFactoryBean();
+    }
+    
+    @Bean
+    public MethodValidationPostProcessor methodValidationPostProcessor() {
+        MethodValidationPostProcessor processor = new MethodValidationPostProcessor();
+        processor.setValidator(this.localValidatorFactoryBean());
+        return processor;
+    }
 }

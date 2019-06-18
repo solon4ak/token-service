@@ -35,7 +35,7 @@ public class AdminOrderController {
     @Autowired
     private OrderService orderService;
     
-    @RequestMapping(value = "list", method = RequestMethod.GET)
+    @RequestMapping(value = {"", "list"}, method = RequestMethod.GET)
     public String listOrders(final Map<String, Object> model) {
         
         final List<UserOrder> orders = this.orderService.getAllOrders();
@@ -44,7 +44,7 @@ public class AdminOrderController {
         return "shop/order/a_list";
     }
     
-    @RequestMapping(value = "view/{orderId}", method = RequestMethod.GET)
+    @RequestMapping(value = "view/{orderId:\\d+}", method = RequestMethod.GET)
     public String viewOrder(final Map<String, Object> model, 
             final @PathVariable("orderId") Long orderId) {
         
@@ -59,7 +59,7 @@ public class AdminOrderController {
         return "shop/order/a_view";
     }
     
-    @RequestMapping(value = "edit/{orderId}", method = RequestMethod.GET)
+    @RequestMapping(value = "edit/{orderId:\\d+}", method = RequestMethod.GET)
     public String editOrder(final Map<String, Object> model, 
             final @PathVariable("orderId") Long orderId) {
         
@@ -79,7 +79,7 @@ public class AdminOrderController {
         return "shop/order/a_edit";
     }
     
-    @RequestMapping(value = "edit/{orderId}", method = RequestMethod.POST)
+    @RequestMapping(value = "edit/{orderId:\\d+}", method = RequestMethod.POST)
     public View editOrder(final @PathVariable("orderId") Long orderId, 
             final OrderEditForm form) {
         

@@ -18,7 +18,8 @@ import org.springframework.http.converter.xml.SourceHttpMessageConverter;
 import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
+import org.springframework.validation.Validator;
+import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.RequestToViewNameTranslator;
@@ -39,7 +40,7 @@ import org.springframework.web.servlet.view.JstlView;
 @ComponentScan(
         basePackages = "ru.tokens.site",
         useDefaultFilters = false,
-        excludeFilters = @ComponentScan.Filter(Service.class),
+//        excludeFilters = @ComponentScan.Filter(Service.class),
         includeFilters = @ComponentScan.Filter(Controller.class)
 )
 public class ServletContextConfiguration extends WebMvcConfigurerAdapter {
@@ -52,6 +53,14 @@ public class ServletContextConfiguration extends WebMvcConfigurerAdapter {
     
     @Autowired
     Unmarshaller unmarshaller;
+    
+    @Autowired
+    SpringValidatorAdapter validator;
+    
+    @Override
+    public Validator getValidator() {
+        return this.validator;
+    }
 
     @Override
     public void configureMessageConverters(

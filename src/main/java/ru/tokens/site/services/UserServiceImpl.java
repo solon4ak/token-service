@@ -157,5 +157,15 @@ public class UserServiceImpl implements UserService {
             return "Not registered";
         }
     }
+
+    @Override
+    public int getAllUsersCount() {
+        return this.getAllUsers().size();
+    }
+
+    @Override
+    public int getAllUsersWithTokenCount() {
+        return this.getAllUsersWithToken().size();
+    }
  
 }

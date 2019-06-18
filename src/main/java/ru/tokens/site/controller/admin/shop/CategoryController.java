@@ -20,7 +20,7 @@ import ru.tokens.site.services.shop.CategoryService;
  * @author solon4ak
  */
 @Controller
-@RequestMapping("admin/shop")
+@RequestMapping("admin/shop/category")
 public class CategoryController {
 
     private static final Logger log = LogManager.getLogger("CategoryController");
@@ -28,13 +28,13 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
-    @RequestMapping(value = "category/add", method = RequestMethod.GET)
+    @RequestMapping(value = "add", method = RequestMethod.GET)
     public String addCategory(Map<String, Object> model) {
         model.put("categoryForm", new CategoryForm());
         return "shop/category/add";
     }
 
-    @RequestMapping(value = "category/add", method = RequestMethod.POST)
+    @RequestMapping(value = "add", method = RequestMethod.POST)
     public ModelAndView addCategory(Map<String, Object> model, CategoryForm form) {
         String categoryName = form.getName();
         String message;
@@ -50,14 +50,14 @@ public class CategoryController {
 
     }
 
-    @RequestMapping(value = "category/list", method = RequestMethod.GET)
+    @RequestMapping(value = {"", "list"}, method = RequestMethod.GET)
     public String listCategory(Map<String, Object> model) {
         List<Category> categories = this.categoryService.getAll();
         model.put("categories", categories);
         return "shop/category/list";
     }
 
-    @RequestMapping(value = "category/edit/{categoryId}", method = RequestMethod.GET)
+    @RequestMapping(value = "edit/{categoryId:\\d+}", method = RequestMethod.GET)
     public String editCategory(Map<String, Object> model,
             @PathVariable("categoryId") long categoryId) {
         Category category = this.categoryService.find(categoryId);
@@ -67,7 +67,7 @@ public class CategoryController {
         return "shop/category/edit";
     }
 
-    @RequestMapping(value = "category/edit/{categoryId}", method = RequestMethod.POST)
+    @RequestMapping(value = "edit/{categoryId:\\d+}", method = RequestMethod.POST)
     public ModelAndView editCategory(Map<String, Object> model,
             @PathVariable("categoryId") long categoryId,
             CategoryForm form) {
@@ -93,7 +93,7 @@ public class CategoryController {
         return new ModelAndView(new RedirectView("/admin/shop/category/list", true, false));
     }
 
-    @RequestMapping(value = "category/delete/{categoryId}", method = RequestMethod.GET)
+    @RequestMapping(value = "delete/{categoryId:\\d+}", method = RequestMethod.GET)
     public ModelAndView deleteCategory(Map<String, Object> model,
             @PathVariable("categoryId") long categoryId) {
 
@@ -113,7 +113,7 @@ public class CategoryController {
         return new ModelAndView(new RedirectView("/admin/shop/category/list", true, false));
     }
 
-    @RequestMapping(value = "category/view/{categoryId}", method = RequestMethod.GET)
+    @RequestMapping(value = "view/{categoryId:\\d+}", method = RequestMethod.GET)
     public String viewCategory(Map<String, Object> model,
             @PathVariable("categoryId") long categoryId) {
         Category category = this.categoryService.find(categoryId);

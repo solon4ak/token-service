@@ -44,9 +44,9 @@
                             <tbody>
                                 <tr>
                                     <td class="logo_col">
-                                        <a href="/tkn"><h1>[Tag4Life]</h1></a>
+                                        <a href="/tkn/admpanel"><h1>T4L: Admin panel</h1></a>
                                     </td>                                    
-                                    <td>
+<!--                                    <td>
                                         <table width="100%" class="menu_tbl">
                                             <tbody>
                                                 <tr>
@@ -62,7 +62,7 @@
                                                 </tr>
                                             </tbody>
                                         </table>
-                                    </td>
+                                    </td>-->
                                 </tr>
                             </tbody>
                         </table>

@@ -5,6 +5,19 @@
 
     <jsp:body>
         <div class="container"> 
+            
+            <c:if test="${sessionScope['ru.tkn.user.principal'] eq null}">
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    <p>Для совершения покупок необходимо 
+                        <a href="<c:url value="/login" />">
+                            авторизоваться или зарегистрироваться.</a><br />
+                        <u>Не забудьте указать свой почтовый адрес!</u></p>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </c:if>
+                        
             <div class="row justify-content-between">
                 <div class="col-5">
                     <c:if test="${product.pictures ne null and fn:length(product.pictures) > 0}">

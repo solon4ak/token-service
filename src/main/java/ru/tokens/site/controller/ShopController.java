@@ -162,9 +162,10 @@ public class ShopController {
     }
 
     @RequestMapping(value = "cart/add/category/{catId}/product/{productId}", method = RequestMethod.GET)
-    public View addToCartFromCategory(HttpSession session, @PathVariable("catId") final Long catId,
-            @PathVariable("productId") final Long productId, @RequestParam("src") final String src) {
-
+    public View addToCartFromCategory(final Map<String, Object> model, HttpSession session,
+            final @PathVariable("catId") Long catId, final @PathVariable("productId") Long productId,
+            final @RequestParam("src") String src) {
+        
         ShoppingCart cart = (ShoppingCart) session.getAttribute("cart");
 
         if (cart == null) {
@@ -180,7 +181,7 @@ public class ShopController {
         switch (src) {
             case "prod":
                 return new RedirectView("/shop/category/"
-                        + catId + "/product/" + productId, true, false);
+                                + catId + "/product/" + productId, true, false);
             case "cat":
             default:
                 return new RedirectView("/shop/category/" + catId, true, false);
@@ -245,54 +246,44 @@ public class ShopController {
             cart.calculateTotal(surcharge);
         }
 
-        if (UserPrincipal.getPrincipal(session) != null) {
-            model.put("authorised", true);
-        } else {
-            model.put("loginFailed", false);
-            model.put("loginForm", new LoginForm());
-        }
-
         model.put("cart", cart);
         model.put("surcharge", surcharge);
 
         return "shop/frontend/checkout";
     }
 
-    @RequestMapping(value = "shop_login", method = RequestMethod.POST)
-    public ModelAndView getCheckoutPage(final Map<String, Object> model, HttpSession session,
-            HttpServletRequest request, LoginForm lForm) {
-
-        if (UserPrincipal.getPrincipal(session) != null) {
-            model.put("authorised", true);
-        } else {
-            Principal principal = this.authenticationService
-                    .authenticate(lForm.getEmail(), lForm.getPassword());
-
-            if (principal == null) {
-                log.warn("Principal == null");
-                lForm.setPassword(null);
-                model.put("loginFailed", true);
-                model.put("loginForm", lForm);
-                model.put("message", "Логин или пароль не совпадают.");
-                return new ModelAndView(new RedirectView("/shop/checkout", true, true));
-            }
-
-            UserPrincipal.setPrincipal(session, principal);
-            request.changeSessionId();
-            model.put("authorised", true);
-
-        }
-
-        final ShoppingCart cart = (ShoppingCart) session.getAttribute("cart");
-        if (cart != null) {
-            cart.calculateTotal(surcharge);
-        }
-
-        model.put("cart", cart);
-        model.put("surcharge", surcharge);
-
-        return new ModelAndView("shop/frontend/checkout");
-    }
+//    @RequestMapping(value = "shop_login", method = RequestMethod.POST)
+//    public ModelAndView getLoginForm(final Map<String, Object> model, HttpSession session,
+//            HttpServletRequest request) {
+//
+//        if (UserPrincipal.getPrincipal(session) != null) {
+//            return new ModelAndView(new RedirectView("/shop/checkout", true, false));
+//        }
+//
+//        final String email = request.getParameter("user_email");
+//        final String password = request.getParameter("user_password");
+//
+//        Principal principal = this.authenticationService
+//                .authenticate(email, password);
+//
+//        if (principal == null) {
+//            log.warn("Principal == null");
+//            model.put("loginFailed", true);
+//            model.put("authorised", false);
+//            model.put("message", "Неправильный логин или пароль.");
+//
+//            final ShoppingCart cart = (ShoppingCart) session.getAttribute("cart");
+//            model.put("cart", cart);
+//            model.put("surcharge", surcharge);
+//
+//            return new ModelAndView("shop/frontend/checkout");
+//        }
+//
+//        UserPrincipal.setPrincipal(session, principal);
+//        request.changeSessionId();
+//
+//        return new ModelAndView(new RedirectView("/shop/checkout", true, false));
+//    }
 
     @RequestMapping(value = "purchase", method = RequestMethod.GET)
     public ModelAndView getPurchase(final Map<String, Object> model, HttpSession session) {
@@ -325,28 +316,6 @@ public class ShopController {
         model.put("surcharge", surcharge);
 
         return new ModelAndView("shop/frontend/confirmation");
-    }
-
-    public static class LoginForm {
-
-        private String email;
-        private String password;
-
-        public String getEmail() {
-            return email;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
-
-        public String getPassword() {
-            return password;
-        }
-
-        public void setPassword(String password) {
-            this.password = password;
-        }
     }
 
 }

@@ -12,6 +12,7 @@ import org.springframework.web.servlet.DispatcherServlet;
 import ru.tokens.site.controller.AuthenticationFilter;
 import ru.tokens.site.controller.CharsetFilter;
 import ru.tokens.site.controller.LoggingFilter;
+import ru.tokens.site.controller.admin.sessions.SessionListener;
 
 /**
  *
@@ -28,6 +29,7 @@ public class Bootstrap implements WebApplicationInitializer {
                 new AnnotationConfigWebApplicationContext();
         rootContext.register(RootContextConfiguration.class);
         container.addListener(new ContextLoaderListener(rootContext));
+        container.addListener(SessionListener.class);
 
         AnnotationConfigWebApplicationContext servletContext = 
                 new AnnotationConfigWebApplicationContext();
@@ -58,14 +60,23 @@ public class Bootstrap implements WebApplicationInitializer {
         );
         registration.addMappingForUrlPatterns(
                 null, false, 
+                // token
                 "/token/user", "/token/user/*",
                 "/token/register", "/token/register/*",
                 "/token/add/user", "/token/add/user/*",
+                // session
                 "/session", "/session/*",
+                // user
                 "/user/view", "/user/view/*",
                 "/user/edit", "/user/edit/*",
                 "/user/order", "/user/order/*",
+                // admin
                 "/admin", "/admin/*",
+                // shop
+                "/shop/cart/add", "/shop/cart/add/*", 
+                "/shop/cart/view", "/shop/cart/view/*",
+                "/shop/cart/update", "/shop/cart/update/*",
+                "/shop/cart/clear", "/shop/cart/clear/*",
                 "/shop/purchase", "/shop/purchase/*"
         );
         

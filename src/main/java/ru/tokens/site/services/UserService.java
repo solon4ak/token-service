@@ -41,4 +41,8 @@ public interface UserService {
     
     Token getToken(User user);
     
+    int getAllUsersCount();
+    
+    int getAllUsersWithTokenCount();
+    
 }

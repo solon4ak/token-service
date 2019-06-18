@@ -17,6 +17,18 @@
 
     <jsp:body>
         <div class="container">    
+            <c:if test="${sessionScope['ru.tkn.user.principal'] eq null}">
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    <p>Для совершения покупок необходимо 
+                        <a href="<c:url value="/login" />">
+                            авторизоваться или зарегистрироваться.</a><br />
+                        <u>Не забудьте указать свой почтовый адрес!</u></p>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </c:if>            
+
             <c:choose>
                 <c:when test="${fn:length(products) > 0}">
                     <table class="table">
@@ -34,8 +46,8 @@
                                     <td>
                                         <c:if test="${product.mainPicture ne null}">
                                             <img class="img-thumbnail" 
-                                             src="<c:url value="/shop/product/image/${product.mainPicture}/thumbnail" />" 
-                                             alt="${product.productName}" width="150" />
+                                                 src="<c:url value="/shop/product/image/${product.mainPicture}/thumbnail" />" 
+                                                 alt="${product.productName}" width="150" />
                                         </c:if>                                        
                                     </td>
                                     <td class="align-middle">

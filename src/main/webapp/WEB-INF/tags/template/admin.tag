@@ -15,7 +15,8 @@
     </jsp:attribute>
     <jsp:attribute name="navigationContent">    
         <b>User</b><br /><br />
-        <a href="<c:url value="/session/list" />">List Sessions</a><br />
+        <a href="<c:url value="/session/list" />">List Sessions</a><br /><br />
+        <a href="<c:url value="/admin/user/list" />">Users</a><br />
         <hr />
         <b>Shop</b><br /><br />
         <a href="<c:url value="/admin/shop/category/list" />">Categories</a><br /><br />  

@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import ru.tokens.config.PropertyPlaceholderConfig;
 import ru.tokens.site.entities.User;
 import ru.tokens.site.entities.shop.UserOrder;
-import ru.tokens.site.repository.shop.UserOrdersRepository;
 import ru.tokens.site.services.UserService;
 import ru.tokens.site.services.shop.OrderService;
 

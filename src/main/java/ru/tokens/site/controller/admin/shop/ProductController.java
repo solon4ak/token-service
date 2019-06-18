@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,7 +34,7 @@ import ru.tokens.site.services.shop.ProductService;
  * @author solon4ak
  */
 @Controller
-@RequestMapping("admin/shop")
+@RequestMapping("admin/shop/product")
 public class ProductController {
 
     private static final Logger log = LogManager.getLogger("ProductController");
@@ -49,21 +48,21 @@ public class ProductController {
     @Autowired
     private ImageService imageService;
 
-    @RequestMapping(value = "product/{productId}/view", method = RequestMethod.GET)
+    @RequestMapping(value = "{productId:\\d+}/view", method = RequestMethod.GET)
     public String viewProduct(final Map<String, Object> model,
             final @PathVariable("productId") Long productId) {
         model.put("product", this.productService.find(productId));
         return "shop/product/view";
     }
 
-    @RequestMapping(value = "product/add", method = RequestMethod.GET)
+    @RequestMapping(value = "add", method = RequestMethod.GET)
     public String addProduct(final Map<String, Object> model) {
         model.put("categories", this.categoryService.getAll());
         model.put("productForm", new ProductForm());
         return "shop/product/add";
     }
 
-    @RequestMapping(value = "product/add", method = RequestMethod.POST)
+    @RequestMapping(value = "add", method = RequestMethod.POST)
     public ModelAndView addProduct(final Map<String, Object> model,
             final ProductForm form) {
         final String productName = form.getProductName();
@@ -102,7 +101,7 @@ public class ProductController {
         return new ModelAndView("shop/product/view");
     }
 
-    @RequestMapping(value = "product/{productId}/edit", method = RequestMethod.GET)
+    @RequestMapping(value = "{productId:\\d+}/edit", method = RequestMethod.GET)
     public String editProduct(final Map<String, Object> model,
             final @PathVariable("productId") Long productId) {
 
@@ -128,7 +127,7 @@ public class ProductController {
         return "shop/product/edit";
     }
 
-    @RequestMapping(value = "product/{productId}/edit", method = RequestMethod.POST)
+    @RequestMapping(value = "{productId:\\d+}/edit", method = RequestMethod.POST)
     public String editProduct(final Map<String, Object> model, final ProductForm form,
             @PathVariable("productId") Long productId) {
         final Product product = this.productService.find(productId);
@@ -177,13 +176,13 @@ public class ProductController {
         return "shop/product/view";
     }
 
-    @RequestMapping(value = "product/list", method = RequestMethod.GET)
+    @RequestMapping(value = {"", "list"}, method = RequestMethod.GET)
     public String listProducts(final Map<String, Object> model) {
         model.put("products", this.productService.getAll());
         return "shop/product/list";
     }
 
-    @RequestMapping(value = "product/{productId}/delete", method = RequestMethod.GET)
+    @RequestMapping(value = "{productId:\\d+}/delete", method = RequestMethod.GET)
     public String deleteProduct(final Map<String, Object> model,
             final @PathVariable("productId") Long productId) {
 
@@ -199,7 +198,7 @@ public class ProductController {
         return "shop/product/list";
     }
 
-    @RequestMapping(value = "product/image/{imgId}/view", method = RequestMethod.GET)
+    @RequestMapping(value = "image/{imgId:\\d+}/view", method = RequestMethod.GET)
     public void picture(HttpServletResponse response, final @PathVariable("imgId") Long imgId) {
 
         final Image image = this.imageService.getImageById(imgId);
@@ -214,7 +213,7 @@ public class ProductController {
         }
     }
 
-    @RequestMapping(value = "product/image/{imgId}/thumbnail", method = RequestMethod.GET)
+    @RequestMapping(value = "image/{imgId:\\d+}/thumbnail", method = RequestMethod.GET)
     public void thumbnail(HttpServletResponse response, final @PathVariable("imgId") Long imgId) {
 
         final Image image = this.imageService.getImageById(imgId);
@@ -229,7 +228,7 @@ public class ProductController {
         }
     }
 
-    @RequestMapping(value = "product/image/{imgId}/icon", method = RequestMethod.GET)
+    @RequestMapping(value = "image/{imgId:\\d+}/icon", method = RequestMethod.GET)
     public void showIcon(HttpServletResponse response, final @PathVariable("imgId") Long imgId) {
 
         final Image image = this.imageService.getImageById(imgId);
@@ -244,7 +243,7 @@ public class ProductController {
         }
     }
 
-    @RequestMapping(value = "product/{prodId}/image/{imgId}/delete", method = RequestMethod.GET)
+    @RequestMapping(value = "{prodId:\\d+}/image/{imgId:\\d+}/delete", method = RequestMethod.GET)
     public View deleteImage(final @PathVariable("prodId") Long prodId,
             final @PathVariable("imgId") Long imgId) {
         Product product = this.productService.find(prodId);

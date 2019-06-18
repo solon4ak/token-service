@@ -14,6 +14,9 @@
         </c:if>
         <form:form method="post" modelAttribute="userRegistrationForm">
             <div class="form-group">
+                <!--User-->
+                <h4>User</h4>
+                <hr />
                 <div class="form-group row">
                     <form:label path="lastName" class="col-sm-3 col-form-label">
                         Last name
@@ -76,7 +79,7 @@
                                     id="exampleInputEmail1" aria-describedby="emailHelp" 
                                     placeholder="Enter email" required="true" />
                         <small id="emailHelp" class="form-text text-muted">
-                            We'll never share your email with anyone else.
+                            We'll never share your email with anyone else. Will be used for authorization.
                         </small>
                     </div>                
                 </div>
@@ -93,6 +96,75 @@
                         </small>
                     </div>                
                 </div>
+
+                <!--Address-->
+                <h4>Address</h4>
+                <hr />
+                <div class="form-group row">
+                    <form:label path="zipCode" class="col-sm-3 col-form-label">
+                        Zip code
+                    </form:label>
+                    <div class="col-sm-9">
+                        <form:input path="zipCode" type="text" class="form-control" 
+                                    placeholder="352800" required="true" />
+                    </div>                
+                </div>
+                <div class="form-group row">
+                    <form:label path="country" class="col-sm-3 col-form-label">
+                        Country
+                    </form:label>
+                    <div class="col-sm-9">
+                        <form:input path="country" type="text" class="form-control" 
+                                    placeholder="Россия" required="true" />
+                    </div>                
+                </div>
+                <div class="form-group row">
+                    <form:label path="region" class="col-sm-3 col-form-label">
+                        Region
+                    </form:label>
+                    <div class="col-sm-9">
+                        <form:input path="region" type="text" class="form-control" 
+                                    placeholder="Краснодарский край" required="true" />
+                    </div>                
+                </div>
+                <div class="form-group row">
+                    <form:label path="city" class="col-sm-3 col-form-label">
+                        City
+                    </form:label>
+                    <div class="col-sm-9">
+                        <form:input path="city" type="text" class="form-control" 
+                                    placeholder="Туапсе" required="true" />
+                    </div>                
+                </div>                
+                <div class="form-group row">
+                    <form:label path="street" class="col-sm-3 col-form-label">
+                        Street
+                    </form:label>
+                    <div class="col-sm-9">
+                        <form:input path="street" type="text" class="form-control" 
+                                    placeholder="ул. Ленина" required="true" />
+                    </div>                
+                </div>
+                <div class="form-group row">
+                    <form:label path="building" class="col-sm-3 col-form-label">
+                        Building
+                    </form:label>
+                    <div class="col-sm-9">
+                        <form:input path="building" type="text" class="form-control" 
+                                    placeholder="8" required="true" />
+                    </div>                
+                </div>
+                <div class="form-group row">
+                    <form:label path="apartment" class="col-sm-3 col-form-label">
+                        Apartment
+                    </form:label>
+                    <div class="col-sm-9">
+                        <form:input path="apartment" type="text" class="form-control" 
+                                    placeholder="3" required="true" />
+                    </div>                
+                </div>
+                <hr />
+                <!--Submit-->
                 <div class="form-group row">
                     <span class="col-sm-3 col-form-label">
                         &nbsp;

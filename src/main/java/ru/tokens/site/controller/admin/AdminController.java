@@ -1,5 +1,6 @@
 package ru.tokens.site.controller.admin;
 
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +15,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 import ru.tokens.site.entities.UserPrincipal;
 import ru.tokens.site.services.AuthenticationService;
+import ru.tokens.site.services.UserService;
+import ru.tokens.site.services.shop.OrderService;
 
 /**
  *
@@ -22,10 +25,16 @@ import ru.tokens.site.services.AuthenticationService;
 @Controller
 public class AdminController {
 
-    private static final Logger log = LogManager.getLogger("Admin");
+    private static final Logger log = LogManager.getLogger("AdminController");
     
     @Autowired
     private AuthenticationService authenticationService;
+    
+    @Autowired
+    private UserService userService;
+    
+    @Autowired
+    private OrderService orderService;
 
     @RequestMapping(value = "admlogin", method = RequestMethod.GET)
     public ModelAndView login(Map<String, Object> model, HttpSession session) {
@@ -64,7 +73,7 @@ public class AdminController {
         return this.getUserRedirect();
     }
     
-    @RequestMapping(value = "admpanel", method = RequestMethod.GET)
+    @RequestMapping(value = {"", "admpanel"}, method = RequestMethod.GET)
     public ModelAndView getAdminPanel(Map<String, Object> model, HttpSession session) {
         
         if (UserPrincipal.getPrincipal(session) == null) {
@@ -72,6 +81,20 @@ public class AdminController {
                     new RedirectView("/admlogin", true, false));
         }
         
+        int usersCount = this.userService.getAllUsersCount();
+        int usersWithToken = this.userService.getAllUsersWithTokenCount();
+        
+        int orders = this.orderService.getAllOrdersCount();
+        BigDecimal allOrdersTotal = this.orderService.getAllOrdersTotal();
+        BigDecimal allPayedOrdersTotal = this.orderService.getAllPayedOrdersTotal();
+        int lastWeekOrdersCount = this.orderService.getLastWeekOrdersCount();
+        
+        model.put("users", usersCount);
+        model.put("users_with_tokens", usersWithToken);
+        model.put("orders", orders);        
+        model.put("allOrdersTotal", allOrdersTotal);
+        model.put("allPayedOrdersTotal", allPayedOrdersTotal);
+        model.put("lastWeekOrdersCount", lastWeekOrdersCount);
         return new ModelAndView("admin/panel");
     }
     
