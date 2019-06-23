@@ -26,6 +26,7 @@ import org.springframework.web.servlet.RequestToViewNameTranslator;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
@@ -121,5 +122,16 @@ public class ServletContextConfiguration extends WebMvcConfigurerAdapter {
         return new StandardServletMultipartResolver();
     }
     
-    
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//        registry.addResourceHandler("/css/**").addResourceLocations("/css/");
+//        registry.addResourceHandler("/img/**").addResourceLocations("/img/");
+//        registry.addResourceHandler("/js/**").addResourceLocations("/js/");
+//        registry.addResourceHandler("/crossdomain.xml").addResourceLocations("/crossdomain.xml");
+//        registry.addResourceHandler("/robots.txt").addResourceLocations("/robots.txt");
+//        registry.addResourceHandler("/humans.txt").addResourceLocations("/humans.txt");
+        registry.addResourceHandler("/404.html").addResourceLocations("/404.html");
+        registry.addResourceHandler("/405.html").addResourceLocations("/405.html");        
+        registry.addResourceHandler("/500.html").addResourceLocations("/500.html");
+    }
 }
