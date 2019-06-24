@@ -38,12 +38,12 @@ public class MedicalHistoryController {
     private static final Logger log = LogManager.getLogger("MedHistFormController");
 
     @RequestMapping(value = {"view"}, method = RequestMethod.GET)
-    public ModelAndView view(Map<String, Object> model, Principal principal) {
+    public ModelAndView view(final Map<String, Object> model, final Principal principal) {
 
-        Long userId = Long.valueOf(principal.getName());
-        User user = userService.findUserById(userId);
+        final Long userId = Long.valueOf(principal.getName());
+        final User user = userService.findUserById(userId);
 
-        Token token = tokenService.findTokenByUser(user);
+        final Token token = tokenService.findTokenByUser(user);
         if (token == null || !token.isActivated()) {
             return new ModelAndView(new RedirectView("/token/register", true, false));
         }
@@ -56,12 +56,12 @@ public class MedicalHistoryController {
  
 
     @RequestMapping(value = {"add"}, method = RequestMethod.GET)
-    public ModelAndView create(Map<String, Object> model, Principal principal) {
+    public ModelAndView create(final Map<String, Object> model, final Principal principal) {
 
-        Long userId = Long.valueOf(principal.getName());
-        User user = userService.findUserById(userId);
+        final Long userId = Long.valueOf(principal.getName());
+        final User user = userService.findUserById(userId);
 
-        Token token = tokenService.findTokenByUser(user);
+        final Token token = tokenService.findTokenByUser(user);
         if (token == null || !token.isActivated()) {
             return new ModelAndView(new RedirectView("/token/register", true, false));
         }
@@ -74,10 +74,18 @@ public class MedicalHistoryController {
     }
 
     @RequestMapping(value = {"add"}, method = RequestMethod.POST)
-    public View create(Map<String, Object> model,
-            Principal principal, MedicalForm form) {
+    public View create(final Map<String, Object> model,
+            final Principal principal, final MedicalForm form) {
 
-        MedicalHistory medHistory = new MedicalHistory();
+        final Long userId = Long.valueOf(principal.getName());
+        final User user = userService.findUserById(userId);
+
+        final Token token = tokenService.findTokenByUser(user);
+        if (token == null || !token.isActivated()) {
+            return new RedirectView("/token/register", true, false);
+        }
+        
+        final MedicalHistory medHistory = new MedicalHistory();
 
         medHistory.setOmsNumber(form.getOmsNumber());
         medHistory.setAllergy(form.getAllergy());
@@ -89,15 +97,7 @@ public class MedicalHistoryController {
         medHistory.setSurgicalOperations(form.getSurgicalOperations());
         medHistory.setBloodType(form.getBloodType());
         medHistory.setOrganDonor(form.isIsOrganDonor());
-        medHistory.setMedicine(form.getMedicine());
-
-        Long userId = Long.valueOf(principal.getName());
-        User user = userService.findUserById(userId);
-
-        Token token = tokenService.findTokenByUser(user);
-        if (token == null || !token.isActivated()) {
-            return new RedirectView("/token/register", true, false);
-        }
+        medHistory.setMedicine(form.getMedicine());        
 
         user.setMedicalHistory(medHistory);
         model.put("token", token);
@@ -107,19 +107,20 @@ public class MedicalHistoryController {
     }
 
     @RequestMapping(value = {"edit"}, method = RequestMethod.GET)
-    public ModelAndView edit(Map<String, Object> model, Principal principal) {
+    public ModelAndView edit(final Map<String, Object> model, final Principal principal) {
 
-        Long userId = Long.valueOf(principal.getName());
-        User user = userService.findUserById(userId);
+        final Long userId = Long.valueOf(principal.getName());
+        final User user = userService.findUserById(userId);
 
-        Token token = tokenService.findTokenByUser(user);
+        final Token token = tokenService.findTokenByUser(user);
         if (token == null || !token.isActivated()) {
             return new ModelAndView(new RedirectView("/token/register", true, false));
         }
 
-        MedicalHistory medicalHistory = user.getMedicalHistory();
+        final MedicalHistory medicalHistory = user.getMedicalHistory();
 
-        MedicalForm form = new MedicalForm();
+        final MedicalForm form = new MedicalForm();
+        
         form.setOmsNumber(medicalHistory.getOmsNumber());
         form.setAllergy(medicalHistory.getAllergy());
         form.setChildhoodIllness(medicalHistory.getChildhoodIllness());
@@ -140,18 +141,18 @@ public class MedicalHistoryController {
     }
 
     @RequestMapping(value = {"edit"}, method = RequestMethod.POST)
-    public View edit(Map<String, Object> model,
-            Principal principal, MedicalForm form) {
+    public View edit(final Map<String, Object> model,
+            final Principal principal, final MedicalForm form) {
 
-        Long userId = Long.valueOf(principal.getName());
-        User user = userService.findUserById(userId);
+        final Long userId = Long.valueOf(principal.getName());
+        final User user = userService.findUserById(userId);
 
-        Token token = tokenService.findTokenByUser(user);
+        final Token token = tokenService.findTokenByUser(user);
         if (token == null || !token.isActivated()) {
             return new RedirectView("/token/register", true, false);
         }
 
-        MedicalHistory medicalHistory = user.getMedicalHistory();
+        final MedicalHistory medicalHistory = user.getMedicalHistory();
 
         medicalHistory.setOmsNumber(form.getOmsNumber());
         medicalHistory.setAllergy(form.getAllergy());
@@ -169,7 +170,7 @@ public class MedicalHistoryController {
     }
 
     private List<String> getBloodTypes() {
-        List<String> types = new LinkedList<>();
+        final List<String> types = new LinkedList<>();
         types.addAll(Arrays.asList(
                 "0(I) Rh-", "0(I) Rh+",
                 "A(II) Rh-", "A(II) Rh+",

@@ -1,30 +1,43 @@
 <%--@elvariable id="userRegistrationForm" type="ru.tokens.site.controller.UserRegistrationController.UserRegistrationForm"--%>
-<template:basic_bs_two_col htmlTitle="Edit user" bodyTitle="Edit user">
+<template:basic_bs_two_col htmlTitle="Edit user" bodyTitle="Редактирование данных пользователя">
 
     <jsp:attribute name="leftColumnContent">
         <nav class="nav flex-column">
             <a class="nav-link disabled" href="<c:url value="/user/view" />">
-                User
+                Пользователь
             </a>
             <a class="nav-link" href="<c:url value="/token/user/postaddress/view" />">
-                Post address
+                Почтовый адрес
+            </a>
+            <a class="nav-link" href="<c:url value="/user/order/list" />">
+                Заказы
             </a>
             <a class="nav-link" href="<c:url value="/token/user/view" />">
-                Token
+                Жетон
             </a> 
         </nav>
     </jsp:attribute>
-    
-    
+
+
     <jsp:body>
-        <h5>User: <c:out value="${user.lastName}, ${user.firstName}" /></h5>
+        <c:if test="${message ne null}">
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>
+                    <c:out value="${message}" />
+                </strong>                    
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </c:if>
+        <h5>Пользователь: <c:out value="${user.lastName}, ${user.firstName}" /></h5>
         <h5>E-mail: <c:out value="${user.userEmailAddress}" /></h5>
         <hr />
         <form:form method="post" modelAttribute="userRegistrationForm">
             <div class="form-group">
                 <div class="form-group row">
                     <form:label path="lastName" class="col-sm-3 col-form-label">
-                        Last name
+                        Фамилия
                     </form:label>
                     <div class="col-sm-9">
                         <form:input path="lastName" type="text" class="form-control" 
@@ -33,7 +46,7 @@
                 </div>
                 <div class="form-group row">
                     <form:label path="firstName" class="col-sm-3 col-form-label">
-                        First name
+                        Имя
                     </form:label>
                     <div class="col-sm-9">
                         <form:input path="firstName" type="text" class="form-control" 
@@ -42,7 +55,7 @@
                 </div>
                 <div class="form-group row">
                     <form:label path="middleName" class="col-sm-3 col-form-label">
-                        Middle name
+                        Отчество
                     </form:label>
                     <div class="col-sm-9">
                         <form:input path="middleName" type="text" class="form-control" 
@@ -51,40 +64,40 @@
                 </div>
                 <div class="form-group row">
                     <form:label path="birthDate" class="col-sm-3 col-form-label">
-                        Birth date
+                        Дата рождения
                     </form:label>
                     <div class="col-sm-9">
                         <form:input path="birthDate" type="text" class="form-control" 
                                     id="birthDate" aria-describedby="bdHelp" 
                                     placeholder="23.11.1997" required="true" />
                         <small id="bdHelp" class="form-text text-muted">
-                            Format: dd.mm.yyyy (29.01.2001).
+                            Формат: dd.mm.yyyy (29.01.2001).
                         </small>
                     </div>
                 </div>
                 <div class="form-group row">
                     <form:label path="phoneNumber" class="col-sm-3 col-form-label">
-                        Phone number
+                        Телефон
                     </form:label>
                     <div class="col-sm-9">
                         <form:input path="phoneNumber" type="text" class="form-control" 
                                     id="phoneNumber" aria-describedby="pnHelp" 
                                     placeholder="+7 XXX XXX XX XX" required="true" />
                         <small id="pnHelp" class="form-text text-muted">
-                            Format: +7 499 999 99 99
+                            Формат: +7 499 999 99 99
                         </small>
                     </div>
                 </div>                
                 <div class="form-group row">
                     <form:label path="password" class="col-sm-3 col-form-label">
-                        Password
+                        Пароль
                     </form:label>
                     <div class="col-sm-9">
                         <form:input path="password" type="text" class="form-control" 
                                     id="password" aria-describedby="passHelp"
                                     readonly="true" />
                         <small id="passHelp" class="form-text text-muted">
-                            Automatically generated.
+                            Создается системой.
                         </small>
                     </div>                
                 </div>
@@ -93,10 +106,10 @@
 
                     </span>
                     <div class="col-sm-9">
-                        <button class="btn btn-primary" type="submit">Confirm</button>
+                        <button class="btn btn-primary" type="submit">Подтвердить</button>
                     </div>                
                 </div>
-                
+
             </form:form>
         </jsp:body>
     </template:basic_bs_two_col>

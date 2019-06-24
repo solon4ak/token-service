@@ -1,6 +1,6 @@
 <%--@elvariable id="categoryForm" type="ru.tokens.site.controller.CategoryController.CategoryForm"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
-<template:admin htmlTitle="Adding store category" bodyTitle="Add store category">  
+<template:admin htmlTitle="Adding store category" bodyTitle="Добавить категорию товара">  
         
     <c:if test="${message != null}">
         <c:out value="${message}" />

@@ -32,17 +32,17 @@ public class PasswordResetController {
     private PasswordUtil passwordUtil;
     
     @RequestMapping(value = "passwordreset", method = RequestMethod.GET)
-    public String getResetPasswordForm(Map<String, Object> model) {
+    public String getResetPasswordForm(final Map<String, Object> model) {
         model.put("passwordResetForm", new PasswordResetForm());
         model.put("wrongEmail", false);
         return "userreg/passwordreset";
     }
     
     @RequestMapping(value = "passwordreset", method = RequestMethod.POST)
-    public ModelAndView resetPassword(Map<String, Object> model, 
-            PasswordResetForm form) {
-        String email = form.getEmail();
-        User user = userService.findUserByEmail(email);
+    public ModelAndView resetPassword(final Map<String, Object> model, 
+            final PasswordResetForm form) {
+        final String email = form.getEmail();
+        final User user = userService.findUserByEmail(email);
         
         if (null == user) {
             String msg = "Пользователь с данным адресом электронной почты не существует.";

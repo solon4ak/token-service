@@ -55,13 +55,13 @@ public class ServletContextConfiguration extends WebMvcConfigurerAdapter {
     @Autowired
     Unmarshaller unmarshaller;
     
-    @Autowired
-    SpringValidatorAdapter validator;
+//    @Autowired
+//    SpringValidatorAdapter validator;
     
-    @Override
-    public Validator getValidator() {
-        return this.validator;
-    }
+//    @Override
+//    public Validator getValidator() {
+//        return this.validator;
+//    }
 
     @Override
     public void configureMessageConverters(

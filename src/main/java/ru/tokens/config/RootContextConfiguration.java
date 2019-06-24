@@ -19,8 +19,6 @@ import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 
 /**
  *
@@ -93,15 +91,15 @@ public class RootContextConfiguration implements AsyncConfigurer, SchedulingConf
         taskRegistrar.setTaskScheduler(scheduler);
     }
     
-    @Bean
-    public LocalValidatorFactoryBean localValidatorFactoryBean() {
-        return new LocalValidatorFactoryBean();
-    }
+//    @Bean
+//    public LocalValidatorFactoryBean localValidatorFactoryBean() {
+//        return new LocalValidatorFactoryBean();
+//    }
     
-    @Bean
-    public MethodValidationPostProcessor methodValidationPostProcessor() {
-        MethodValidationPostProcessor processor = new MethodValidationPostProcessor();
-        processor.setValidator(this.localValidatorFactoryBean());
-        return processor;
-    }
+//    @Bean
+//    public MethodValidationPostProcessor methodValidationPostProcessor() {
+//        MethodValidationPostProcessor processor = new MethodValidationPostProcessor();
+//        processor.setValidator(this.localValidatorFactoryBean());
+//        return processor;
+//    }
 }

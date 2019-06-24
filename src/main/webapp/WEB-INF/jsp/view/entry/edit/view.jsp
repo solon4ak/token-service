@@ -3,27 +3,27 @@
 <%--@elvariable id="user" type="ru.tokens.site.entities.User"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:basic_bs_three_col_tkn htmlTitle="Token-${token.uuidString} :: View Medical Entry" 
-                                 bodyTitle="Entry #${entry.id} : ${entry.subject}">
+                                 bodyTitle="Запись #${entry.id} : ${entry.subject}">
 
     <jsp:attribute name="rightColumnContent">
         <nav class="nav flex-column">
             <a class="nav-link" href="<c:url value="/token/user/med/entry/list" />">
-                Entries
+                Записи
             </a>
             <a class="nav-link" href="<c:url value="/token/user/med/entry/create" />">
-                Add entry
+                Новая запись
             </a>
             <a class="nav-link" href="<c:url context="/tkn" 
                    value="/token/user/med/entry/${entry.id}/edit" />">
-                Edit
+                Изменить
             </a>
             <a class="nav-link" href="<c:url context="/tkn" 
                    value="/token/user/med/entry/${entry.id}/delete" />">
-                Delete
+                Удалить
             </a>
             <div class="dropdown-divider"></div>
             <a class="nav-link" href="<c:url value="/user/view" />">
-                User
+                Пользователь
             </a>
         </nav>
     </jsp:attribute>
@@ -35,7 +35,7 @@
                 <div class="card-body">                    
                     <p class="card-text">
                         <small>
-                            Created: <wrox:formatDate value="${entry.dateCreated}" type="both"
+                            Создана: <wrox:formatDate value="${entry.dateCreated}" type="both"
                                              timeStyle="long" dateStyle="full" />                
                         </small>
                     </p>
@@ -43,7 +43,7 @@
             </div>
             <div class="card my-2">
                 <div class="card-header">
-                    Subject
+                    Тема
                 </div>
                 <div class="card-body">
                     <p class="card-text">
@@ -53,7 +53,7 @@
             </div>
             <div class="card my-2">
                 <div class="card-header">
-                    Content
+                    Описание
                 </div>
                 <div class="card-body">
                     <p class="card-text">
@@ -64,14 +64,14 @@
             <c:if test="${entry.numberOfAttachments > 0}">
                 <div class="card my-2">
                     <div class="card-header">
-                        Attachments
+                        Вложения
                     </div>
                     <div class="card-body">
                         <table class="card-text table">
                             <thead>
                                 <tr>
-                                    <th>Filename</th>
-                                    <th>Size</th>                    
+                                    <th>Файл</th>
+                                    <th>Размер</th>                    
                                 </tr>
                             </thead>
                             <tbody>

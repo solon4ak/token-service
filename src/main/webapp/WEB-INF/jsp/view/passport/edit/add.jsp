@@ -2,21 +2,29 @@
 <%--@elvariable id="token" type="ru.tokens.site.entities.Token"--%>
 <%--@elvariable id="user" type="ru.tokens.site.entities.User"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
-<template:basic_bs_three_col_tkn htmlTitle="Add Passport" bodyTitle="Token owner passport"> 
+<template:basic_bs_three_col_tkn htmlTitle="Add Passport" bodyTitle="Добавить пасспортные данные"> 
 
     <jsp:attribute name="rightColumnContent">
         <nav class="nav flex-column">
             <a class="nav-link" href="<c:url value="/user/view" />">
-                User
+                Пользователь
             </a>
         </nav>
     </jsp:attribute>
 
     <jsp:body>
         <div class="container">
+            <c:if test="${message ne null}">
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <c:out value="${message}" />
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </c:if>
             <jsp:include page="/WEB-INF/jsp/token_id.jspf" />
             <small>
-                Birth Date: <wrox:formatDate value="${token.user.birthDate}" />
+                Дата рождения: <wrox:formatDate value="${token.user.birthDate}" />
             </small>
             <hr />
             <form:form method="post" modelAttribute="passportForm">
@@ -78,7 +86,7 @@
                             &nbsp;
                         </span>
                         <div class="col-sm-9">
-                            <button class="btn btn-primary" type="submit">Confirm</button>
+                            <button class="btn btn-primary" type="submit">Подтвердить</button>
                         </div>                
                     </div>
                 </div> 

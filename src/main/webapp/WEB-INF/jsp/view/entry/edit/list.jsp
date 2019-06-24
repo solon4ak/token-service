@@ -3,16 +3,16 @@
 <%--@elvariable id="entries" type="java.util.Collection"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:basic_bs_three_col_tkn htmlTitle="Token-${token.uuidString} :: Medical History Entries"
-                                 bodyTitle="Medical History Entries">    
+                                 bodyTitle="Список записей">    
 
     <jsp:attribute name="rightColumnContent">
         <nav class="nav flex-column">
             <a class="nav-link" href="<c:url value="/token/user/med/entry/create" />">
-                Add entry
+                Новая запись
             </a>
             <div class="dropdown-divider"></div>
             <a class="nav-link" href="<c:url value="/user/view" />">
-                User
+                Пользователь
             </a>
         </nav>
     </jsp:attribute>
@@ -22,7 +22,7 @@
             <jsp:include page="/WEB-INF/jsp/token_id.jspf" />              
             <c:choose>
                 <c:when test="${(user.medicalHistory.numberOfMedicalFormEntries) > 0}">
-                    <h4>Entries: ${user.medicalHistory.numberOfMedicalFormEntries}</h5>
+                    <h4>Записи: ${user.medicalHistory.numberOfMedicalFormEntries}</h5>
                         <ul class="list-group list-group-flush">
                             <c:forEach items="${user.medicalHistory.medicalFormEntries}" var="entry">
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -31,7 +31,7 @@
                                        <c:out value="${entry.subject}" />                               
                                     </a>  
                                     <span class="badge badge-primary badge-pill">
-                                        Atch:&nbsp;<c:out value="${entry.numberOfAttachments}" />
+                                        Вложения:&nbsp;<c:out value="${entry.numberOfAttachments}" />
                                     </span>
                                 </li>
                             </c:forEach>

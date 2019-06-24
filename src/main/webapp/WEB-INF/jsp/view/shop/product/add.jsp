@@ -2,7 +2,7 @@
 <%--@elvariable id="categories" type="java.util.List"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 
-<template:admin htmlTitle="Adding new product" bodyTitle="Add product to category"> 
+<template:admin htmlTitle="Adding new product" bodyTitle="Добавить товар"> 
 
     <jsp:attribute name="extraHeadContent">
         <script src="https://cloud.tinymce.com/5/tinymce.min.js?apiKey=i6rk63ssg8q0xzbsnyjrkxichdz2rjlup6i7drwsa82i6i1w"></script>        

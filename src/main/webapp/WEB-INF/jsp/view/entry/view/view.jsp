@@ -2,14 +2,15 @@
 <%--@elvariable id="token" type="ru.tokens.site.entities.Token"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:basic_bs_one_col_simple htmlTitle="View Medical Entry" 
-                                  bodyTitle="Entry #${entry.id} : ${entry.subject}">
+                                  bodyTitle="Запись #${entry.id} : ${entry.subject}">
     <jsp:body>
         <div class="container">
             <a class="btn btn-info" href="<c:url value="/token/${token.tokenId}/${token.uuidString}">
                    <c:param name="showMH" value="true" />
                </c:url>">
-                Back
-            </a><br /><br />
+                На предыдущую страницу
+            </a>
+            <hr />
             <div class="border rounded mb-3 bg-light text-dark">
                 <div class="p-2">
                     <h5 class="m-2 pl-4">
@@ -18,7 +19,7 @@
                     <div class="row justify-content-lg-center py-2">
                         <div class="col-md-11 border-top p-2">
                             <small>
-                                Created: <wrox:formatDate value="${entry.dateCreated}" type="both"
+                                Создано: <wrox:formatDate value="${entry.dateCreated}" type="both"
                                                  timeStyle="long" dateStyle="full" />
                             </small>
                         </div>                            
@@ -35,8 +36,8 @@
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th>Filename</th>
-                                            <th>Size</th>                    
+                                            <th>Файл</th>
+                                            <th>Размер</th>                    
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -62,6 +63,5 @@
             </div>
         </div>
     </jsp:body>
-
-
+    
 </template:basic_bs_one_col_simple>

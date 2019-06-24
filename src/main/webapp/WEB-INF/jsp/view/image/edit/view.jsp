@@ -2,28 +2,28 @@
 <%--@elvariable id="token" type="ru.tokens.site.entities.Token"--%>
 <%--@elvariable id="user" type="ru.tokens.site.entities.User"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
-<template:basic_bs_three_col_tkn htmlTitle="Add User Photo" bodyTitle="Token owner Photo">  
+<template:basic_bs_three_col_tkn htmlTitle="Add User Photo" bodyTitle="Изменить фото пользователя">  
 
     <jsp:attribute name="rightColumnContent">
         <nav class="nav flex-column">            
             <c:choose>
                 <c:when test="${user.image == null}">
                     <a class="nav-link" href="<c:url value="/token/user/image/upload" />">
-                        Add
+                        Добавить
                     </a>
                 </c:when>
                 <c:otherwise>
                     <a class="nav-link" href="<c:url value="/token/user/image/upload" />">
-                        Change
+                        Изменить
                     </a> 
                     <a class="nav-link" href="<c:url value="/token/user/image/delete" />">
-                        Delete
+                        Удалить
                     </a>   
                 </c:otherwise>
             </c:choose>   
             <div class="dropdown-divider"></div>
             <a class="nav-link" href="<c:url value="/user/view" />">
-                User
+                Пользователь
             </a>
         </nav>
     </jsp:attribute>
@@ -34,7 +34,7 @@
             <c:choose>
                 <c:when test="${user.image == null}">
                     <div class="text-justify">
-                        Add your picture.
+                        Добавьте фото.
                     </div>                            
                 </c:when>
                 <c:otherwise>

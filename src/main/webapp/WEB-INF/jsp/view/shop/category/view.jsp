@@ -2,7 +2,7 @@
 <%--@elvariable id="category" type="ru.tokens.site.entities.shop.Category"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:admin htmlTitle="List products for category: ${category.categoryName}" 
-                bodyTitle="Products list for category: ${category.categoryName}">
+                bodyTitle="Список товаров в категории: ${category.categoryName}">
     <hr />    
     <c:if test="${message != null}">
         <c:out value="${message}" />

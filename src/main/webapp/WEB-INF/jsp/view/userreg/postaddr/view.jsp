@@ -2,19 +2,19 @@
 <%--@elvariable id="address" type="ru.tokens.site.entities.Address"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:basic_bs_three_col htmlTitle="User: ${user.lastName}, ${user.firstName} post address"
-                             bodyTitle="Post address">
+                             bodyTitle="Почтовый адрес">
 
     <jsp:attribute name="rightColumnContent">
         <nav class="nav flex-column">
             <c:choose>
                 <c:when test="${user.postAddress == null}">
                     <a class="nav-link" href="<c:url value="/token/user/postaddress/add" />">
-                        Add
+                        Добавить
                     </a>
                 </c:when>
                 <c:otherwise>
                     <a class="nav-link" href="<c:url value="/token/user/postaddress/edit" />">
-                        Edit
+                        Изменить
                     </a>
                 </c:otherwise>
             </c:choose>
@@ -24,13 +24,13 @@
     <jsp:attribute name="leftColumnContent">
         <nav class="nav flex-column">
             <a class="nav-link" href="<c:url value="/user/view" />">
-                User
+                Пользователь
             </a>
             <a class="nav-link disabled" href="<c:url value="/token/user/postaddress/view" />">
-                Post address
+                Почтовый адрес
             </a>
             <a class="nav-link" href="<c:url value="/token/user/view" />">
-                Token
+                Жетон
             </a> 
         </nav>
     </jsp:attribute>
@@ -38,38 +38,38 @@
     <jsp:body>   
         <c:choose>
             <c:when test="${user.postAddress == null}">
-                Post address wasn't added!
+                Почтовый адрес не указан.
             </c:when>
             <c:otherwise>
-                <h4>Post Address</h4>
+                <h4>Почтовый адрес</h4>
                 <table class="table">
                     <tbody>
                         <tr>
-                            <td>Zip code</td>
+                            <td>Индекс</td>
                             <td><c:out value="${address.zipCode}" /></td>
                         </tr>
                         <tr>
-                            <td>Country</td>
+                            <td>Страна</td>
                             <td><c:out value="${address.country}" /></td>
                         </tr>
                         <tr>
-                            <td>Region</td>
+                            <td>Регион</td>
                             <td><c:out value="${address.region}" /></td>
                         </tr>
                         <tr>
-                            <td>City</td>
+                            <td>Город</td>
                             <td><c:out value="${address.city}" /></td>
                         </tr>
                         <tr>
-                            <td>Street</td>
+                            <td>Улица (шоссе, проспект)</td>
                             <td><c:out value="${address.street}" /></td>
                         </tr>
                         <tr>
-                            <td>Building</td>
+                            <td>Дом</td>
                             <td><c:out value="${address.building}" /></td>
                         </tr>
                         <tr>
-                            <td>Apartment</td>
+                            <td>Квартира</td>
                             <td><c:out value="${address.apartment}" /></td>
                         </tr>
                     </tbody>

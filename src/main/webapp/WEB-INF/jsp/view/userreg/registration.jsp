@@ -1,7 +1,7 @@
 <%--@elvariable id="userRegistrationFailed" type="java.lang.Boolean"--%>
 <%--@elvariable id="message" type="java.lang.String"--%>
 <%--@elvariable id="userRegistrationForm" type="ru.tokens.site.controller.UserRegistrationController.UserRegistrationForm"--%>
-<template:basic_bs_one_col htmlTitle="User registration" bodyTitle="User registration">
+<template:basic_bs_one_col htmlTitle="User registration" bodyTitle="Регистрация пользователя">
 
     <jsp:body>
         <c:if test="${userRegistrationFailed}">
@@ -12,61 +12,71 @@
                 </button>
             </div>
         </c:if>
+        <c:if test="${message ne null}">
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>
+                    <c:out value="${message}" />
+                </strong>                    
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </c:if>
         <form:form method="post" modelAttribute="userRegistrationForm">
             <div class="form-group">
                 <!--User-->
-                <h4>User</h4>
+                <h4>Пользователь</h4>
                 <hr />
                 <div class="form-group row">
                     <form:label path="lastName" class="col-sm-3 col-form-label">
-                        Last name
+                        Фамилия
                     </form:label>
                     <div class="col-sm-9">
                         <form:input path="lastName" type="text" class="form-control" 
-                                    placeholder="Last name" required="true" />
+                                    placeholder="Фамилия" required="true" />
                     </div>                
                 </div>
                 <div class="form-group row">
                     <form:label path="firstName" class="col-sm-3 col-form-label">
-                        First name
+                        Имя
                     </form:label>
                     <div class="col-sm-9">
                         <form:input path="firstName" type="text" class="form-control" 
-                                    placeholder="First name" required="true" />
+                                    placeholder="Имя" required="true" />
                     </div>
                 </div>
                 <div class="form-group row">
                     <form:label path="middleName" class="col-sm-3 col-form-label">
-                        Middle name
+                        Отчество
                     </form:label>
                     <div class="col-sm-9">
                         <form:input path="middleName" type="text" class="form-control" 
-                                    placeholder="Middle name" />
+                                    placeholder="Отчество" />
                     </div>
                 </div>
                 <div class="form-group row">
                     <form:label path="birthDate" class="col-sm-3 col-form-label">
-                        Birth date
+                        Дата рождения
                     </form:label>
                     <div class="col-sm-9">
                         <form:input path="birthDate" type="text" class="form-control" 
                                     id="birthDate" aria-describedby="bdHelp" 
                                     placeholder="23.11.1997" required="true" />
                         <small id="bdHelp" class="form-text text-muted">
-                            Please use the following format: dd.mm.yyyy (29.01.2001).
+                            Формат даты: dd.mm.yyyy (29.01.2001)
                         </small>
                     </div>
                 </div>
                 <div class="form-group row">
                     <form:label path="phoneNumber" class="col-sm-3 col-form-label">
-                        Phone number
+                        Телефон
                     </form:label>
                     <div class="col-sm-9">
                         <form:input path="phoneNumber" type="text" class="form-control" 
                                     id="phoneNumber" aria-describedby="pnHelp" 
                                     placeholder="+7 XXX XXX XX XX" required="true" />
                         <small id="pnHelp" class="form-text text-muted">
-                            We'll never share your phone number with anyone else. Format: +7 499 999 99 99
+                            Формат: +7 499 999 99 99
                         </small>
                     </div>
                 </div>
@@ -77,32 +87,32 @@
                     <div class="col-sm-9">
                         <form:input path="email" type="email" class="form-control" 
                                     id="exampleInputEmail1" aria-describedby="emailHelp" 
-                                    placeholder="Enter email" required="true" />
+                                    placeholder="Электронная почта" required="true" />
                         <small id="emailHelp" class="form-text text-muted">
-                            We'll never share your email with anyone else. Will be used for authorization.
+                            Используется в качестве логина.
                         </small>
                     </div>                
                 </div>
                 <div class="form-group row">
                     <form:label path="password" class="col-sm-3 col-form-label">
-                        Password
+                        Пароль
                     </form:label>
                     <div class="col-sm-9">
                         <form:input path="password" type="text" class="form-control" 
                                     id="password" aria-describedby="passHelp"
                                     readonly="true" />
                         <small id="passHelp" class="form-text text-muted">
-                            Automatically generated. Will be send by mail.
+                            Создается системой. Будет отправлен почтой после регистрации.
                         </small>
                     </div>                
                 </div>
 
                 <!--Address-->
-                <h4>Address</h4>
+                <h4>Почтовый адрес</h4>
                 <hr />
                 <div class="form-group row">
                     <form:label path="zipCode" class="col-sm-3 col-form-label">
-                        Zip code
+                        Индекс
                     </form:label>
                     <div class="col-sm-9">
                         <form:input path="zipCode" type="text" class="form-control" 
@@ -111,7 +121,7 @@
                 </div>
                 <div class="form-group row">
                     <form:label path="country" class="col-sm-3 col-form-label">
-                        Country
+                        Страна
                     </form:label>
                     <div class="col-sm-9">
                         <form:input path="country" type="text" class="form-control" 
@@ -120,7 +130,7 @@
                 </div>
                 <div class="form-group row">
                     <form:label path="region" class="col-sm-3 col-form-label">
-                        Region
+                        Регион (край, область)
                     </form:label>
                     <div class="col-sm-9">
                         <form:input path="region" type="text" class="form-control" 
@@ -129,7 +139,7 @@
                 </div>
                 <div class="form-group row">
                     <form:label path="city" class="col-sm-3 col-form-label">
-                        City
+                        Город
                     </form:label>
                     <div class="col-sm-9">
                         <form:input path="city" type="text" class="form-control" 
@@ -138,7 +148,7 @@
                 </div>                
                 <div class="form-group row">
                     <form:label path="street" class="col-sm-3 col-form-label">
-                        Street
+                        Улица (шоссе, проспект)
                     </form:label>
                     <div class="col-sm-9">
                         <form:input path="street" type="text" class="form-control" 
@@ -147,7 +157,7 @@
                 </div>
                 <div class="form-group row">
                     <form:label path="building" class="col-sm-3 col-form-label">
-                        Building
+                        Дом
                     </form:label>
                     <div class="col-sm-9">
                         <form:input path="building" type="text" class="form-control" 
@@ -156,7 +166,7 @@
                 </div>
                 <div class="form-group row">
                     <form:label path="apartment" class="col-sm-3 col-form-label">
-                        Apartment
+                        Квартира
                     </form:label>
                     <div class="col-sm-9">
                         <form:input path="apartment" type="text" class="form-control" 
@@ -170,7 +180,7 @@
                         &nbsp;
                     </span>
                     <div class="col-sm-9">
-                        <button class="btn btn-primary" type="submit">Register</button>
+                        <button class="btn btn-primary" type="submit">Зарегистрировать</button>
                     </div>                
                 </div>
             </form:form>

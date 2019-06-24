@@ -3,28 +3,28 @@
 <%--@elvariable id="passport" type="ru.tokens.site.entities.Passport"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:basic_bs_three_col_tkn htmlTitle="${token.uuidString} :: Passport"
-                                 bodyTitle="Passport">
+                                 bodyTitle="Пасспортные данные">
 
     <jsp:attribute name="rightColumnContent">
         <nav class="nav flex-column">
             <c:choose>
                 <c:when test="${user.passport == null}">
                     <a class="nav-link" href="<c:url value="/token/user/passport/add" />">
-                        Add
+                        Добавить
                     </a>
                 </c:when>
                 <c:otherwise>
                     <a class="nav-link" href="<c:url value="/token/user/passport/edit" />">
-                        Edit
+                        Изменить
                     </a>
                     <a class="nav-link" href="<c:url value="/token/user/passport/delete" />">
-                        Delete
+                        Удалить
                     </a>
                 </c:otherwise>
             </c:choose>  
             <div class="dropdown-divider"></div>
             <a class="nav-link" href="<c:url value="/user/view" />">
-                User
+                Пользователь
             </a>
         </nav>
     </jsp:attribute>
@@ -33,10 +33,10 @@
         <div class="container">
             <jsp:include page="/WEB-INF/jsp/token_id.jspf" />
 
-            <h4>Passport</h4>
+            <h4>Пасспорт</h4>
             <c:choose>
                 <c:when test="${user.passport == null}">
-                    There is no passport binded to the token.                 
+                    Паспорт не добавлен.                
                 </c:when>
                 <c:otherwise>
                     <table class="table">                    

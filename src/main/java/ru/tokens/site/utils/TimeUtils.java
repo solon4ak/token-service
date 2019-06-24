@@ -2,6 +2,7 @@ package ru.tokens.site.utils;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.format.DateTimeFormatter;
 
 public final class TimeUtils {
 
@@ -20,5 +21,9 @@ public final class TimeUtils {
         LocalDate now = LocalDate.now();
         age = Period.between(birthDate, now).getYears();        
         return age;
+    }
+    
+    public static LocalDate getDate(String date) {
+        return LocalDate.parse(date, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     }
 }

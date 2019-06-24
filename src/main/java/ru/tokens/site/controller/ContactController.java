@@ -39,21 +39,23 @@ public class ContactController {
     private static final Logger log = LogManager.getLogger("ContactController");
     
     @RequestMapping(value = {"list"}, method = RequestMethod.GET)
-    public String listContact(Map<String, Object> model, Principal principal) {        
+    public ModelAndView listContact(final Map<String, Object> model, final Principal principal) {        
         
         Long userId = Long.valueOf(principal.getName());
-        User user = userService.findUserById(userId);
-        
-        Token token = tokenService.findTokenByUser(user);
+        User user = userService.findUserById(userId);        
+        Token token = tokenService.findTokenByUser(user);        
+        if (token == null || !token.isActivated()) {
+            return new ModelAndView(new RedirectView("/token/register", true, false));
+        }
         
         model.put("contacts", user.getContacts());
         model.put("token", token);
         model.put("user", user);
-        return "contact/edit/list";
+        return new ModelAndView("contact/edit/list");
     }
 
     @RequestMapping(value = {"add"}, method = RequestMethod.GET)
-    public ModelAndView addContact(Map<String, Object> model, Principal principal) {
+    public ModelAndView addContact(final Map<String, Object> model, final Principal principal) {
 
         Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
@@ -71,13 +73,7 @@ public class ContactController {
     }
 
     @RequestMapping(value = {"add"}, method = RequestMethod.POST)
-    public View addContact(Principal principal, ContactForm form) {
-
-        Contact contact = new Contact();
-        contact.setFirstName(form.getFirstName());
-        contact.setLastName(form.getLastName());
-        contact.setPhoneNumber(form.getPhoneNumber());
-        contact.setEmail(form.getEmail());
+    public View addContact(final Principal principal, final ContactForm form) {
 
         Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
@@ -87,6 +83,13 @@ public class ContactController {
             return new RedirectView("/token/register", true, false);
         }
         
+        Contact contact = new Contact();
+        
+        contact.setFirstName(form.getFirstName());
+        contact.setLastName(form.getLastName());
+        contact.setPhoneNumber(form.getPhoneNumber());
+        contact.setEmail(form.getEmail());
+        
         contactService.saveContact(contact);
         user.addContact(contact);
 
@@ -95,7 +98,8 @@ public class ContactController {
     }
 
     @RequestMapping(value = {"delete/{contactId}"}, method = RequestMethod.GET)
-    public View delete(Principal principal, @PathVariable("contactId") Long contactId) {
+    public View delete(final Principal principal, 
+            final @PathVariable("contactId") Long contactId) {
 
         Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
@@ -113,7 +117,7 @@ public class ContactController {
     }
 
     @RequestMapping(value = {"edit/{contactId}"}, method = RequestMethod.GET)
-    public ModelAndView editContact(Map<String, Object> model, Principal principal,
+    public ModelAndView editContact(final Map<String, Object> model, final Principal principal,
             @PathVariable(value = "contactId") Long contactId) {
 
         Long userId = Long.valueOf(principal.getName());
@@ -146,7 +150,7 @@ public class ContactController {
     }
 
     @RequestMapping(value = {"edit/{contactId}"}, method = RequestMethod.POST)
-    public View editContact(Principal principal, ContactForm form,
+    public View editContact(final Principal principal, final ContactForm form,
             @PathVariable(value = "contactId") Long contactId) {
 
         Long userId = Long.valueOf(principal.getName());

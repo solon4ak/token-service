@@ -38,18 +38,19 @@ public class TokenRegistrationController {
     private static final Logger log = LogManager.getLogger("Token");
     
     @RequestMapping(value = "register", method = RequestMethod.GET)
-    public String tokenRegisterForm(Map<String, Object> model) {
+    public String tokenRegisterForm(final Map<String, Object> model) {
         model.put("registrationFailed", false);
         model.put("tokenRegistrationForm", new TokenRegistrationForm());
         return "token/view/registration";
     }
     
     @RequestMapping(value = "register", method = RequestMethod.POST)
-    public ModelAndView tokenFormSubmit(Map<String, Object> model, Principal principal,
-            HttpServletRequest request, TokenRegistrationForm form) {
+    public ModelAndView tokenFormSubmit(final Map<String, Object> model, 
+            final Principal principal, final HttpServletRequest request, 
+            final TokenRegistrationForm form) {
         
-        Long userId = Long.valueOf(principal.getName());        
-        User user = userService.findUserById(userId);
+        final Long userId = Long.valueOf(principal.getName());        
+        final User user = userService.findUserById(userId);
 
         // TODO валидация полей
         String msg;
@@ -61,23 +62,23 @@ public class TokenRegistrationController {
             msg = "Id жетона или код активации не совпадают.";
             model.put("message", msg);
             model.put("uuidString", uuidString);
-            return new ModelAndView("token/view/error");
+            return new ModelAndView("token/view/registration");
         }
         
-        Token token = this.tokenService.findTokenByUUIDString(uuidString);
+        final Token token = this.tokenService.findTokenByUUIDString(uuidString);
         
         if (token == null) {
             msg = "Жетон с таким номером не существует.";
             model.put("message", msg);
             model.put("uuidString", uuidString);
-            return new ModelAndView("token/view/error");
+            return new ModelAndView("token/view/registration");
         }
         
         if (token.isActivated()) {
             msg = "Жетон с данным номером уже был активирован.";
             model.put("message", msg);
             model.put("uuidString", uuidString);
-            return new ModelAndView("token/view/error");
+            return new ModelAndView("token/view/registration");
         }
         
         if (!(token.getActivationCode()).equals(activationCode)) {
@@ -94,8 +95,9 @@ public class TokenRegistrationController {
         token.setActivated(true);
         token.setActivatedDate(Instant.now());
         
-        final String subject = "tag4life: token registration";
-        final String body = "Token - " + token.getUuidString() + "\r\n"
+//        Confirmation e-mail
+        String subject = "tag4life: token registration";
+        String body = "Token - " + token.getUuidString() + "\r\n"
                 + "successfully registered for user - " 
                 + user.toString() + ".";
         emailSender.sendSimpleEmail(user.getUserEmailAddress(), subject, body);

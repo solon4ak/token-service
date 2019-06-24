@@ -35,24 +35,28 @@ public class BirthCertificateController {
     private TokenService tokenService;
 
     private static final Logger log = LogManager.getLogger("BirthCertificateController");
-    
+
     @RequestMapping(value = "view", method = RequestMethod.GET)
-    public String viewCertificate(Map<String, Object> model, Principal principal) {
-        
+    public ModelAndView viewCertificate(final Map<String, Object> model, final Principal principal) {
+
         Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
         Token token = tokenService.findTokenByUser(user);
-        
+
+        if (token == null || !token.isActivated()) {
+            return new ModelAndView(new RedirectView("/token/register", true, false));
+        }
+
         BirthCertificate certificate = user.getBirthCertificate();
-        
+
         model.put("token", token);
         model.put("certificate", certificate);
         model.put("user", user);
-        return "birth_certificate/edit/view";
+        return new ModelAndView("birth_certificate/edit/view");
     }
 
     @RequestMapping(value = "add", method = RequestMethod.GET)
-    public ModelAndView getCertificateForm(Map<String, Object> model, Principal principal) {
+    public ModelAndView getCertificateForm(final Map<String, Object> model, final Principal principal) {
 
         Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
@@ -69,14 +73,15 @@ public class BirthCertificateController {
     }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public View addCertificate(Principal principal, BthCertForm form) {
+    public ModelAndView addCertificate(final Map<String, Object> model,
+            final Principal principal, final BthCertForm form) {
 
         Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
         Token token = tokenService.findTokenByUser(user);
 
         if (token == null || !token.isActivated()) {
-            return new RedirectView("/token/register", true, false);
+            return new ModelAndView(new RedirectView("/token/register", true, false));
         }
 
         BirthCertificate certificate = new BirthCertificate();
@@ -88,27 +93,44 @@ public class BirthCertificateController {
 
         String issueDate = form.getIssueDate();
         LocalDate iDate = null;
+        String message = null;
 
         try {
             iDate = LocalDate.parse(issueDate, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         } catch (DateTimeParseException e) {
+            message = "Неправильный формат даты.";
+            model.put("message", message);
             log.warn("Wrong date format '{}'", issueDate, e);
+            model.put("token", token);
+            model.put("user", user);
+            model.put("certForm", new BthCertForm());
+            return new ModelAndView("birth_certificate/edit/add");
+        }
+
+        if (!this.userService.validateBCDate(iDate, user)) {
+            message = "Дата выдачи свидетельства о рождении раньше даты рождения.";
+            model.put("message", message);
+            log.warn("Incorrect birth cert issue date", issueDate);
+            model.put("token", token);
+            model.put("user", user);
+            model.put("certForm", new BthCertForm());
+            return new ModelAndView("birth_certificate/edit/add");
         }
 
         certificate.setIssueDate(iDate);
         user.setBirthCertificate(certificate);
 
         log.info("Birth Certificate for token '{}' was added", token.getTokenId());
-        return new RedirectView("/token/user/birthcert/view", true, false);
+        return new ModelAndView(new RedirectView("/token/user/birthcert/view", true, false));
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.GET)
-    public ModelAndView editCertificate(Map<String, Object> model, Principal principal) {
+    public ModelAndView editCertificate(final Map<String, Object> model, final Principal principal) {
 
         Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
         Token token = tokenService.findTokenByUser(user);
-        
+
         if (token == null || !token.isActivated()) {
             return new ModelAndView(new RedirectView("/token/register", true, false));
         }
@@ -130,14 +152,15 @@ public class BirthCertificateController {
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.POST)
-    public View editCertificate(Principal principal, BthCertForm form) {
+    public ModelAndView editCertificate(final Map<String, Object> model,
+            final Principal principal, final BthCertForm form) {
 
         Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
         Token token = tokenService.findTokenByUser(user);
-        
+
         if (token == null || !token.isActivated()) {
-            return new RedirectView("/token/register", true, false);
+            return new ModelAndView(new RedirectView("/token/register", true, false));
         }
 
         BirthCertificate certificate = new BirthCertificate();
@@ -149,28 +172,45 @@ public class BirthCertificateController {
 
         String issueDate = form.getIssueDate();
         LocalDate iDate = null;
+        String message = null;
 
         try {
             iDate = LocalDate.parse(issueDate, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         } catch (DateTimeParseException e) {
+            message = "Неправильный формат даты.";
+            model.put("message", message);
             log.warn("Wrong date format '{}'", issueDate, e);
+            model.put("token", token);
+            model.put("user", user);
+            model.put("certForm", new BthCertForm());
+            return new ModelAndView("birth_certificate/edit/add");
         }
 
+        if (!this.userService.validateBCDate(iDate, user)) {
+            message = "Дата выдачи свидетельства о рождении раньше даты рождения.";
+            model.put("message", message);
+            log.warn("Incorrect birth cert issue date", issueDate);
+            model.put("token", token);
+            model.put("user", user);
+            model.put("certForm", new BthCertForm());
+            return new ModelAndView("birth_certificate/edit/add");
+        }
+        
         certificate.setIssueDate(iDate);
 
         user.setBirthCertificate(certificate);
 
         log.info("Birth Certificate for token '{}' has been edited", token.getTokenId());
-        return new RedirectView("/token/user/birthcert/view", true, false);
+        return new ModelAndView(new RedirectView("/token/user/birthcert/view", true, false));
     }
 
     @RequestMapping(value = "delete", method = RequestMethod.GET)
-    public View deletePassport(Principal principal) {
+    public View deletePassport(final Principal principal) {
 
         Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
         Token token = tokenService.findTokenByUser(user);
-        
+
         if (token == null || !token.isActivated()) {
             return new RedirectView("/token/register", true, false);
         }

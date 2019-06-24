@@ -4,6 +4,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.tokens.site.entities.Attachment;
+import ru.tokens.site.entities.DataEntry;
+import ru.tokens.site.entities.User;
 import ru.tokens.site.repository.AttachmentRepository;
 
 /**

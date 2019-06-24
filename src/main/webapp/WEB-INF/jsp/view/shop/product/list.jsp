@@ -1,7 +1,7 @@
 <%--@elvariable id="products" type="java.util.List"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:admin htmlTitle="Product list" 
-                bodyTitle="Products">
+                bodyTitle="Список товаров">
     <hr />    
     <c:if test="${message != null}">
         <c:out value="${message}" />

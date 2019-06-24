@@ -1,5 +1,5 @@
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
-<template:admin htmlTitle="View order #${orderRecord.orderId}" bodyTitle="View order #${orderRecord.orderId}">
+<template:admin htmlTitle="View order #${orderRecord.orderId}" bodyTitle="Заказ #${orderRecord.orderId}">
        
     <c:if test="${message != null}">
         <c:out value="${message}" />

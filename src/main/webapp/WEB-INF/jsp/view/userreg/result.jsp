@@ -1,7 +1,7 @@
 <%--@elvariable id="message" type="java.lang.String"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:basic_bs_one_col htmlTitle="E-mail confirmation"
-                           bodyTitle="User e-mail confirmation.">
+                           bodyTitle="Подтверждение адреса электронной почты">
 
     <jsp:body>
         <div class="alert alert-success" role="alert">

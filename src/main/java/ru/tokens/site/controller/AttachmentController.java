@@ -16,9 +16,11 @@ import ru.tokens.site.entities.Attachment;
 import ru.tokens.site.entities.DataEntry;
 import ru.tokens.site.entities.MedicalHistory;
 import ru.tokens.site.entities.MessageEvent;
+import ru.tokens.site.entities.Token;
 import ru.tokens.site.entities.User;
 import ru.tokens.site.services.AttachmentService;
 import ru.tokens.site.services.MessageEventService;
+import ru.tokens.site.services.TokenService;
 import ru.tokens.site.services.UserService;
 
 /**
@@ -33,10 +35,13 @@ public class AttachmentController {
 
     @Autowired
     private MessageEventService eventService;
-    
+
     @Autowired
     private AttachmentService attachmentService;
-    
+
+    @Autowired
+    private TokenService tokenService;
+
     private static final Logger log = LogManager.getLogger("AttachmentController");
 
     @RequestMapping(value = "token/user/med/entry/{entryId}/{attachmentId}/delete",
@@ -48,20 +53,26 @@ public class AttachmentController {
         Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
 
+        Token token = this.tokenService.findTokenByUser(user);
+        if (token == null || !token.isActivated()) {
+            return new ModelAndView(new RedirectView("/token/register", true, false));
+        }
+
         MedicalHistory history = user.getMedicalHistory();
         DataEntry entry = history.getMedicalFormEntry(entryId);
-        if (null != entry) {
-            Attachment attachment = entry.getAttachment(attachmentId);
-
-            File atch = new File(attachment.getUrl());
-            atch.delete();
-
-            entry.deleteAttachment(attachmentId);
-            attachmentService.delete(attachmentId);
-
-            model.put("entry", entry);
-            model.put("user", user);
-        }
+        
+        this.deleteAttachment(entry, attachmentId);
+//        if (null != entry) {
+//            Attachment attachment = entry.getAttachment(attachmentId);
+//            File atch = new File(attachment.getUrl());
+//            atch.delete();
+//
+//            entry.deleteAttachment(attachmentId);
+//            attachmentService.delete(attachmentId);
+//
+//            model.put("entry", entry);
+//            model.put("user", user);
+//        }
 
         return new ModelAndView(new RedirectView("/token/user/med/entry/" + entryId + "/edit", true, false));
     }
@@ -75,23 +86,40 @@ public class AttachmentController {
         Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
 
+        Token token = this.tokenService.findTokenByUser(user);
+        if (token == null || !token.isActivated()) {
+            return new ModelAndView(new RedirectView("/token/register", true, false));
+        }
+
         MessageEvent event = eventService.findMessageEventById(eventId);
         DataEntry entry = event.getDataEntry();
+        
+        this.deleteAttachment(entry, attachmentId);
 
+//        if (null != entry) {
+//            Attachment attachment = entry.getAttachment(attachmentId);
+//            File atch = new File(attachment.getUrl());
+//            atch.delete();
+//
+//            entry.deleteAttachment(attachmentId);
+//            attachmentService.delete(attachmentId);
+//
+//            model.put("entry", entry);
+//            model.put("user", user);
+////                return new ModelAndView("entry/edit");
+//        }
+
+        return new ModelAndView(new RedirectView("/token/user/csdevent/edit/" + eventId, true, false));
+    }
+
+    public synchronized void deleteAttachment(DataEntry entry, Long attachmentId) {
         if (null != entry) {
             Attachment attachment = entry.getAttachment(attachmentId);
             File atch = new File(attachment.getUrl());
             atch.delete();
 
             entry.deleteAttachment(attachmentId);
-            attachmentService.delete(attachmentId);
-
-            model.put("entry", entry);
-            model.put("user", user);
-//                return new ModelAndView("entry/edit");
+            attachmentService.delete(attachmentId);            
         }
-        
-        return new ModelAndView(new RedirectView("/token/user/csdevent/edit/" + eventId, true, false));
     }
-    
 }

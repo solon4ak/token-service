@@ -3,12 +3,12 @@
 <%--@elvariable id="user" type="ru.tokens.site.entities.User"--%>
 <%--@elvariable id="bloodVariants" type="java.util.List"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
-<template:basic_bs_three_col_tkn htmlTitle="Adding medical data" bodyTitle="Add medical data">
+<template:basic_bs_three_col_tkn htmlTitle="Adding medical data" bodyTitle="Медицинские данные">
 
     <jsp:attribute name="rightColumnContent">
         <nav class="nav flex-column">     
             <a class="nav-link" href="<c:url value="/user/view" />">
-                User
+                Пользователь
             </a>
         </nav>
     </jsp:attribute>
@@ -27,13 +27,13 @@
                                     placeholder="1234 5678 9012 3456" 
                                     aria-describedby="omsHelp" id="omsNumber" />
                         <small id="omsHelp" class="form-text text-muted">
-                            16 digits!
+                            16 цифр!
                         </small>
                     </div>
                     <div class="form-group row border-top mt-1 p-2">
                         <form:label path="bloodType">Группа крови</form:label>
                         <form:select path="bloodType" class="form-control bg-light text-dark" id="bloodType">
-                            <form:option value="Нет данных" label="--- Select ---" />
+                            <form:option value="Нет данных" label="--- Выбрать ---" />
                             <form:options items="${bloodVariants}" />
                         </form:select>
                     </div>
@@ -108,7 +108,7 @@
                                        id="inheritedDiseases" rows="3" />
                     </div>
                     <div class="form-group row border-top p-4">
-                        <button class="btn btn-primary" type="submit">Submit</button>                
+                        <button class="btn btn-primary" type="submit">Подтвердить</button>                
                     </div>
                 </div>            
             </form:form>

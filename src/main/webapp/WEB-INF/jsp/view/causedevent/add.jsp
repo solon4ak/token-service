@@ -6,7 +6,7 @@
 <%--@elvariable id="user" type="ru.tokens.site.entities.User"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:basic_bs_three_col_tkn htmlTitle="${user.token.uuidString} :: Adding Message Event" 
-                                 bodyTitle="Add Message Event">
+                                 bodyTitle="Добавить сообщение">
 
     <jsp:attribute name="extraHeadContent">
         <script src="https://cloud.tinymce.com/5/tinymce.min.js?apiKey=i6rk63ssg8q0xzbsnyjrkxichdz2rjlup6i7drwsa82i6i1w"></script>        
@@ -20,11 +20,11 @@
     <jsp:attribute name="rightColumnContent">
         <nav class="nav flex-column">
             <a class="nav-link" href="<c:url value="/token/user/csdevent/list" />">
-                List
+                Сообщения
             </a>
             <div class="dropdown-divider"></div>
             <a class="nav-link" href="<c:url value="/user/view" />">
-                User
+                Пользователь
             </a>
         </nav>
     </jsp:attribute>
@@ -58,9 +58,9 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Check</th>
+                                    <th>Имя</th>
+                                    <th>E-mail</th>
+                                    <th>Выбрать</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -85,25 +85,25 @@
                     <hr />
                     <div class="form-group row">
                         <form:label class="h5 pb-2" path="attachments">
-                            Прикрепленные файлы
+                            Вложения
                         </form:label> 
                         <input type="file"  name="attachments" multiple="multiple"
                                class="form-control-file" 
                                aria-describedby="fileHelp" id="attachments" />
                         <small id="fileHelp" class="form-text text-muted">
-                            Up to 5 Mb/file
+                            До 5 Mb/файл
                         </small>
                     </div>
                     <hr />
                     <div class="form-group row">
-                        <form:label class="h5" for="emailInterval" path="emailSendingInterval">Sending checking email interval</form:label>
+                        <form:label class="h5" for="emailInterval" path="emailSendingInterval">Контрольный интервал</form:label>
                         <form:select path="emailSendingInterval" class="form-control bg-light text-dark" id="emailInterval">
                             <form:options items="${emailIntervals}" />
                         </form:select>
                     </div>
                     <hr />
                     <div class="form-group row">
-                        <button class="btn btn-primary" type="submit">Submit</button>                
+                        <button class="btn btn-primary" type="submit">Подтвердить</button>                
                     </div>
                 </form:form>                
             </div>            

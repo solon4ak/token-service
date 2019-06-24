@@ -39,12 +39,13 @@ public class OrderController {
     private OrderService orderService;
 
     @RequestMapping(value = "list", method = RequestMethod.GET)
-    public String listOrders(Map<String, Object> model, Principal principal) {
+    public String listOrders(final Map<String, Object> model, 
+            final Principal principal) {
 
-        Long userId = Long.valueOf(principal.getName());
-        User user = this.userService.findUserById(userId);
+        final Long userId = Long.valueOf(principal.getName());
+        final User user = this.userService.findUserById(userId);
 
-        List<UserOrder> orders = this.orderService.getAllOrdersForUser(userId);
+        final List<UserOrder> orders = this.orderService.getAllOrdersForUser(userId);
 
         model.put("orders", orders);
         model.put("user", user);
@@ -52,8 +53,8 @@ public class OrderController {
     }
 
     @RequestMapping(value = "view/{orderId}", method = RequestMethod.GET)
-    public String viewOrder(Map<String, Object> model, 
-            @PathVariable("orderId") Long orderId) {
+    public String viewOrder(final Map<String, Object> model, 
+            final @PathVariable("orderId") Long orderId) {
                 
         Map orderMap = this.orderService.getOrderDetails(orderId);
         

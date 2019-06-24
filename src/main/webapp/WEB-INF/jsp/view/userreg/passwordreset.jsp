@@ -1,7 +1,7 @@
 <%--@elvariable id="wrongEmail" type="java.lang.Boolean"--%>
 <%--@elvariable id="message" type="java.lang.String"--%>
 <%--@elvariable id="passwordResetForm" type="ru.tokens.site.controller.PasswordResetController.PasswordResetForm"--%>
-<template:basic_bs_one_col htmlTitle="Password reset" bodyTitle="Password reset">
+<template:basic_bs_one_col htmlTitle="Password reset" bodyTitle="Сброс пароля">
 
     <jsp:body>
         <div class="container  justify-content-center">
@@ -23,7 +23,7 @@
                     </div>
                     <div class="form-group">                        
                         <div>
-                            <button class="btn btn-primary" type="submit">Confirm</button>
+                            <button class="btn btn-primary" type="submit">Отправить</button>
                         </div>                
                     </div>
                 </div>

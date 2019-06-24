@@ -1,7 +1,7 @@
 <%--@elvariable id="product" type="ru.tokens.site.entities.shop.Product"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:admin htmlTitle="Product: ${product.productName}" 
-                bodyTitle="Product: ${product.productName}">
+                bodyTitle="Просмотр товара: ${product.productName}">
     <hr />    
     <c:if test="${message != null}">
         <c:out value="${message}" />

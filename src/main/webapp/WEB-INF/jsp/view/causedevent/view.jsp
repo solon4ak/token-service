@@ -3,25 +3,25 @@
 <%--@elvariable id="user" type="ru.tokens.site.entities.User"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:basic_bs_three_col_tkn htmlTitle="${user.token.uuidString} :: View Message Event" 
-                                 bodyTitle="Event #${event.id}: ${event.dataEntry.subject}">
+                                 bodyTitle="Сообщение #${event.id}: ${event.dataEntry.subject}">
 
     <jsp:attribute name="rightColumnContent">
         <nav class="nav flex-column">
             <a class="nav-link" href="<c:url value="/token/user/csdevent/list" />">
-                List
+                Сообщения
             </a>
             <a class="nav-link" href="<c:url value="/token/user/csdevent/edit/${event.id}" />">
-                Edit
+                Изменить
             </a>
             <a class="nav-link" href="<c:url value="/token/user/csdevent/delete/${event.id}" />">
-                Delete
+                Удалить
             </a>
             <a class="nav-link" href="<c:url value="/token/user/csdevent/add" />">
-                Add
+                Добавить
             </a>
             <div class="dropdown-divider"></div>
             <a class="nav-link" href="<c:url value="/user/view" />">
-                User
+                Пользователь
             </a>
         </nav>
     </jsp:attribute>
@@ -34,7 +34,7 @@
                     <div class="card-body">
                         <p class="card-text">
                             <small>            
-                                Created: <tags:localDate date="${event.createDate}" />
+                                Создано: <tags:localDate date="${event.createDate}" />
                             </small>
                         </p>
                     </div>
@@ -43,18 +43,18 @@
 
             <div class="card my-2">
                 <div class="card-header">
-                    Status
+                    Состояние
                 </div>
                 <div class="card-body">
                     <p class="card-text">
                         <c:choose>
                             <c:when test="${event.started}">
-                                <b>Started</b> /
-                                <a href="<c:url value="/token/user/csdevent/stop/${event.id}" />">Stop</a>
+                                <b>Запущено</b> /
+                                <a href="<c:url value="/token/user/csdevent/stop/${event.id}" />">Остановить</a>
                             </c:when>
                             <c:otherwise>
-                                <a href="<c:url value="/token/user/csdevent/start/${event.id}" />">Start</a> /
-                                <b>Stopped</b>
+                                <a href="<c:url value="/token/user/csdevent/start/${event.id}" />">Запустить</a> /
+                                <b>Остановлено</b>
                             </c:otherwise>
                         </c:choose>
                     </p>
@@ -63,7 +63,7 @@
 
             <div class="card my-2">
                 <div class="card-header">
-                    Subject
+                    Тема
                 </div>
                 <div class="card-body">
                     <p class="card-text">
@@ -73,7 +73,7 @@
             </div>
             <div class="card my-2">
                 <div class="card-header">
-                    Content
+                    Содержание
                 </div>
                 <div class="card-body">
                     <p class="card-text">
@@ -85,14 +85,14 @@
             <c:if test="${event.dataEntry.numberOfAttachments > 0}">
                 <div class="card my-2">
                     <div class="card-header">
-                        Attachments: <c:out value="${event.dataEntry.numberOfAttachments}" />
+                        Вложения: <c:out value="${event.dataEntry.numberOfAttachments}" />
                     </div>
                     <div class="card-body">
                         <table class="table card-text">
                             <thead>
                                 <tr>
-                                    <th>Filename</th>
-                                    <th>Size</th>                    
+                                    <th>Файл</th>
+                                    <th>Размер</th>                    
                                 </tr>
                             </thead>
                             <tbody>
@@ -114,14 +114,14 @@
 
             <div class="card my-2">
                 <div class="card-header">
-                    Contacts
+                    Контакты
                 </div>
                 <div class="card-body">
                     <table class="table card-text">
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>Email</th>
+                                <th>Имя</th>
+                                <th>E-mail</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -141,7 +141,7 @@
 
             <div class="card my-2">
                 <div class="card-header">
-                    Sending checking email interval
+                    Режим отправки контрольных писем
                 </div>
                 <div class="card-body">
                     <p class="card-text">

@@ -36,10 +36,10 @@ public class UserDataController {
     private static final Logger log = LogManager.getLogger("UserDataController");
 
     @RequestMapping(value = "{tokenId}/{uuidString}", method = RequestMethod.GET)
-    public ModelAndView view(Map<String, Object> model,
-            @PathVariable("tokenId") Long tokenId,
-            @PathVariable("uuidString") String uuidString,
-            @RequestParam("showMH") boolean showMH) {
+    public ModelAndView view(final Map<String, Object> model,
+            final @PathVariable("tokenId") Long tokenId,
+            final @PathVariable("uuidString") String uuidString,
+            final @RequestParam("showMH") boolean showMH) {
 
         String msg;
 
@@ -50,7 +50,7 @@ public class UserDataController {
             return new ModelAndView("token/view/error");
         }
 
-        Token token = tokenService.findTokenById(tokenId);
+        final Token token = tokenService.findTokenById(tokenId);
 
         if (token == null || !token.isActivated()
                 || !uuidString.equals(token.getUuidString())) {
@@ -60,9 +60,9 @@ public class UserDataController {
             return new ModelAndView("token/view/error");
         }
 
-        User user = token.getUser();
-        LocalDate birthdate = user.getBirthDate();
-        int age = TimeUtils.getYearsPassedFromDate(birthdate);
+        final User user = token.getUser();
+        final LocalDate birthdate = user.getBirthDate();
+        final int age = TimeUtils.getYearsPassedFromDate(birthdate);
 
         model.put("token", token);
         model.put("age", age);
@@ -76,12 +76,12 @@ public class UserDataController {
     }
 
     @RequestMapping(value = "user/view", method = RequestMethod.GET)
-    public ModelAndView view(Map<String, Object> model, Principal principal) {
+    public ModelAndView view(final Map<String, Object> model, final Principal principal) {
 
-        Long userId = Long.valueOf(principal.getName());
-        User user = userService.findUserById(userId);
+        final Long userId = Long.valueOf(principal.getName());
+        final User user = userService.findUserById(userId);
 
-        Token token = tokenService.findTokenByUser(user);
+        final Token token = tokenService.findTokenByUser(user);
         if (token == null || !token.isActivated()) {
             return new ModelAndView(new RedirectView("/token/register", true, false));
         }
@@ -93,12 +93,13 @@ public class UserDataController {
     }
 
     @RequestMapping(value = "user/picture/view", method = RequestMethod.GET)
-    public ModelAndView getPicture(Map<String, Object> model, Principal principal) {
+    public ModelAndView getPicture(final Map<String, Object> model, 
+            final Principal principal) {
 
-        Long userId = Long.valueOf(principal.getName());
-        User user = userService.findUserById(userId);
+        final Long userId = Long.valueOf(principal.getName());
+        final User user = userService.findUserById(userId);
 
-        Token token = tokenService.findTokenByUser(user);
+        final Token token = tokenService.findTokenByUser(user);
         if (token == null || !token.isActivated()) {
             return new ModelAndView(new RedirectView("/token/register", true, false));
         }

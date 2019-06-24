@@ -1,7 +1,7 @@
 <%--@elvariable id="adminLoginForm" type="ru.tokens.site.controller.admin.AdminController.AdminLoginForm"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:loggedOut htmlTitle="Administrator authentication" 
-                bodyTitle="Administrator authentication">  
+                bodyTitle="Вход на страницу администрирования">  
         
     You must log in to access admin panel.<br /><br />
     <c:if test="${loginFailed}">

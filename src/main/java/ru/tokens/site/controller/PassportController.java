@@ -32,34 +32,41 @@ public class PassportController {
 
     @Autowired
     private UserService userService;
-    
+
     @Autowired
     private TokenService tokenService;
 
     private static final Logger log = LogManager.getLogger("PassportController");
-    
-    @RequestMapping(value = "view", method = RequestMethod.GET)
-    public String viewPassport(Map<String, Object> model, Principal principal) {
-        
-        Long userId = Long.valueOf(principal.getName());
-        User user = userService.findUserById(userId);
 
-        Token token = tokenService.findTokenByUser(user);
-        Passport passport = user.getPassport();
-        
+    @RequestMapping(value = "view", method = RequestMethod.GET)
+    public ModelAndView viewPassport(final Map<String, Object> model,
+            final Principal principal) {
+
+        final Long userId = Long.valueOf(principal.getName());
+        final User user = userService.findUserById(userId);
+
+        final Token token = tokenService.findTokenByUser(user);
+
+        if (token == null || !token.isActivated()) {
+            return new ModelAndView(new RedirectView("/token/register", true, false));
+        }
+
+        final Passport passport = user.getPassport();
+
         model.put("token", token);
         model.put("passport", passport);
         model.put("user", user);
-        return "passport/edit/view";
+        return new ModelAndView("passport/edit/view");
     }
 
     @RequestMapping(value = "add", method = RequestMethod.GET)
-    public ModelAndView getPassportForm(Map<String, Object> model, Principal principal) {
+    public ModelAndView getPassportForm(final Map<String, Object> model,
+            final Principal principal) {
 
-        Long userId = Long.valueOf(principal.getName());
-        User user = userService.findUserById(userId);
+        final Long userId = Long.valueOf(principal.getName());
+        final User user = userService.findUserById(userId);
 
-        Token token = tokenService.findTokenByUser(user);
+        final Token token = tokenService.findTokenByUser(user);
         if (token == null || !token.isActivated()) {
             return new ModelAndView(new RedirectView("/token/register", true, false));
         }
@@ -71,34 +78,48 @@ public class PassportController {
     }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public View addPassport(Principal principal, PassportForm form) {
+    public ModelAndView addPassport(final Map<String, Object> model,
+            final Principal principal, final PassportForm form) {
 
-        Long userId = Long.valueOf(principal.getName());
-        User user = userService.findUserById(userId);
+        final Long userId = Long.valueOf(principal.getName());
+        final User user = userService.findUserById(userId);
 
-        Token token = tokenService.findTokenByUser(user);
+        final Token token = tokenService.findTokenByUser(user);
         if (token == null || !token.isActivated()) {
-            return new RedirectView("/token/register", true, false);
+            return new ModelAndView(new RedirectView("/token/register", true, false));
         }
 
-        Passport passport = new Passport();
+        final Passport passport = new Passport();
+
         passport.setSeries(form.getSer());
         passport.setNumber(form.getNum());
         passport.setIssueDepartment(form.getIssueDep());
         passport.setIssueDepartmentCode(form.getIssueDepCode());
 
-        String issueDate = form.getDated();
+        final String issueDate = form.getDated();
         LocalDate iDate = null;
+        String message = null;
 
         try {
             iDate = LocalDate.parse(issueDate, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         } catch (DateTimeParseException e) {
+            message = "Неправильный формат даты.";
+            model.put("message", message);
             log.warn("Wrong date format '{}'", issueDate, e);
+            model.put("token", token);
+            model.put("passportForm", form);
+            model.put("user", user);
+            return new ModelAndView("passport/edit/add");
         }
 
-        if (!this.checkPassportIssueDate(user, iDate)) {
-            String msg = "Указанный возраст получения паспорта менее 14 лет!";
-            throw new PassportIssueDateException(msg);
+        if (!this.userService.validatePassportDate(iDate, user)) {
+            message = "Указанная дата выдачи паспорта не соответствует возрасту.";
+            model.put("message", message);
+            log.warn("Incorrect birth cert issue date", issueDate);
+            model.put("token", token);
+            model.put("passportForm", form);
+            model.put("user", user);
+            return new ModelAndView("passport/edit/add");
         }
 
         passport.setIssueDate(iDate);
@@ -106,23 +127,25 @@ public class PassportController {
         user.setPassport(passport);
 
         log.info("Passport for token '{}' was added", token.getTokenId());
-        return new RedirectView("/token/user/passport/view", true, false);
+        return new ModelAndView(new RedirectView("/token/user/passport/view", true, false));
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.GET)
-    public ModelAndView editPassport(Map<String, Object> model, Principal principal) {
+    public ModelAndView editPassport(final Map<String, Object> model, 
+            final Principal principal) {
 
-        Long userId = Long.valueOf(principal.getName());
-        User user = userService.findUserById(userId);
+        final Long userId = Long.valueOf(principal.getName());
+        final User user = userService.findUserById(userId);
 
-        Token token = tokenService.findTokenByUser(user);
+        final Token token = tokenService.findTokenByUser(user);
         if (token == null || !token.isActivated()) {
             return new ModelAndView(new RedirectView("/token/register", true, false));
         }
 
-        Passport passport = user.getPassport();
+        final Passport passport = user.getPassport();
 
-        PassportForm pForm = new PassportForm();
+        final PassportForm pForm = new PassportForm();
+        
         pForm.setSer(passport.getSeries());
         pForm.setNum(passport.getNumber());
         pForm.setIssueDep(passport.getIssueDepartment());
@@ -138,64 +161,71 @@ public class PassportController {
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.POST)
-    public View editPassport(Principal principal, PassportForm form) {
+    public ModelAndView editPassport(final Map<String, Object> model,
+            final Principal principal, final PassportForm form) {
 
-        Long userId = Long.valueOf(principal.getName());
-        User user = userService.findUserById(userId);
+        final Long userId = Long.valueOf(principal.getName());
+        final User user = userService.findUserById(userId);
 
-        Token token = tokenService.findTokenByUser(user);
+        final Token token = tokenService.findTokenByUser(user);
         if (token == null || !token.isActivated()) {
-            return new RedirectView("/token/register", true, false);
+            return new ModelAndView(new RedirectView("/token/register", true, false));
         }
 
-        Passport passport = user.getPassport();
+        final Passport passport = user.getPassport();
 
         passport.setSeries(form.getSer());
         passport.setNumber(form.getNum());
         passport.setIssueDepartment(form.getIssueDep());
         passport.setIssueDepartmentCode(form.getIssueDepCode());
 
-        String issueDate = form.getDated();
+        final String issueDate = form.getDated();
         LocalDate iDate = null;
+        String message = null;
 
         try {
             iDate = LocalDate.parse(issueDate, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         } catch (DateTimeParseException e) {
+            message = "Неправильный формат даты.";
+            model.put("message", message);
             log.warn("Wrong date format '{}'", issueDate, e);
+            model.put("token", token);
+            model.put("passportForm", form);
+            model.put("user", user);
+            return new ModelAndView("passport/edit/edit");
         }
 
-        if (!this.checkPassportIssueDate(user, iDate)) {
-            String msg = "Указанный возраст получения паспорта менее 14 лет!";
-            throw new PassportIssueDateException(msg);
+        if (!this.userService.validatePassportDate(iDate, user)) {
+            message = "Указанная дата выдачи паспорта не соответствует возрасту.";
+            model.put("message", message);
+            log.warn("Incorrect birth cert issue date", issueDate);
+            model.put("token", token);
+            model.put("passportForm", form);
+            model.put("user", user);
+            return new ModelAndView("passport/edit/edit");
         }
 
         passport.setIssueDate(iDate);
 
         log.info("Passport for token '{}' has been edited", token.getTokenId());
-        return new RedirectView("/token/user/passport/view", true, false);
+        return new ModelAndView(new RedirectView("/token/user/passport/view", true, false));
     }
 
     @RequestMapping(value = "delete", method = RequestMethod.GET)
-    public View deletePassport(Principal principal) {
-          
-        Long userId = Long.valueOf(principal.getName());
-        User user = userService.findUserById(userId);
+    public View deletePassport(final Principal principal) {
 
-        Token token = tokenService.findTokenByUser(user);
+        final Long userId = Long.valueOf(principal.getName());
+        final User user = userService.findUserById(userId);
+
+        final Token token = tokenService.findTokenByUser(user);
         if (token == null || !token.isActivated()) {
             return new RedirectView("/token/register", true, false);
         }
-        
+
         user.setPassport(null);
 
         log.info("Passport for token '{}' has been deleted", token.getTokenId());
         return new RedirectView("/token/user/passport/view", true, false);
-    }
-
-    private synchronized boolean checkPassportIssueDate(final User user, final LocalDate issueDate) {
-        LocalDate birthDate = user.getBirthDate();
-        int diff = Period.between(birthDate, issueDate).getYears();
-        return diff >= 14;
     }
 
     public static class PassportForm {

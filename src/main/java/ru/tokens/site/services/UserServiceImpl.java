@@ -1,5 +1,7 @@
 package ru.tokens.site.services;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -167,5 +169,22 @@ public class UserServiceImpl implements UserService {
     public int getAllUsersWithTokenCount() {
         return this.getAllUsersWithToken().size();
     }
- 
+
+    @Override
+    public boolean validateBCDate(LocalDate iDate, User user) {
+        return iDate.isAfter(this.findUserById(user.getUserId()).getBirthDate());
+    }
+
+    @Override
+    public boolean validatePassportDate(LocalDate iDate, User user) {
+        LocalDate birthDate = user.getBirthDate();
+        int diff = Period.between(birthDate, iDate).getYears();
+        return diff >= 14;
+    } 
+    
+    @Override
+    public boolean validateBirthDate(LocalDate iDate) {
+        LocalDate now = LocalDate.now();
+        return iDate.isBefore(now) && Period.between(iDate, now).getYears() < 100;
+    }
 }

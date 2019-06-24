@@ -1,7 +1,7 @@
 <%--@elvariable id="categories" type="java.util.List"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:basic_bs_shop_one_col htmlTitle="Shop"
-                           bodyTitle="Shop">
+                           bodyTitle="Магазин">
 
     <jsp:body>
         <div class="pricing-header px-3 py-3 pt-md-3 pb-md-4 mx-auto text-center">

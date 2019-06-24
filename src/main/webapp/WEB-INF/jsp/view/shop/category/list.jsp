@@ -1,6 +1,6 @@
 <%--@elvariable id="categories" type="java.util.List"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
-<template:admin htmlTitle="List categories" bodyTitle="Categories list">
+<template:admin htmlTitle="List categories" bodyTitle="список категорий">
     <hr />    
     <c:if test="${message != null}">
         <c:out value="${message}" />

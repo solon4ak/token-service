@@ -56,12 +56,12 @@ public class ImageController {
     private ImageService imageService;
 
     @RequestMapping(value = "user/image/view", method = RequestMethod.GET)
-    public void picture(Principal principal, HttpServletResponse response) {
+    public void picture(final Principal principal, final HttpServletResponse response) {
 
-        Long userId = Long.valueOf(principal.getName());         
-        User user = userService.findUserById(userId);
-        Image image = user.getImage();
-        File imageFile = new File(image.getUrl());
+        final Long userId = Long.valueOf(principal.getName());         
+        final User user = userService.findUserById(userId);
+        final Image image = user.getImage();
+        final File imageFile = new File(image.getUrl());
 
         response.setContentType(image.getContentType());
         response.setContentLength(image.getSize().intValue());
@@ -73,12 +73,12 @@ public class ImageController {
     }
     
     @RequestMapping(value = "image", method = RequestMethod.GET)
-    public void picture(HttpServletResponse response, 
-            @RequestParam("userId") Long userId) {
+    public void picture(final HttpServletResponse response, 
+            final @RequestParam("userId") Long userId) {
 
-        User user = userService.findUserById(userId);
-        Image image = user.getImage();
-        File imageFile = new File(image.getUrl());
+        final User user = userService.findUserById(userId);
+        final Image image = user.getImage();
+        final File imageFile = new File(image.getUrl());
 
         response.setContentType(image.getContentType());
         response.setContentLength(image.getSize().intValue());
@@ -90,12 +90,12 @@ public class ImageController {
     }
 
     @RequestMapping(value = "user/image/thumbnail", method = RequestMethod.GET)
-    public void thumbnail(Principal principal, HttpServletResponse response) {
+    public void thumbnail(final Principal principal, final HttpServletResponse response) {
 
-        Long userId = Long.valueOf(principal.getName());
-        User user = userService.findUserById(userId);
-        Image image = user.getImage();
-        File imageFile = new File(image.getThumbnailUrl());
+        final Long userId = Long.valueOf(principal.getName());
+        final User user = userService.findUserById(userId);
+        final Image image = user.getImage();
+        final File imageFile = new File(image.getThumbnailUrl());
 
         response.setContentType(image.getContentType());
         response.setContentLength(image.getThumbnailSize().intValue());
@@ -107,12 +107,12 @@ public class ImageController {
     }
     
     @RequestMapping(value = "thumb", method = RequestMethod.GET)
-    public void thumbnail(HttpServletResponse response,
-            @RequestParam("userId") Long userId) {
+    public void thumbnail(final HttpServletResponse response,
+            final @RequestParam("userId") Long userId) {
         
-        User user = userService.findUserById(userId);
-        Image image = user.getImage();
-        File imageFile = new File(image.getThumbnailUrl());
+        final User user = userService.findUserById(userId);
+        final Image image = user.getImage();
+        final File imageFile = new File(image.getThumbnailUrl());
 
         response.setContentType(image.getContentType());
         response.setContentLength(image.getThumbnailSize().intValue());
@@ -124,12 +124,13 @@ public class ImageController {
     }
 
     @RequestMapping(value = "user/image/upload", method = RequestMethod.GET)
-    public ModelAndView getImgForm(Map<String, Object> model, Principal principal) {
+    public ModelAndView getImgForm(final Map<String, Object> model, 
+            final Principal principal) {
 
-        Long userId = Long.valueOf(principal.getName());
-        User user = userService.findUserById(userId);
+        final Long userId = Long.valueOf(principal.getName());
+        final User user = userService.findUserById(userId);
 
-        Token token = tokenService.findTokenByUser(user);
+        final Token token = tokenService.findTokenByUser(user);
         if (token == null || !token.isActivated()) {
             return new ModelAndView(new RedirectView("/token/register", true, false));
         }
@@ -141,32 +142,32 @@ public class ImageController {
     }
 
     @RequestMapping(value = "user/image/upload", method = RequestMethod.POST)
-    public View upload(Principal principal, ImageForm form) {
+    public View upload(final Principal principal, final ImageForm form) {
 
-        Long userId = Long.valueOf(principal.getName());
-        User user = userService.findUserById(userId);
+        final Long userId = Long.valueOf(principal.getName());
+        final User user = userService.findUserById(userId);
 
         if (user.getImage() != null) {
             this.deleteImage(user);
         }
 
-        MultipartFile file = form.getFile();
+        final MultipartFile file = form.getFile();
         if (file != null && file.getSize() > 0) {
-            String newFileName = fileUtil.getNewFileName(file);
-            String storageDirectory = fileUtil.getStorageDirectory();
-            String newFilenameBase = fileUtil.getNewFileNameBase();
+            final String newFileName = fileUtil.getNewFileName(file);
+            final String storageDirectory = fileUtil.getStorageDirectory();
+            final String newFilenameBase = fileUtil.getNewFileNameBase();
 
-            File newFile = new File(storageDirectory + newFileName);
+            final File newFile = new File(storageDirectory + newFileName);
 
             try {
                 file.transferTo(newFile);
 
-                BufferedImage thumbnail = Scalr.resize(ImageIO.read(newFile), 290);
-                String thumbnailFilename = newFilenameBase + "-thumbnail.png";
-                File thumbnailFile = new File(storageDirectory + thumbnailFilename);
+                final BufferedImage thumbnail = Scalr.resize(ImageIO.read(newFile), 290);
+                final String thumbnailFilename = newFilenameBase + "-thumbnail.png";
+                final File thumbnailFile = new File(storageDirectory + thumbnailFilename);
                 ImageIO.write(thumbnail, "png", thumbnailFile);
 
-                Image image = new Image();
+                final Image image = new Image();
 
                 image.setName(file.getOriginalFilename());
                 image.setThumbnailFilename(thumbnailFilename);
@@ -189,22 +190,23 @@ public class ImageController {
     }
 
     @RequestMapping(value = "user/image/delete", method = RequestMethod.GET)
-    public View delete(Principal principal) {
+    public View delete(final Principal principal) {
 
-        Long userId = Long.valueOf(principal.getName());
-        User user = userService.findUserById(userId);
+        final Long userId = Long.valueOf(principal.getName());
+        final User user = userService.findUserById(userId);
 
         this.deleteImage(user);
         return new RedirectView("/token/user/view", true, false);
     }
 
-    public synchronized void deleteImage(User user) {
-        Image image = user.getImage();
+    public synchronized void deleteImage(final User user) {
+        
+        final Image image = user.getImage();
 
-        File imageFile = new File(image.getUrl());
+        final File imageFile = new File(image.getUrl());
         imageFile.delete();
 
-        File thumbnailFile = new File(image.getThumbnailUrl());
+        final File thumbnailFile = new File(image.getThumbnailUrl());
         thumbnailFile.delete();
 
         user.setImage(null);
@@ -213,7 +215,7 @@ public class ImageController {
 
     public static class ImageForm {
 
-        MultipartFile file;
+        private MultipartFile file;
 
         public MultipartFile getFile() {
             return file;

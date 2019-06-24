@@ -2,11 +2,11 @@
 <%--@elvariable id="age" type="java.lang.Integer"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:basic_bs_one_col_simple htmlTitle="${token.uuidString}"
-                                  bodyTitle="Token: ${token.uuidString}">
+                                  bodyTitle="Жетон: ${token.uuidString}">
     <jsp:body>
         <div class="border rounded mb-3 bg-light text-dark">
             <div class="p-2">
-                <h5 class="ml-4">Owner</h5>
+                <h5 class="ml-4">Владелец жетона</h5>
                 <hr />
                 <div class="container">
                     <div class="row justify-content-lg-center py-2">
@@ -28,7 +28,7 @@
                                 <tbody>
                                     <tr>
                                         <th>
-                                            Token owner
+                                            Владелец
                                         </th>
                                         <td>
                                             <c:out value="${user.lastName}, 
@@ -37,7 +37,7 @@
                                     </tr>
                                     <tr>
                                         <th>
-                                            Birth date
+                                            Дата рождения
                                         </th>
                                         <td>
                                             <tags:localDate date="${user.birthDate}" />
@@ -45,7 +45,7 @@
                                     </tr>
                                     <tr>
                                         <th>
-                                            Age
+                                            Возраст
                                         </th>
                                         <td>
                                             <c:out value="${age}" />
@@ -62,10 +62,10 @@
             <div class="p-2">
                 <c:choose>
                     <c:when test="${age > 14 && token.user.passport != null}">
-                        <h5 class="pl-4">Пасспорт</h5>
+                        <h5 class="pl-4">Паспорт</h5>
                         <c:choose>
                             <c:when test="${user.passport == null}">
-                                There is no passport binded to the token.                 
+                                Паспортные данные не указаны.                 
                             </c:when>
                             <c:otherwise>
                                 <table class="table">
@@ -96,10 +96,10 @@
                         </c:choose>
                     </c:when>
                     <c:otherwise>
-                        <h5 class="pl-4">Birth Certificate</h5>
+                        <h5 class="pl-4">Свидетельство о рождении</h5>
                         <c:choose>
                             <c:when test="${user.birthCertificate == null}">
-                                There is no birth certificate binded to the token.                             
+                                Свидетельство о рождении не указано.                             
                             </c:when>
                             <c:otherwise>
                                 <table class="table">
@@ -131,36 +131,36 @@
 
         <div class="border rounded mb-3 bg-light text-dark">
             <div class="p-2">
-                <h5 class="pl-4">Address</h5>    
+                <h5 class="pl-4">Адрес проживания</h5>    
                 <c:choose>
                     <c:when test="${user.tokenAddress == null}">
-                        There is no address binded to the token!                            
+                        Адрес не указан!                            
                     </c:when>
                     <c:otherwise>
                         <table class="table">
                             <tbody>
                                 <tr>
-                                    <th>Country</th>
+                                    <th>Страна</th>
                                     <td><c:out value="${user.tokenAddress.country}" /></td>
                                 </tr>
                                 <tr>
-                                    <th>Region</th>
+                                    <th>Регион</th>
                                     <td><c:out value="${user.tokenAddress.region}" /></td>
                                 </tr>
                                 <tr>
-                                    <th>City</th>
+                                    <th>Город</th>
                                     <td><c:out value="${user.tokenAddress.city}" /></td>
                                 </tr>
                                 <tr>
-                                    <th>Street</th>
+                                    <th>Улица (шоссе, проспект)</th>
                                     <td><c:out value="${user.tokenAddress.street}" /></td>
                                 </tr>
                                 <tr>
-                                    <th>Building</th>
+                                    <th>Дом</th>
                                     <td><c:out value="${user.tokenAddress.building}" /></td>
                                 </tr>
                                 <tr>
-                                    <th>Apartment</th>
+                                    <th>Квартира</th>
                                     <td><c:out value="${user.tokenAddress.apartment}" /></td>
                                 </tr>
                             </tbody>
@@ -171,18 +171,18 @@
         </div>
         <div class="border rounded mb-3 bg-light text-dark">
             <div class="p-2">
-                <h5 class="pl-4">Contacts</h5>
+                <h5 class="pl-4">Контакты</h5>
                 <c:if test="${fn:length(user.contacts) == 0}">
-                    There is no contacts binded to the token!
+                    Контакты не указаны!
                 </c:if>
                 <table class="table">
                     <c:if test="${fn:length(user.contacts) > 0}">
                         <thead>
                             <!-- here should go some titles... -->
                             <tr>                
-                                <th>First name</th>
-                                <th>Last Name</th>
-                                <th>Phone</th>
+                                <th>Имя</th>
+                                <th>Фамилия</th>
+                                <th>Телефон</th>
                             </tr>
                         </thead>
                     </c:if>
@@ -206,7 +206,7 @@
         </div>
         <div class="border rounded mb-3 bg-light text-dark">
             <div class="p-2">
-                <h5 class="pl-4">Medical History</h5>
+                <h5 class="pl-4">Медицинские данные</h5>
 
                 <div class="card my-2 p-3">
                     <table class="table-borderless">
@@ -351,7 +351,7 @@
                 <c:if test="${(user.medicalHistory.numberOfMedicalFormEntries) > 0}">
                     <div class="card my-2">
                         <div class="card-header font-weight-bolder">
-                            Entries: ${user.medicalHistory.numberOfMedicalFormEntries}
+                            Записи: ${user.medicalHistory.numberOfMedicalFormEntries}
                         </div>
                         <div class="card-body">
                             <ul class="card-text list-group list-group-flush">
@@ -361,7 +361,7 @@
                                             <c:out value="${entry.subject}" />                               
                                         </a>  
                                         <span class="badge badge-primary badge-pill">
-                                            Atch:&nbsp;<c:out value="${entry.numberOfAttachments}" />
+                                            Вложения:&nbsp;<c:out value="${entry.numberOfAttachments}" />
                                         </span>
                                     </li>
                                 </c:forEach>

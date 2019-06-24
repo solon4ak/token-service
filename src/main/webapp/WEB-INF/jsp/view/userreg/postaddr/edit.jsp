@@ -1,41 +1,41 @@
 <%--@elvariable id="addressForm" type="ru.tokens.site.controller.PostAddressController.PostAddressForm"--%>
 <%--@elvariable id="user" type="ru.tokens.site.entities.User"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
-<template:basic_bs_two_col htmlTitle="Edit Post Address" bodyTitle="Post Address Edit">    
+<template:basic_bs_two_col htmlTitle="Edit Post Address" bodyTitle="Редактирование почтового адреса">    
     
     <jsp:attribute name="leftColumnContent">
         <nav class="nav flex-column">
             <a class="nav-link" href="<c:url value="/user/view" />">
-                User
+                Пользователь
             </a>
             <a class="nav-link" href="<c:url value="/token/user/postaddress/view" />">
-                Post address
+                Почтовый адрес
             </a>
             <a class="nav-link" href="<c:url value="/token/user/view" />">
-                Token
+                Жетон
             </a> 
         </nav>
     </jsp:attribute>
     
     <jsp:body>
         <h5>
-            <c:out value="User E-mail: ${user.userEmailAddress}"/>
+            <c:out value="E-mail: ${user.userEmailAddress}"/>
         </h5>
         <hr />
         <form:form method="post" modelAttribute="addressForm">
             <div class="form-group">
                 <div class="form-group row">
                     <form:label path="zipCode" class="col-sm-3 col-form-label">
-                        Zip code
+                        Почтовый индекс
                     </form:label>
                     <div class="col-sm-9">
                         <form:input path="zipCode" type="text" class="form-control" 
-                                    placeholder="352800" required="true" />
+                                    placeholder="352800" required="true" size="6" />
                     </div>                
                 </div>
                 <div class="form-group row">
                     <form:label path="country" class="col-sm-3 col-form-label">
-                        Country
+                        Страна
                     </form:label>
                     <div class="col-sm-9">
                         <form:input path="country" type="text" class="form-control" 
@@ -44,7 +44,7 @@
                 </div>
                 <div class="form-group row">
                     <form:label path="region" class="col-sm-3 col-form-label">
-                        Region
+                        Регион (область, край)
                     </form:label>
                     <div class="col-sm-9">
                         <form:input path="region" type="text" class="form-control" 
@@ -53,7 +53,7 @@
                 </div>
                 <div class="form-group row">
                     <form:label path="city" class="col-sm-3 col-form-label">
-                        City
+                        Город
                     </form:label>
                     <div class="col-sm-9">
                         <form:input path="city" type="text" class="form-control" 
@@ -62,7 +62,7 @@
                 </div>                
                 <div class="form-group row">
                     <form:label path="street" class="col-sm-3 col-form-label">
-                        Street
+                        Улица
                     </form:label>
                     <div class="col-sm-9">
                         <form:input path="street" type="text" class="form-control" 
@@ -71,7 +71,7 @@
                 </div>
                 <div class="form-group row">
                     <form:label path="building" class="col-sm-3 col-form-label">
-                        Building
+                        Дом
                     </form:label>
                     <div class="col-sm-9">
                         <form:input path="building" type="text" class="form-control" 
@@ -80,7 +80,7 @@
                 </div>
                 <div class="form-group row">
                     <form:label path="apartment" class="col-sm-3 col-form-label">
-                        Apartment
+                        Квартира
                     </form:label>
                     <div class="col-sm-9">
                         <form:input path="apartment" type="text" class="form-control" 
@@ -94,7 +94,7 @@
 
                     </span>
                     <div class="col-sm-9">
-                        <button class="btn btn-primary" type="submit">Submit</button>
+                        <button class="btn btn-primary" type="submit">Подтвердить</button>
                     </div>                
                 </div>
             </div>

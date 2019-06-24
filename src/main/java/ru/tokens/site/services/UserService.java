@@ -1,5 +1,6 @@
 package ru.tokens.site.services;
 
+import java.time.LocalDate;
 import java.util.List;
 import ru.tokens.site.entities.ActivationLink;
 import ru.tokens.site.entities.Token;
@@ -44,5 +45,11 @@ public interface UserService {
     int getAllUsersCount();
     
     int getAllUsersWithTokenCount();
+
+    boolean validateBCDate(LocalDate iDate, User user);
+    
+    boolean validatePassportDate(LocalDate iDate, User user);
+    
+    boolean validateBirthDate(LocalDate iDate);
     
 }

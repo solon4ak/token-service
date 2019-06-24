@@ -2,21 +2,21 @@
 <%--@elvariable id="user" type="ru.tokens.site.entities.User"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:basic_bs_three_col htmlTitle="User :: User orders"
-                             bodyTitle="User orders">   
+                             bodyTitle="Заказы">   
 
     <jsp:attribute name="leftColumnContent">
         <nav class="nav flex-column">  
             <a class="nav-link disabled" href="<c:url value="/user/view" />">
-                User
+                Пользователь
             </a>
             <a class="nav-link" href="<c:url value="/token/user/postaddress/view" />">
-                Post address
+                Почтовый адрес
             </a>
             <a class="nav-link" href="<c:url value="/user/order/list" />">
-                Orders
+                Заказы
             </a>
             <a class="nav-link" href="<c:url value="/token/user/view" />">
-                Token
+                Жетон
             </a>            
         </nav>
     </jsp:attribute>

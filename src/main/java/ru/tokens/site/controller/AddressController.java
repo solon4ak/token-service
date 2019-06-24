@@ -34,19 +34,23 @@ public class AddressController {
     private static final Logger log = LogManager.getLogger("AddressController");
 
     @RequestMapping(value = "view", method = RequestMethod.GET)
-    public String viewAddress(Map<String, Object> model,
+    public ModelAndView viewAddress(Map<String, Object> model,
             Principal principal) {
         
-        Long userId = Long.valueOf(principal.getName());
-        User user = userService.findUserById(userId);
-        Token token = tokenService.findTokenByUser(user);
+        final Long userId = Long.valueOf(principal.getName());
+        final User user = userService.findUserById(userId);
+        final Token token = tokenService.findTokenByUser(user);
+        
+        if (token == null || !token.isActivated()) {
+            return new ModelAndView(new RedirectView("/token/register", true, false));
+        }
 
         Address address = user.getTokenAddress();
         
         model.put("token", token);
         model.put("user", user);
         model.put("address", address);
-        return "address/edit/view";
+        return new ModelAndView("address/edit/view");
     }
 
     @RequestMapping(value = "add", method = RequestMethod.GET)
@@ -61,6 +65,7 @@ public class AddressController {
         if (token == null || !token.isActivated()) {
             return new ModelAndView(new RedirectView("/token/register", true, false));
         }
+        
         model.put("addressForm", new AddressForm());
         model.put("token", token);
         model.put("user", user);
@@ -69,14 +74,7 @@ public class AddressController {
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
     public View addAddress(Principal principal, AddressForm form) {
-        Address address = new Address();
-        address.setCountry(form.getCountry());
-        address.setCity(form.getCity());
-        address.setStreet(form.getStreet());
-        address.setBuilding(form.getBuilding());
-        address.setApartment(form.getApartment());
-        address.setRegion(form.getRegion());
-
+        
         Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
         Token token = tokenService.findTokenByUser(user);
@@ -85,6 +83,15 @@ public class AddressController {
             return new RedirectView("/token/register", true, false);
         }
 
+        Address address = new Address();
+        
+        address.setCountry(form.getCountry());
+        address.setCity(form.getCity());
+        address.setStreet(form.getStreet());
+        address.setBuilding(form.getBuilding());
+        address.setApartment(form.getApartment());
+        address.setRegion(form.getRegion());
+        
         user.setTokenAddress(address);
 
         log.info("Address for token '{}' was added", token.getTokenId());
@@ -96,8 +103,14 @@ public class AddressController {
 
         Long userId = Long.valueOf(principal.getName());
         User user = userService.findUserById(userId);
+        Token token = tokenService.findTokenByUser(user);
+
+        if (token == null || !token.isActivated()) {
+            return new RedirectView("/token/register", true, false);
+        }
 
         Address address = new Address();
+        
         address.setCountry(user.getPostAddress().getCountry());
         address.setCity(user.getPostAddress().getCity());
         address.setStreet(user.getPostAddress().getStreet());
@@ -146,6 +159,7 @@ public class AddressController {
         if (token == null || !token.isActivated()) {
             return new RedirectView("/token/register", true, false);
         }
+        
         Address address = user.getTokenAddress();
 
         address.setCountry(form.getCountry());
@@ -215,6 +229,5 @@ public class AddressController {
         public void setRegion(String region) {
             this.region = region;
         }
-
     }
 }

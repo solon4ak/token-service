@@ -2,28 +2,28 @@
 <%--@elvariable id="user" type="ru.tokens.site.entities.User"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:basic_bs_three_col_tkn htmlTitle="Token-${token.uuidString} :: Medical History"
-                                 bodyTitle="Medical History">    
+                                 bodyTitle="Медицинские данные">    
 
     <jsp:attribute name="rightColumnContent">
         <nav class="nav flex-column">      
             <c:choose>
                 <c:when test="${user.medicalHistory == null}">
                     <a class="nav-link" href="<c:url value="/token/user/med/add" />">
-                        Add
+                        Добавить
                     </a>
                 </c:when>
                 <c:otherwise>
                     <a class="nav-link" href="<c:url value="/token/user/med/edit" />">
-                        Edit
+                        Изменить
                     </a>  
                     <a class="nav-link" href="<c:url value="/token/user/med/entry/list" />">
-                        Entries
+                        Записи
                     </a> 
                 </c:otherwise>
             </c:choose>
             <div class="dropdown-divider"></div>
             <a class="nav-link" href="<c:url value="/user/view" />">
-                User
+                Пользователь
             </a>
         </nav>
     </jsp:attribute>
@@ -34,7 +34,7 @@
 
             <c:choose>
                 <c:when test="${user.medicalHistory == null}">
-                    Empty! Please add your med data!
+                    Заполните форму!
                 </c:when>
                 <c:otherwise>
                     <div class="card my-2 p-3">
@@ -178,7 +178,7 @@
                     <c:if test="${(user.medicalHistory.numberOfMedicalFormEntries) > 0}">
                         <div class="card my-2">
                             <div class="card-header">
-                                Entries: ${user.medicalHistory.numberOfMedicalFormEntries}
+                                Записи: ${user.medicalHistory.numberOfMedicalFormEntries}
                             </div>
                             <div class="card-body">
                                 <ul class="card-text list-group list-group-flush">
@@ -189,7 +189,7 @@
                                                <c:out value="${entry.subject}" />                               
                                             </a>    
                                             <span class="badge badge-primary badge-pill">
-                                                Atch:&nbsp;<c:out value="${entry.numberOfAttachments}" />
+                                                Вложения:&nbsp;<c:out value="${entry.numberOfAttachments}" />
                                             </span>
                                         </li>
                                     </c:forEach>

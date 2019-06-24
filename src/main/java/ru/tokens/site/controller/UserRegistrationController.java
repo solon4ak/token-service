@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 import ru.tokens.site.entities.Address;
 import ru.tokens.site.entities.User;
@@ -56,28 +55,30 @@ public class UserRegistrationController {
     private static final Logger log = LogManager.getLogger("User");
 
     @RequestMapping(value = "register", method = RequestMethod.GET)
-    public String register(Map<String, Object> model) {
-        UserRegistrationForm form = new UserRegistrationForm();
+    public String register(final Map<String, Object> model) {
+
+        final UserRegistrationForm form = new UserRegistrationForm();
         String password = passwordUtil.generatePassword();
         form.setPassword(password);
         log.info("Password generated {}", password);
+
         model.put("userRegistrationFailed", false);
         model.put("userRegistrationForm", form);
         return "userreg/registration";
     }
 
     @RequestMapping(value = "register", method = RequestMethod.POST)
-    public ModelAndView register(Map<String, Object> model,
-            HttpServletRequest request, UserRegistrationForm form) {
+    public ModelAndView register(final Map<String, Object> model,
+            final HttpServletRequest request, final UserRegistrationForm form) {
 
         String lastName = form.getLastName();
         String firstName = form.getFirstName();
         String midName = form.getMiddleName();
         String password = form.getPassword();
         String phoneNumber = form.getPhoneNumber();
-        
-        Address address = new Address();
-        
+
+        final Address address = new Address();
+
         address.setCountry(form.getCountry());
         address.setCity(form.getCity());
         address.setStreet(form.getStreet());
@@ -89,7 +90,7 @@ public class UserRegistrationController {
         // Проверка на наличие этого почтового адреса в базе
         String email = form.getEmail();
         if (userService.findUserByEmail(email) != null) {
-            String msg = "User with email: " + email + " has already registered.";
+            String msg = "Пользователь с почтой: " + email + " уже зарегистрирован в системе.";
             model.put("message", msg);
             model.put("userRegistrationFailed", true);
             form.setEmail("");
@@ -98,19 +99,32 @@ public class UserRegistrationController {
         }
 
         String birthDate = form.getBirthDate();
-        LocalDate bdate;
+        LocalDate bDate = null;
+        String message = null;
+
         try {
-            bdate = LocalDate.parse(birthDate, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+            bDate = LocalDate.parse(birthDate, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         } catch (DateTimeParseException e) {
-            String msg = "Неправильный формат даты. "
+            message = "Неправильный формат даты. "
                     + "Введите дату в следующем формате '30.03.1985'.";
-            model.put("message", msg);
-            model.put("userRegistrationFailed", true);
+            model.put("message", message);
+            log.warn("Wrong date format '{}'", birthDate, e);
+            model.put("userRegistrationFailed", false);
             model.put("userRegistrationForm", form);
             return new ModelAndView("userreg/registration");
         }
 
-        User user = new User();
+        if (!this.userService.validateBirthDate(bDate)) {
+            message = "Дата указана некорректно.";
+            model.put("message", message);
+            log.warn("Incorrect birth date", birthDate);
+            model.put("userRegistrationFailed", false);
+            model.put("userRegistrationForm", form);
+            return new ModelAndView("userreg/registration");
+        }
+
+        final User user = new User();
+
         user.setRegistered(Instant.now());
         user.setLastName(lastName);
         user.setFirstName(firstName);
@@ -118,8 +132,7 @@ public class UserRegistrationController {
         user.setUserEmailAddress(email);
         user.setPassword(password);
         user.setPhoneNumber(phoneNumber);
-        // check date less than today date
-        user.setBirthDate(bdate);
+        user.setBirthDate(bDate);
         user.setPostAddress(address);
 
         try {
@@ -146,7 +159,8 @@ public class UserRegistrationController {
     }
 
     @RequestMapping(value = "success")
-    public String successRegistration(Map<String, Object> model, HttpServletRequest request) {
+    public String successRegistration(final Map<String, Object> model,
+            final HttpServletRequest request) {
         String msg = "<p>Завершите регистрацию перейдя по ссылке в полученном письме.</p>"
                 + "<p><strong>Ссылка активна в течение суток.</strong></p>";
         request.changeSessionId();
@@ -155,8 +169,8 @@ public class UserRegistrationController {
     }
 
     @RequestMapping(value = "registrationConfirm", method = RequestMethod.GET)
-    public ModelAndView confirmRegistration(Map<String, Object> model,
-            HttpServletRequest request, HttpSession session,
+    public ModelAndView confirmRegistration(final Map<String, Object> model,
+            final HttpServletRequest request, HttpSession session,
             @RequestParam("token") String confimationToken) {
 
         final User user = userService.getUser(confimationToken);
@@ -175,7 +189,7 @@ public class UserRegistrationController {
         }
 
         //        Locale locale = request.getLocale();
-        final String result = userService.validateVerificationToken(confimationToken);
+        final String result = this.userService.validateVerificationToken(confimationToken);
 
         if (result.equals("valid")) {
             user.setEmailActivated(true);
@@ -183,10 +197,10 @@ public class UserRegistrationController {
             UserPrincipal.setPrincipal(session, principal);
             request.changeSessionId();
 
-            String subject = "Thank u for registration.";
+            String subject = "Благодарим вас за регистрацию на нашем ресурсе.";
             String email = user.getUserEmailAddress();
-            String body = "Your e-mail: " + email
-                    + "; password: " + user.getPassword();
+            String body = "Зарегистрирован пользователь: E-mail: " + email
+                    + "; пароль: " + user.getPassword();
             emailSender.sendSimpleEmail(email, subject, body);
 
             return new ModelAndView(
@@ -203,18 +217,19 @@ public class UserRegistrationController {
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.GET)
-    public ModelAndView editUserData(Map<String, Object> model, Principal principal) {
+    public ModelAndView editUserData(final Map<String, Object> model,
+            final Principal principal) {
 
-        Long userId = Long.valueOf(principal.getName());
-        User user = this.userService.findUserById(userId);
+        final Long userId = Long.valueOf(principal.getName());
+        final User user = this.userService.findUserById(userId);
         if (user == null) {
             log.error("User with id {} doesn't exist.", userId);
-            String msg = "User doesn't exist.";
+            String msg = "Пользователь не зарегистрирован в системе.";
             model.put("message", msg);
             return new ModelAndView("userreg/error");
         }
 
-        UserRegistrationForm form = new UserRegistrationForm();
+        final UserRegistrationForm form = new UserRegistrationForm();
 
         form.setFirstName(user.getFirstName());
         form.setMiddleName(user.getMiddleName());
@@ -232,14 +247,14 @@ public class UserRegistrationController {
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.POST)
-    public View editUserData(Map<String, Object> model, Principal principal,
-            UserRegistrationForm form) {
+    public ModelAndView editUserData(final Map<String, Object> model,
+            final Principal principal, final UserRegistrationForm form) {
 
-        Long userId = Long.valueOf(principal.getName());
-        User user = this.userService.findUserById(userId);
+        final Long userId = Long.valueOf(principal.getName());
+        final User user = this.userService.findUserById(userId);
         if (user == null) {
             log.error("User with id {} doesn't exist.", userId);
-            return new RedirectView("/user/register", true, false);
+            return new ModelAndView(new RedirectView("/user/register", true, false));
         }
 
         user.setFirstName(form.getFirstName());
@@ -249,27 +264,42 @@ public class UserRegistrationController {
         user.setPhoneNumber(form.getPhoneNumber());
 
         String birthDate = form.getBirthDate();
-        LocalDate bdate;
-        try {
-            bdate = LocalDate.parse(birthDate, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-        } catch (DateTimeParseException e) {
-            String msg = "Неправильный формат даты. "
-                    + "Введите дату в следующем формате '30.03.1985'.";
-            model.put("message", msg);
-            return new RedirectView("/userreg/error", true, true, true);
-        }
-        // check date less than today date
-        user.setBirthDate(bdate);
+        LocalDate bDate = null;
+        String message = null;
 
-        return new RedirectView("/user/view", true, false);
+        try {
+            bDate = LocalDate.parse(birthDate, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        } catch (DateTimeParseException e) {
+            message = "Неправильный формат даты. "
+                    + "Введите дату в следующем формате '30.03.1985'.";
+            model.put("message", message);
+            log.warn("Wrong date format '{}'", birthDate, e);
+            model.put("userRegistrationForm", form);
+            model.put("user", user);
+            return new ModelAndView("userreg/edit");
+        }
+
+        if (!this.userService.validateBirthDate(bDate)) {
+            message = "Дата указана некорректно.";
+            model.put("message", message);
+            log.warn("Incorrect birth date", birthDate);
+            model.put("userRegistrationForm", form);
+            model.put("user", user);
+            return new ModelAndView("userreg/edit");
+        }
+        
+        // check date less than today date
+        user.setBirthDate(bDate);
+
+        return new ModelAndView(new RedirectView("/user/view", true, false));
     }
 
     @RequestMapping(value = "view", method = RequestMethod.GET)
-    public ModelAndView viewUserPage(Map<String, Object> model,
-            Principal principal) {
+    public ModelAndView viewUserPage(final Map<String, Object> model,
+            final Principal principal) {
 
-        Long userId = Long.valueOf(principal.getName());
-        User user = this.userService.findUserById(userId);
+        final Long userId = Long.valueOf(principal.getName());
+        final User user = this.userService.findUserById(userId);
         if (user == null) {
             log.error("User with id {} doesn't exist.", userId);
             String msg = "User doesn't exist.";

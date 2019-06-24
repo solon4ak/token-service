@@ -1,5 +1,5 @@
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
-<template:basic_bs_one_col htmlTitle="Token Application" bodyTitle="Token Application">
+<template:basic_bs_one_col htmlTitle="Token Application" bodyTitle="tag4life">
     
     <jsp:body>
         <p class="text-justify">

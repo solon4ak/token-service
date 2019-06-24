@@ -3,7 +3,7 @@
 <%--@elvariable id="categories" type="java.util.List"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 
-<template:admin htmlTitle="Editing product: ${product.productName}" bodyTitle="Edit product: ${product.productName}"> 
+<template:admin htmlTitle="Editing product: ${product.productName}" bodyTitle="Редактировать товар: ${product.productName}"> 
 
     <jsp:attribute name="extraHeadContent">
         <script src="https://cloud.tinymce.com/5/tinymce.min.js?apiKey=i6rk63ssg8q0xzbsnyjrkxichdz2rjlup6i7drwsa82i6i1w"></script>        

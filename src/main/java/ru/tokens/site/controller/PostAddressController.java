@@ -29,10 +29,11 @@ public class PostAddressController {
     private static final Logger log = LogManager.getLogger("PostAddressController");
 
     @RequestMapping(value = "add", method = RequestMethod.GET)
-    public ModelAndView addAddress(Map<String, Object> model, Principal principal) {
+    public ModelAndView addAddress(final Map<String, Object> model, 
+            final Principal principal) {
         
-        Long userId = Long.valueOf(principal.getName());
-        User user = userService.findUserById(userId);
+        final Long userId = Long.valueOf(principal.getName());
+        final User user = userService.findUserById(userId);
         
         model.put("addressForm", new PostAddressForm());
         model.put("user", user);
@@ -40,9 +41,9 @@ public class PostAddressController {
     }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public View addAddress(Principal principal, PostAddressForm form) {
+    public View addAddress(final Principal principal, final PostAddressForm form) {
         
-        Address address = new Address();
+        final Address address = new Address();
         
         address.setCountry(form.getCountry());
         address.setCity(form.getCity());

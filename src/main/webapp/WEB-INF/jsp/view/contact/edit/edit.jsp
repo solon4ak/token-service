@@ -3,12 +3,12 @@
 <%--@elvariable id="user" type="ru.tokens.site.entities.User"--%>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <template:basic_bs_three_col_tkn htmlTitle="${token.uuidString} :: Edit Contact" 
-                                 bodyTitle="Edit contact">
+                                 bodyTitle="Изменить контакт">
 
     <jsp:attribute name="rightColumnContent">
         <nav class="nav flex-column">   
             <a class="nav-link" href="<c:url value="/user/view" />">
-                User
+                Пользователь
             </a>
         </nav>
     </jsp:attribute>
@@ -20,7 +20,7 @@
                 <div class="form-group">
                     <div class="form-group row">
                         <form:label path="lastName" class="col-sm-3 col-form-label">
-                            Last name
+                            Фамилия
                         </form:label>
                         <div class="col-sm-9">
                             <form:input path="lastName" type="text" class="form-control" 
@@ -29,7 +29,7 @@
                     </div>
                     <div class="form-group row">
                         <form:label path="firstName" class="col-sm-3 col-form-label">
-                            First name
+                            Имя
                         </form:label>
                         <div class="col-sm-9">
                             <form:input path="firstName" type="text" class="form-control" 
@@ -38,14 +38,14 @@
                     </div>                
                     <div class="form-group row">
                         <form:label path="phoneNumber" class="col-sm-3 col-form-label">
-                            Phone number
+                            Телефон
                         </form:label>
                         <div class="col-sm-9">
                             <form:input path="phoneNumber" type="text" class="form-control" 
                                         id="phoneNumber" aria-describedby="pnHelp" 
                                         placeholder="+7 XXX XXX XX XX" required="true" />
                             <small id="pnHelp" class="form-text text-muted">
-                                Format: +7 499 999 99 99
+                                Формат: +7 499 999 99 99
                             </small>
                         </div>
                     </div>
@@ -58,7 +58,7 @@
                                         id="exampleInputEmail1" aria-describedby="emailHelp" 
                                         placeholder="Enter email" required="true" />
                             <small id="emailHelp" class="form-text text-muted">
-                                Will be used in user events.
+                                Используется в событиях пользователя.
                             </small>
                         </div>                
                     </div>
@@ -69,7 +69,7 @@
                             &nbsp;
                         </span>
                         <div class="col-sm-9">
-                            <button class="btn btn-primary" type="submit">Save</button>
+                            <button class="btn btn-primary" type="submit">Изменить</button>
                         </div>                
                     </div>
                 </div>

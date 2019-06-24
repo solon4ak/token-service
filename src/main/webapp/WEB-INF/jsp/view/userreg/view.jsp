@@ -6,16 +6,16 @@
     <jsp:attribute name="leftColumnContent">
         <nav class="nav flex-column">  
             <a class="nav-link disabled" href="<c:url value="/user/view" />">
-                User
+                Пользователь
             </a>
             <a class="nav-link" href="<c:url value="/token/user/postaddress/view" />">
-                Post address
+                Почтовый адрес
             </a>
             <a class="nav-link" href="<c:url value="/user/order/list" />">
-                Orders
+                Заказы
             </a>
             <a class="nav-link" href="<c:url value="/token/user/view" />">
-                Token
+                Жетон
             </a>            
         </nav>
     </jsp:attribute>
@@ -23,33 +23,33 @@
     <jsp:attribute name="rightColumnContent">
         <nav class="nav flex-column">
             <a class="nav-link" href="<c:url value="/user/edit" />">
-                Edit
+                Изменить
             </a>
         </nav>        
     </jsp:attribute>
 
     <jsp:body>
-        <h4>User</h4> 
+        <h4>Пользователь</h4> 
         <table class="table">
             <tbody>  
                 <tr>
-                    <td>Registered</td>
+                    <td>Зарегистрирован</td>
                     <td><wrox:formatDate value="${user.registered}" /></td>
                 </tr>
                 <tr>
-                    <td>First name</td>
-                    <td><c:out value="${user.firstName}" /></td>
-                </tr>
-                <tr>
-                    <td>Middle name</td>
-                    <td><c:out value="${user.middleName}" /></td>
-                </tr>
-                <tr>
-                    <td>Last name</td>
+                    <td>Фамилия</td>
                     <td><c:out value="${user.lastName}" /></td>
                 </tr>
                 <tr>
-                    <td>Birth date</td>
+                    <td>Имя</td>
+                    <td><c:out value="${user.firstName}" /></td>
+                </tr>
+                <tr>
+                    <td>Отчество</td>
+                    <td><c:out value="${user.middleName}" /></td>
+                </tr>
+                <tr>
+                    <td>Дата рождения</td>
                     <td><tags:localDate date="${user.birthDate}" /></td>
                 </tr>
                 <tr>
@@ -57,7 +57,7 @@
                     <td><c:out value="${user.userEmailAddress}" /></td>
                 </tr>
                 <tr>
-                    <td>Phone number</td>
+                    <td>Телефон</td>
                     <td><c:out value="${user.phoneNumber}" /></td>
                 </tr>
             </tbody>
