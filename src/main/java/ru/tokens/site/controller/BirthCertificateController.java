@@ -103,7 +103,7 @@ public class BirthCertificateController {
             log.warn("Wrong date format '{}'", issueDate, e);
             model.put("token", token);
             model.put("user", user);
-            model.put("certForm", new BthCertForm());
+            model.put("certForm", form);
             return new ModelAndView("birth_certificate/edit/add");
         }
 
@@ -113,7 +113,7 @@ public class BirthCertificateController {
             log.warn("Incorrect birth cert issue date", issueDate);
             model.put("token", token);
             model.put("user", user);
-            model.put("certForm", new BthCertForm());
+            model.put("certForm", form);
             return new ModelAndView("birth_certificate/edit/add");
         }
 
@@ -182,7 +182,7 @@ public class BirthCertificateController {
             log.warn("Wrong date format '{}'", issueDate, e);
             model.put("token", token);
             model.put("user", user);
-            model.put("certForm", new BthCertForm());
+            model.put("certForm", form);
             return new ModelAndView("birth_certificate/edit/add");
         }
 
@@ -192,7 +192,7 @@ public class BirthCertificateController {
             log.warn("Incorrect birth cert issue date", issueDate);
             model.put("token", token);
             model.put("user", user);
-            model.put("certForm", new BthCertForm());
+            model.put("certForm", form);
             return new ModelAndView("birth_certificate/edit/add");
         }
         

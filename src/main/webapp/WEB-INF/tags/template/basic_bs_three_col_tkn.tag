@@ -11,43 +11,15 @@
 <%--<%@ attribute name="authContent" fragment="true" required="true" %>--%>
 <%@ include file="/WEB-INF/jsp/base.jspf" %>
 <template:main_bs htmlTitle="${htmlTitle}" bodyTitle="${bodyTitle}">
-    
+
     <jsp:attribute name="headContent">
         <jsp:invoke fragment="extraHeadContent" />
     </jsp:attribute>
-    
+
     <jsp:body>
         <div class="row justify-content-lg-center">
-            <div class="col-2 border-right">
-                <nav class="nav flex-column">
-                    <a class="nav-link" href="<c:url value="/token/user/view" />">
-                        Token
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a class="nav-link" href="<c:url value="/token/user/picture/view" />">
-                        Picture
-                    </a>
-                    <a class="nav-link" href="<c:url value="/token/user/birthcert/view" />">
-                        Birth cert
-                    </a>
-                    <a class="nav-link" href="<c:url value="/token/user/passport/view" />">
-                        Passport
-                    </a>
-                    <a class="nav-link" href="<c:url value="/token/user/address/view" />">
-                        Address
-                    </a>
-                    <a class="nav-link" href="<c:url value="/token/user/contact/list" />">
-                        Contacts
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a class="nav-link" href="<c:url value="/token/user/med/view" />">
-                        Medical data
-                    </a>           
-                    <a class="nav-link" href="<c:url value="/token/user/csdevent/list" />">
-                        Events
-                    </a>            
-                </nav>
-            </div>
+            
+            <jsp:include page="/WEB-INF/jsp/left_nav.jspf" />
             <div class="col-8 border-right">                
                 <jsp:doBody />
             </div>

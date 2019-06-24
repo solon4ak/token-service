@@ -8,7 +8,7 @@
 
     <jsp:attribute name="rightColumnContent">
         <nav class="nav flex-column">
-            <a class="nav-link" href="<c:url value="/token/user/csdevent/add" />">Add</a>   
+            <a class="nav-link" href="<c:url value="/token/user/csdevent/add" />">Добавить</a>   
             <div class="dropdown-divider"></div>
             <a class="nav-link" href="<c:url value="/user/view" />">
                 Пользователь
@@ -172,7 +172,7 @@
                     </c:forEach>                
                 </c:when>
                 <c:otherwise>
-                    Событий нет.
+                    Сообщений нет.
                 </c:otherwise>            
             </c:choose>
         </div>

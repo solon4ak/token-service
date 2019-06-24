@@ -1,0 +1,32 @@
+<%-- any content can be specified here e.g.: --%>
+<%@ page pageEncoding="UTF-8" %>
+<div class="col-2 border-right">
+    <nav class="nav flex-column">
+        <a class="nav-link" href="<c:url value="/token/user/view" />">
+            Жетон
+        </a>
+        <div class="dropdown-divider"></div>
+        <a class="nav-link" href="<c:url value="/token/user/picture/view" />">
+            Фото
+        </a>
+        <a class="nav-link" href="<c:url value="/token/user/birthcert/view" />">
+            Свидетельство о рождении
+        </a>
+        <a class="nav-link" href="<c:url value="/token/user/passport/view" />">
+            Паспорт
+        </a>
+        <a class="nav-link" href="<c:url value="/token/user/address/view" />">
+            Адрес
+        </a>
+        <a class="nav-link" href="<c:url value="/token/user/contact/list" />">
+            Контакты
+        </a>
+        <div class="dropdown-divider"></div>
+        <a class="nav-link" href="<c:url value="/token/user/med/view" />">
+            Медицина
+        </a>           
+        <a class="nav-link" href="<c:url value="/token/user/csdevent/list" />">
+            Сообщения
+        </a>     
+    </nav>
+</div>

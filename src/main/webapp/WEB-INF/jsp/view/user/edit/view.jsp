@@ -22,7 +22,7 @@
                             <table class="table table-sm table-borderless">
                                 <tbody>
                                     <tr>
-                                        <td>
+                                        <td class="h6">
                                             Активирован 
                                         </td>
                                         <td>
@@ -30,7 +30,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>
+                                        <td class="h6">
                                             Владелец 
                                         </td>
                                         <td>
@@ -39,7 +39,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>
+                                        <td class="h6">
                                             Дата рождения
                                         </td>
                                         <td>
@@ -47,7 +47,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>
+                                        <td class="h6">
                                             E-mail 
                                         </td>
                                         <td>
@@ -55,7 +55,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>
+                                        <td class="h6">
                                             Телефон 
                                         </td>
                                         <td>
@@ -77,7 +77,7 @@
                             <table class="table table-sm table-borderless">
                                 <tbody>
                                     <tr>
-                                        <td>
+                                        <td class="h6">
                                             Активирован 
                                         </td>
                                         <td>
@@ -85,7 +85,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>
+                                        <td class="h6">
                                             Владелец 
                                         </td>
                                         <td>
@@ -94,7 +94,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>
+                                        <td class="h6">
                                             Дата рождения
                                         </td>
                                         <td>
@@ -102,7 +102,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>
+                                        <td class="h6">
                                             E-mail 
                                         </td>
                                         <td>
@@ -110,7 +110,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>
+                                        <td class="h6">
                                             Телефон 
                                         </td>
                                         <td>
